@@ -1,3 +1,3 @@
 (defpackage :plan-generator-package
-  (:nicknames :pgen)
+  (:nicknames :pgeneration)
   (:use :cl :roslisp))
