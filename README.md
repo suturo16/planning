@@ -5,7 +5,7 @@
 
 1. **Every change MUST be done on a new branch.**
 
-  This project follows the simple [GitHub workflow](https://guides.github.com/introduction/flow/) to always keep the `master` branch deployable and free from buggy and untested code. The main principle of this is very straight forward: just create a new branch for every change you make to the code (these branches are called _feature branches_. If you are done with making changes in your newly created branch simply push the branch to the remote repository, create a new merge request in the GitLab and assign another son to review your changes (so that at least 4 eyes have seen and checked the code before it gets merged into the master branch).
+  This project follows the simple [GitHub workflow](https://guides.github.com/introduction/flow/) to always keep the `master` branch deployable and free from buggy and untested code. The main principle of this is very straight forward: just create a new branch for every change you make to the code (these branches are called _feature branches_. If you are done with making changes in your newly created branch simply push the branch to the remote repository, create a new push request on GitHub and assign another developer to review your changes (so that at least 4 eyes have seen and checked the code before it gets merged into the master branch).
 
   **Step 1**: _Make sure you are on the master branch and up-to-date_. In order to create a new branch, you should be on the master branch that is up-to-date with the remote repository. Just checkout the master branch and pull from the remote server (the remote server is called `origin` in this example).
 
@@ -21,10 +21,10 @@
   ```
 2. **Every change MUST be reviewed.**
 
-  In order to write better code with less bugs it is always necessary that at least one other person reviews the code. The idea is that, since you already created an own branch for your changes, you simply open a merge request in the GitLab and assign another person from the project to it to check the code (in the best case this person is somehow connected to the change). For more information on why code review is necessary, have a look [this article](https://www.sitepoint.com/the-importance-of-code-reviews/).
+  In order to write better code with less bugs it is always necessary that at least one other person reviews the code. The idea is that, since you already created an own branch for your changes, you simply open a push request on GitHub and assign another person from the project to it to check the code (in the best case this person is somehow connected to the change). For more information on why code review is necessary, have a look [this article](https://www.sitepoint.com/the-importance-of-code-reviews/).
 3. **All new features/bug fixes MUST be tested by one or more specs.**
 
-  Bugs are always bad. To avoid having a lot of them, new code should always be tested. Even though a TDD-approach is recommended it is not necessary. But before assigning a new PR to another person for review, there should always be tests that cover the additions to the project. Even when it is just a small bug fix. The GitLab will then automatically run the tests and display the result in the web interface (you can of course run the tests locally before, this is just another indicator for the reviewer of the code). Try to cover the new code as good as possible with all kinds of tests (unit tests, integration tests, front-end tests, etc.).
+  Bugs are always bad. To avoid having a lot of them, new code should always be tested. Even though a TDD-approach is recommended it is not necessary. But before assigning a new PR to another person for review, there should always be tests that cover the additions to the project. Even when it is just a small bug fix. GitHub will then automatically run the tests and display the result in the web interface (you can of course run the tests locally before, this is just another indicator for the reviewer of the code). Try to cover the new code as good as possible with all kinds of tests (unit tests, integration tests, front-end tests, etc.).
 4. **Always update the documentation, if necessary.**
 
   To ensure that every part of the project is documented you MUST update the documentation, when necessary. This should land in the same merge request as the change itself, so it can also be reviewed all together. In this way, it also never creates technical debt to you/to the project (we all have enough of them...).
@@ -43,10 +43,11 @@ You SHOULD adhere to the [The Emacs Lisp Style Guide](https://github.com/bbatsov
 
 - You MUST follow the lisp-case convention for file names. Use `-` in any case to seperate lower-case words.
 
+
 ### <a name="commit-conventions">Commit conventions (Submitting Changes)</a>
 1. **Create an issue first**
 
-  If you find a bug in the code or something that is misbehaving, you SHOULD fill an issue in the bug tracker ([gitlab](https://gitlab.informatik.uni-bremen.de/sputze/aimdata/issues)) first. This ensures that everybody in the team is aware of the bug. Then use the labeling and assign functionalities to give it some more context and a category (see the [issue tracker section](#issue-tracker) for more information). If you want to resolve the issue, assign it to yourself. Only after creating the issue you should start fixing and creating a merge request. The issues and merge request MAY be in English.
+  If you find a bug in the code or something that is misbehaving, you SHOULD fill an issue in the bug tracker ([Trello](https://trello.com/b/GnVkqAGh/planning)) first. This ensures that everybody in the team is aware of the bug. Then use the labeling and assign functionalities to give it some more context and a category (see the [issue tracker section](#issue-tracker) for more information). If you want to resolve the issue, assign it to yourself. Only after creating the issue you should start fixing and creating a merge request. The issues and merge request MAY be in English.
 2. **Use the branching model**
 
   For this project we use the most simple git branching model suitable for this codebase, the GitHub flow, which is explained [here](http://scottchacon.com/2011/08/31/github-flow.html) and [here](https://guides.github.com/introduction/flow/) in more detail. The main idea is as simple as creating a new branch from `master` for every change (while following the branch naming convention), creating a merge request for it, assigning a person to review it when it's done and let this person merge the branch into the `master`-branch. Please read both in-depth articles provided above before using it. A simple step-by-step solution on how to do it is explained in the [Contributing](#contributing) section.
@@ -59,7 +60,7 @@ You SHOULD adhere to the [The Emacs Lisp Style Guide](https://github.com/bbatsov
   - `misc`: Everything that fits not one of the tags above MUST use this tag instead.
 4. **Follow the commit message guidelines**
 
-  In order to be able to easily scan through commit messages/history and the changes your MUST follow the commit message guidelines. The first line of the commit message MUST be concrete and written in imperative and present tense form ("Add feature ..." instead of "Added feature ..." or "Adds feature ..."). Also, the first line SHOULD not exceed 50 characters (this is usually a length after which the text is cut off in git management systems like GitLab or GitHub). After the first line a short description should follow in which you are more specific about the changes you made (include not only _what_ but more importantly _why_ you did it). You SHOULD try to line-break these descriptions at 72 characters (we are basically following the 50/72 format as [proposed by Tim Pope](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)). If the commit fixes a bug, also consider adding a reference to the GitLab issue. This will close the issue automatically if the commit gets merged into the master branch (see [here](http://docs.gitlab.com/ee/customization/issue_closing.html) for more information about the actual format of this reference). All commit messages MUST be written in English and the first letters MUST be in capitals.
+  In order to be able to easily scan through commit messages/history and the changes your MUST follow the commit message guidelines. The first line of the commit message MUST be concrete and written in imperative and present tense form ("Add feature ..." instead of "Added feature ..." or "Adds feature ..."). Also, the first line SHOULD not exceed 50 characters (this is usually a length after which the text is cut off in git management systems like GitLab or GitHub). After the first line a short description should follow in which you are more specific about the changes you made (include not only _what_ but more importantly _why_ you did it). You SHOULD try to line-break these descriptions at 72 characters (we are basically following the 50/72 format as [proposed by Tim Pope](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)). If the commit fixes a bug, also consider adding a reference to the Trello issue. This will close the issue automatically if the commit gets merged into the master branch (see [here](http://docs.gitlab.com/ee/customization/issue_closing.html) for more information about the actual format of this reference). All commit messages MUST be written in English and the first letters MUST be in capitals.
 
   You SHOULD start your messages with an applicable emoji. This will ease the scanning of the messages even more and also categorize each commit. The emojis you are able to choose from is on of the following:
 
@@ -75,17 +76,16 @@ You SHOULD adhere to the [The Emacs Lisp Style Guide](https://github.com/bbatsov
   - :ring: `:ring:` when working on dependencies
 5. **Resolve all merge conflicts**
 
-  Before assigning another developer for reviewing your merge request you MUST make sure that there are no merge conflicts with the `master` branch (GitLab does actually not allow merging when conflicts are present). If they are present it is your job to resolve them and not the reviewers.
+  Before assigning another developer for reviewing your merge request you MUST make sure that there are no merge conflicts with the `master` branch (GitHub does actually not allow merging when conflicts are present). If they are present it is your job to resolve them and not the reviewers.
 6. **Delete merged branches**
 
-  After a branch was successfully merged into the master branch all feature branches aren't very useful any longer. Therefore you MUST always delete those feature branches after the merge if not already done by the reviewer (in GitLab there is a checkbox right next to the `merge` button that will automatically delete the feature branch after the merge).
+  After a branch was successfully merged into the master branch all feature branches aren't very useful any longer. Therefore you MUST always delete those feature branches after the merge if not already done by the reviewer (in GitHub there is a button right next to the `merge` button that will delete the feature branch after the merge).
 
 ### <a name="issue-tracker">Issue Tracker</a>
-This project uses the issue tracker from GitLab (you can find it [here](https://gitlab.informatik.uni-bremen.de/sputze/aimdata/issues)). So far we use 4 main labels to categorize the issues:
+This project uses Trello as the issue tracker (you can find the board [here](https://trello.com/b/GnVkqAGh/planning)). So far we use 4 main labels to categorize the issues:
 
 - `feature`: This label should be used when opening an issue as a feature request or as a reminder to add a specific _new_ feature.
 - `bug`: This label indicates that someone found a bug. The priority of this label is higher then all others.
-- `in progress`: An issues labeled with the in progress-status is currently in the works by another developer.
 - `discussion`: The discussion label is used to have issues that discuss certain things in the project. An action on the codebase isn't necessary most of the time.
 
 If you think that labels are missing on certain issues feel free to add them.
@@ -102,5 +102,4 @@ $ git pull origin feature/to-be-reviewed
 
 **Step 2**: _Test/review the codebase_. Now that you have checked out the changed code you are able to test the new feature/the bugfix (the reviewing process also includes running the full test suite, which will be done by CI in the future). If something is wrong, reply to the discussion on the merge request and wait for a response from the creator. After the creator changed the code again, `pull` and test it again. This will be an ongoing cycle until everyone is happy with the added/deleted code.
 
-**Step 3**: _Merge the feature branch_. At this point in time you should be able to merge the request in the GitLab. You SHOULD check the checkbox next to the merge button to delete the branch after merging. Then hit the merge button. Done.
-
+**Step 3**: _Merge the feature branch_. At this point in time you should be able to merge the request on GitHub. Hit the merge button. You SHOULD click the button next to the merge button to delete the branch after merging. Done.
