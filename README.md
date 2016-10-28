@@ -38,28 +38,10 @@
 ### Coding Styleguides and Naming Conventions
 Coding styles and naming conventions are important to keep every part of the codebase readable and as always: consistency is key! So please do your very best to follow the rules below when adding new code to the project. For rules like soft-tabs and tab-size try to configure your editor to the guidelines. This will make it easier to follow them.
 
-#### Java
-You SHOULD adhere to the [Google Java Styleguide](https://google.github.io/styleguide/javaguide.html).
+#### Lisp
+You SHOULD adhere to the [The Emacs Lisp Style Guide](https://github.com/bbatsov/emacs-lisp-style-guide).
 
-- You MUST follow the [`UpperCamleCase`](http://c2.com/cgi/wiki?UpperCamelCase) convention for file names. Don't use `-` or `_` in any case to seperate words.
-
-#### HTML/Scala HTML
-You SHOULD adhere to the [HTML CodeGuide](http://codeguide.co/#html) and the [Scala Styleguide](http://docs.scala-lang.org/style/).
-
-- You SHOULD try to use [semantic class names](https://css-tricks.com/semantic-class-names/) as often as possible.
-- You SHOULD use the [HTML5 semantic Elements](http://www.hongkiat.com/blog/html-5-semantics/), where possible.
-- In Scala templates, you SHOULD always omit spaces between parentheses and curly braces (e.g. `if(true){...}` instead of `if(true) {...}`)
-- You MUST follow the [`lowerCamleCase`](http://c2.com/cgi/wiki?LowerCamelCase) convention for file names. Don't use `-` or `_` in any case to seperate words.
-
-#### CSS
-You SHOULD adhere to the [CSS CodeGuide](http://codeguide.co/#css) and the [BEM naming convention](http://getbem.com/naming/).
-
-- You SHOULD use the [Ideomatic CSS guide](https://github.com/necolas/idiomatic-css#comments) for CSS comments.
-- You MUST follow the [`kebab-case`](https://en.wikipedia.org/wiki/Letter_case#Special_case_styles) convention for file names. Don't use `_` in any case to seperate words.
-
-#### JavaScript
-You SHOULD adhere to the [AirBnB JavaScript Styleguide](https://github.com/airbnb/javascript).
-- You MUST follow the [`kebab-case`](https://en.wikipedia.org/wiki/Letter_case#Special_case_styles) convention for file names. Don't use `_` in any case to seperate words.
+- You MUST follow the lisp-case convention for file names. Use `-` in any case to seperate lower-case words.
 
 ### <a name="commit-conventions">Commit conventions (Submitting Changes)</a>
 1. **Create an issue first**
