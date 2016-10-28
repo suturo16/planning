@@ -22,16 +22,13 @@
 2. **Every change MUST be reviewed.**
 
   In order to write better code with less bugs it is always necessary that at least one other person reviews the code. The idea is that, since you already created an own branch for your changes, you simply open a push request on GitHub and assign another person from the project to it to check the code (in the best case this person is somehow connected to the change). For more information on why code review is necessary, have a look [this article](https://www.sitepoint.com/the-importance-of-code-reviews/).
-3. **All new features/bug fixes MUST be tested by one or more specs.**
-
-  Bugs are always bad. To avoid having a lot of them, new code should always be tested. Even though a TDD-approach is recommended it is not necessary. But before assigning a new PR to another person for review, there should always be tests that cover the additions to the project. Even when it is just a small bug fix. GitHub will then automatically run the tests and display the result in the web interface (you can of course run the tests locally before, this is just another indicator for the reviewer of the code). Try to cover the new code as good as possible with all kinds of tests (unit tests, integration tests, front-end tests, etc.).
-4. **Always update the documentation, if necessary.**
+3. **Always update the documentation, if necessary.**
 
   To ensure that every part of the project is documented you MUST update the documentation, when necessary. This should land in the same merge request as the change itself, so it can also be reviewed all together. In this way, it also never creates technical debt to you/to the project (we all have enough of them...).
-5. **Write meaningful code comments**
+4. **Write meaningful code comments**
 
   _Good comments_ on newly written code is important. Not only for the people that didn't write the code and want to have a look at it afterwards (e.g. to review it or fix a bug), but also for you because most of the time you will not remember why you wrote the code the way you did 10 days later. To write good comments, you SHOULD read through the guidelines found [here](https://seesparkbox.com/foundry/lets_write_beautiful_css_comments) and try to apply them (even though the blog post talks about CSS comments, a lot of the guidelines are applicable to other languages as well). For example, you SHOULD always try to tell _why_ you are doing things the ways you do instead of _how/what_ (that should actually be visible from the code below the comments).
-6. **Follow simple programming principles**
+5. **Follow simple programming principles**
 
   Simple programming principles or code design patterns are a good way of keeping the code clean. You SHOULD read through the programming principles provided [here](https://webpro.github.io/programming-principles/) and try to apply them while adding new code. The most important ones are [KISS](https://webpro.github.io/programming-principles/#kiss), [YAGNI](https://webpro.github.io/programming-principles/#yagni), [DRY](https://webpro.github.io/programming-principles/#keep-things-dry) and the [Boy-Scout Rule](https://webpro.github.io/programming-principles/#boy-scout-rule), but also try to keep the others in mind as well. When you are applying the _Boy-Scout-Rule_ please do so in a seperate commit.
 
