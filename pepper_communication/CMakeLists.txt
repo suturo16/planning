@@ -7,6 +7,7 @@ project(pepper_communication)
 find_package(catkin REQUIRED COMPONENTS
   roslisp
   std_msgs
+  rospy
 )
 
 ## System dependencies are found with CMake's conventions
