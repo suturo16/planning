@@ -1,4 +1,8 @@
+from __future__ import division
+
 import random
+
+
 
 class State(object):
 	"""docstring for State"""
@@ -125,6 +129,7 @@ class Planner(object):
 
 
 if __name__ == '__main__':
+
 	s1 = State()
 
 	s1['f(x)'] = True
@@ -142,6 +147,11 @@ if __name__ == '__main__':
 	s4 = State()
 	s4['z(x)'] = True
 	s4['f(x)'] = True	
+
+	print(str(s1))
+	print(str(s2))
+	print(str(s3))
+	print(str(s4))
 
 	print('s1 & s2 = ' + str(s1.combinable(s2)))
 	print('s1 & s3 = ' + str(s1.combinable(s3)))
