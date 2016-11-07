@@ -1,7 +1,26 @@
 from __future__ import division
 
 import random
+try:
+    from Queue import PriorityQueue  # ver. < 3.0
+except ImportError:
+    from queue import PriorityQueue
 
+class Predicate(object):
+	"""docstring for Predicate"""
+	def __init__(self, name, fields):
+		super(Predicate, self).__init__()
+		self.name = name
+		self.fields = fields
+		
+	def __str__(self):
+		return self.name + str(self.fields)
+
+	def __hash__(self):
+		return str(self).__hash__()
+
+	def __eq__(self, other):
+		return str(self) == str(other)
 
 
 class State(object):
@@ -101,12 +120,49 @@ class Operator(object):
 		return self.cost >= other.cost
 		
 
+
+
+class Path(list):
+	"""docstring for Path"""
+	def __init__(self):
+		super(Path, self).__init__()
+		self.cost = 0
+		
+
+
+class PlanningProblem(object):
+	"""docstring for PlanningProblem"""
+	def __init__(self, start, goal, left, right, ops):
+		super(PlanningProblem, self).__init__()
+		self.start = start
+		self.goal = goal
+		self.left = left
+		self.right = right
+		self.ops = ops
+		
+	def cost():
+		return left.cost + right.cost
+
+	def __lt__(self, other):
+		return self.cost() < other.cost()
+
+	def __le__(self, other):
+		return self.cost() <= other.cost()
+
+	def __gt__(self, other):
+		return self.cost() > other.cost()
+
+	def __ge__(self, other):
+		return self.cost() >= other.cost()	
+
+
 class Planner(object):
 	"""docstring for Planner"""
 	def __init__(self, operators):
 		super(Planner, self).__init__()
 		self.operators = operators
 		
+
 	def testPath(self, start, goal, constraints, path):
 		currentState = start
 		lastIndex = 0
@@ -126,6 +182,23 @@ class Planner(object):
 			return True, currentState, path, [] 
 		else:
 			return False, currentState, path[:lastIndex], path[lastIndex:]
+
+	def beginPlanning(self, currentState, goalState):
+		self.currentState = currentState
+		self.goalState = goalState
+		self.problems = PriorityQueue()
+
+		diff = currentState / goalState
+
+		if len(diff) > 0:
+
+
+			bp = PlanningProblem(self.currentState, goalState, Path(), Path())
+
+
+
+	def getPlan(self):
+		pass
 
 
 if __name__ == '__main__':
