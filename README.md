@@ -71,7 +71,7 @@ You SHOULD adhere to the [The Emacs Lisp Style Guide](https://github.com/bbatsov
   - :white_check_mark: `:white_check_mark:` when adding tests
   - :lock: `:lock:` when dealing with security
   - :ring: `:ring:` when working on dependencies
-  - :train: ':train:' when commiting to transfer changes between two computers
+  - :train: `:train:` when commiting to transfer changes between two computers
 5. **Resolve all merge conflicts**
 
   Before assigning another developer for reviewing your merge request you MUST make sure that there are no merge conflicts with the `master` branch (GitHub does actually not allow merging when conflicts are present). If they are present it is your job to resolve them and not the reviewers.
