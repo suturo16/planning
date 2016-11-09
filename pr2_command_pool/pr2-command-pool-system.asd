@@ -5,4 +5,5 @@
     :components
     ((:file "package")
      (:file "commands" :depends-on ("package"))
+     (:file "services" :depends-on ("package"))
      ))))
