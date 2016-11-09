@@ -1,6 +1,3 @@
-a = apfel
-b = tisch
-
 <operation name="putOnTop">
 	<preconditions>
 		<predicate name="grasped" arguments="a" value="1"/>

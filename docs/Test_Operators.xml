@@ -1,0 +1,29 @@
+<operations>
+	<operation name="putOnTop" cost="20">
+		<preconditions>
+			<predicate name="grasped" args="a" value="1"/>
+		</preconditions>
+		<postconditions>
+			<predicate name="onTop" args="a, b" value="1"/>
+		</postconditions>
+	</operation>
+
+	<operation name="putInside" cost="20">
+		<preconditions>
+			<predicate name="grasped" args="a" value="1"/>
+			<predicate name="container" args="b" value="1"/>
+		</preconditions>
+		<postconditions>
+			<predicate name="onTop" args="a, b" value="1"/>
+		</postconditions>
+	</operation>
+
+	<operation name="grasp" cost="10">
+		<preconditions>
+			<predicate name="inReach" args="a" value="1"/>
+		</preconditions>
+		<postconditions>
+			<predicate name="grasped" args="a" value="1"/>
+		</postconditions>
+	</operation>
+</operations>
