@@ -6,10 +6,14 @@ class State(object):
 		super(State, self).__init__()
 		self.dict = {}
 		self.evaluator = evaluator
+		self.hash = 0
 		for p in preds:
 			self.put(p)
 
 	def put(self, predInst):
+		if not (predInst.pred, predInst.instance) in self.dict:
+			self.hash += hash((predInst.pred, predInst.instance))
+
 		self.dict[(predInst.pred, predInst.instance)] = predInst
 
 	def __getitem__(self, pred):
@@ -23,16 +27,27 @@ class State(object):
 		return len(self.dict)		
 
 	def __hash__(self):
-		return self.dict.__hash__()
+		return self.hash
 
 	def __iter__(self):
 		return self.dict.__iter__()
+
+	def __str__(self):
+		out = '--STATE--'
+		for k, v in self.dict.iteritems():
+			out += '\n  |-' + str(v)
+
+		return out
 
 	def iteritems(self):
 		return self.dict.iteritems()
 
 	def remove(self, key):
 		self.dict.pop((key.pred, key.instance), None)
+		self.hash -= hash((key.pred, key.instance))
+
+	def getByTuple(self, t):
+		return self.dict[t]
 
 	def getAll(self, pred, val):
 		out = []
@@ -87,7 +102,8 @@ class State(object):
 	This does not force evaluation. Non-shared fields are assumed to unify.
 	"""
 	def unify(self, other):
-		out = State(other)
+		out = State()
+		out.dict = dict(other.dict)
 
 		for k in self.dict:
 			out.put(self.dict[k])

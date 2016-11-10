@@ -30,11 +30,11 @@ class PredicateInstance(object):
 		self.pred = pred
 		self.instance = instance
 		self.val = val
-		assert(len(self) == len(self.pred))
+		assert(len(self.instance) == len(self.pred))
 
 
 	def __eq__(self, other):
-		return self.pred == other.pred and self.instance == other.instance and self.val == other.val
+		return other != None and self.pred == other.pred and self.instance == other.instance and self.val == other.val
 		
 	def __hash__(self):
 		return self.pred.__hash__() + self.instance.__hash__()
@@ -65,22 +65,14 @@ class PredStruct(object):
 		self.b_inst = b_inst		
 
 	def __str__(self):
-		out = 'Side-A:'
-		for a in self.a_inst:
-			out += '\n    ' + str(a)
-
-		out += '\nSide-B:'
-		for b in self.b_inst:
-			out += '\n    ' + str(b)			
-
-		out += '\n'
-		return out
+		return 'Side-A:' + str(self.a_inst) + '\nSide-B:' + str(self.b_inst)
 
 	def __hash__(self):
 		return self.a_inst.__hash__() + self.b_inst.__hash__()
 
 	def __eq__(self, other):
-		return self.a_inst == other.a_inst and self.b_inst == other.b_inst
+		return other != None and self.a_inst == other.a_inst and self.b_inst == other.b_inst
+
 
 class ParameterizedPredStruct(PredStruct):
 	def __init__(self, params, a_inst, b_inst):
@@ -93,7 +85,8 @@ class ParameterizedPredStruct(PredStruct):
 	def parameterize(self, param, inst):
 		resolved = {}
 
-		p_inst = State(param)
+		p_inst = State(evaluator=param.evaluator)
+		p_inst.dict = dict(param.dict)
 
 		for l, i in inst.iteritems():
 			for n, a in p_inst.iteritems():
@@ -109,7 +102,7 @@ class ParameterizedPredStruct(PredStruct):
 
 
 	def buildSolution(self, resolved):
-		print(resolved)
+		#print(resolved)
 
 		if len(resolved) == len(self.params):
 			finalA = State()
@@ -164,12 +157,12 @@ if __name__ == '__main__':
 	pool = PredicatePool()
 	pool.loadFromXML('Test_Predicates.xml')
 
-	p1 = Predicate('onTop', ('a', 'b'))
-	p2 = Predicate('rightOf', ('a', 'b'))
+	p1 = pool['onTop']#Predicate('onTop', ('a', 'b'))
+	p2 = pool['rightOf']#Predicate('rightOf', ('a', 'b'))
 
-	p3 = Predicate('inHand', ('a',))
-	p4 = Predicate('underneath', ('a', 'b'))
-	p5 = Predicate('reachable', ('a',))
+	p3 = pool['grasped']#Predicate('inHand', ('a',))
+	p4 = pool['inFront']#Predicate('underneath', ('a', 'b'))
+	p5 = pool['inReach']#Predicate('reachable', ('a',))
 
 	print(p1)
 	print(p2)

@@ -4,7 +4,7 @@
 			<predicate name="grasped" args="a" value="1"/>
 		</preconditions>
 		<postconditions>
-			<predicate name="onTop" args="a, b" value="1"/>
+			<predicate name="onTop" args="a b" value="1"/>
 		</postconditions>
 	</operation>
 
@@ -14,7 +14,7 @@
 			<predicate name="container" args="b" value="1"/>
 		</preconditions>
 		<postconditions>
-			<predicate name="onTop" args="a, b" value="1"/>
+			<predicate name="inside" args="a b" value="1"/>
 		</postconditions>
 	</operation>
 

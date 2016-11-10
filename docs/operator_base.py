@@ -1,7 +1,26 @@
 from predicate_base import *
 import xml.etree.ElementTree as ET
 
-class Operator(PredStruct):
+class OpRelations(object):
+	"""docstring for OpRelations"""
+	def __lt__(self, other):
+		return self.cost < other.cost
+
+	def __le__(self, other):
+		return self.cost <= other.cost
+
+	def __gt__(self, other):
+		return self.cost > other.cost
+
+	def __ge__(self, other):
+		return self.cost >= other.cost
+
+	def __cmp__(self, other):
+		return cmp(self.cost, other.cost)
+
+		
+
+class Operator(PredStruct, OpRelations):
 	"""docstring for Operator"""
 	def __init__(self, name, preCon, postCon, cost):
 		super(Operator, self).__init__(preCon, postCon)
@@ -18,7 +37,7 @@ class Operator(PredStruct):
 		return 'OPERATOR-Instance: "' + self.name + '" cost:= ' + str(self.cost) + '\n' + super(Operator, self).__str__()
 
 
-class OperatorTemplate(ParameterizedPredStruct):
+class OperatorTemplate(ParameterizedPredStruct, OpRelations):
 	"""docstring for Operator"""
 	def __init__(self, name, params, preCon, postCon, cost):
 		super(OperatorTemplate, self).__init__(params, preCon, postCon)
@@ -30,7 +49,7 @@ class OperatorTemplate(ParameterizedPredStruct):
 
 """
 Idea: store the operators as a map |predicates -> bool -> operator| this should make it easier to find
-      suiting operators. 
+	  suiting operators. 
 """
 class OperatorPool(object):
 	def __init__(self):
@@ -42,8 +61,8 @@ class OperatorPool(object):
 		root = tree.getroot()
 
 		for o in root:
-			preCon = []
-			postCon = []
+			preCon = State()
+			postCon = State()
 			params = []
 
 			operator = OperatorTemplate(o.attrib['name'], params, preCon, postCon, float(o.attrib['cost']))
@@ -55,7 +74,7 @@ class OperatorPool(object):
 						if name in predPool:
 							pp = tuple(p.attrib['args'].split())
 							val = p.attrib['value'] in ['1', 'true']
-							preCon.append(PredicateInstance(predPool[name], pp, val))
+							preCon.put(PredicateInstance(predPool[name], pp, val))
 
 							for x in pp:
 								if x not in params:
@@ -68,7 +87,7 @@ class OperatorPool(object):
 							pp = tuple(p.attrib['args'].split())
 							val = p.attrib['value'] in ['1', 'true']
 							pred = predPool[name]
-							postCon.append(PredicateInstance(pred, pp, val))
+							postCon.put(PredicateInstance(pred, pp, val))
 
 							if not pred in self.ops:
 								self.ops[pred] = {True : [], False : []}
@@ -79,6 +98,7 @@ class OperatorPool(object):
 								if x not in params:
 									params.append(x)
 		
+
 	def __str__(self):
 		out = 'Operator-Pool'
 
