@@ -70,10 +70,8 @@ def subsets(a):
     elems = a[:1][0]
     if len(elems) > 0:
         for x in elems:
-            print('donald')
             out.add(State(preds=[x]))
             for s in subs:
-                print('hillary')
                 out.add(s)
                 out.add(State(preds=[x]).unify(s))
     else:
