@@ -62,8 +62,8 @@ def rosstuff():
     endpoint.listen(server.Site(r))
     rospy.init_node('rpc_server', anonymous=True)
     rate = rospy.Rate(10)  # 10hz
-    print("Ready to use. You just need the IP address from this machine and the xmlrpc package to use this server :)")
     rospy.loginfo("The pepper_communication/rpc_server node is ready to use.")
+    rospy.on_shutdown(reactor.stop)
     reactor.run()
     while not rospy.is_shutdown():
         rate.sleep()
