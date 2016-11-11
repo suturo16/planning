@@ -3,6 +3,8 @@ from operator_base import *
 from state_base import *
 from predicate_evaluator import *
 
+import random
+
 try:
     from Queue import PriorityQueue  # ver. < 3.0
 except ImportError:
@@ -29,20 +31,20 @@ class Plan(object):
 class PlanningProblem(object):
     """docstring for PlanningProblem"""
 
-    def __init__(self, start, goal, planL, planR, sortedOps):
+    def __init__(self, start, goal, plan_l, plan_r, sorted_ops):
         super(PlanningProblem, self).__init__()
         self.start = start
         self.goal = goal
-        self.planL = planL
-        self.planR = planR
-        self.ops = sortedOps
+        self.planL = plan_l
+        self.planR = plan_r
+        self.ops = sorted_ops
         self.opStack = []
         self.cost = 0
-        if planL is not None:
-            self.cost += planL.cost
+        if plan_l is not None:
+            self.cost += plan_l.cost
 
-        if planR is not None:
-            self.cost += planR.cost
+        if plan_r is not None:
+            self.cost += plan_r.cost
 
     def __cmp__(self, other):
         if other is None:
@@ -58,7 +60,7 @@ class PlanningProblem(object):
 
 
 def subsets(a):
-    if a == []:
+    if not a:
         return set()
 
     out = set()
@@ -83,19 +85,21 @@ def subsets(a):
 class Planner(object):
     """docstring for Planner"""
 
-    def __init__(self, predBase, opBase):
+    def __init__(self, pred_base, op_base):
         super(Planner, self).__init__()
-        self.predBase = predBase
-        self.opBase = opBase
+        self.start = None
+        self.goal = None
+        self.predBase = pred_base
+        self.opBase = op_base
         self.problemHeap = PriorityQueue()
 
-    def generatePermutations(self, op, diff):
+    def generate_permutations(self, op, diff):
         opts = [None] * len(op.b_inst)
         print('generate permutations for: ' + str(op) + '\n' + str(diff))
         i = 0
         for x in op.b_inst:
-            postCon = op.b_inst.getByTuple(x)
-            opts[i] = diff.getAll(postCon.pred, postCon.val)
+            post_con = op.b_inst.getByTuple(x)
+            opts[i] = diff.getAll(post_con.pred, post_con.val)
             i += 1
 
         out = set()
@@ -107,120 +111,117 @@ class Planner(object):
 
         return list(out)
 
-    def buildProblem(self, start, goal, planL, planR):
+    def build_problem(self, start, goal, plan_l, plan_r):
         diff = goal.difference(start)
 
         if len(diff) > 0:
             types = set()
-            opCount = {}
+            op_count = {}
 
             for d in diff:
                 predinst = diff.dict[d]
                 key = (predinst.pred, predinst.val)
-                if key not in types:
+                if not key in types:
                     types.add(key)
                     ops = self.opBase.getOperators(key[0], key[1])
 
                     if len(ops) == 0:
-                        print('Unsolvable problem: "' +
-                              str(predinst) + '" can not be achieved!')
+                        print('Unsolvable problem: "' + str(predinst) + '" can not be achieved!')
                         return None
 
                     for o in ops:
-                        if o in opCount:
-                            opCount[o] = opCount[o] + 1
+                        if o in op_count:
+                            op_count[o] += 1
                         else:
-                            opCount[o] = 1
+                            op_count[o] = 1
 
-            sortedOps = map(lambda t: t[1], sorted(
-                map(lambda t: (t[0].cost / t[1], t[0]), opCount.iteritems())))
+            sorted_ops = map(lambda t: t[1], sorted(map(lambda t: (t[0].cost / t[1], t[0]), op_count.iteritems())))
 
-            return PlanningProblem(start, goal, planL, planR, sortedOps)
+            return PlanningProblem(start, goal, plan_l, plan_r, sorted_ops)
 
         return None
 
     def testPlan(self, constraints, plan):
-        currentState = self.start
+        current_state = self.start
         cost = 0
         while plan.tail is not None:
             diff = plan.op.a_inst.difference(start)
             cost += op.cost
             if len(diff) == 0:
-                currentState = op.a_inst.unify(currentState)
+                current_state = op.a_inst.unify(current_state)
                 plan = plan.tail
             else:
-                planL = plan.head
-                planL.cost = cost
+                plan_l = plan.head
+                plan_l.cost = cost
                 plan.head = None
-                newProblem = self.buildProblem(currentState,
-                                               op.a_inst.unify(currentState),
-                                               planL,
-                                               plan)
-                return False, newProblem
+                new_problem = self.build_problem(current_state,
+                                                op.a_inst.unify(current_state),
+                                                plan_l,
+                                                plan)
+                return False, new_problem
 
         return True, None
 
-    def solveProblem(self, problem):
+    def solve_problem(self, problem):
         print('solving problem...')
         if len(problem.opStack) == 0 and len(problem.ops) > 0:
             op = problem.ops[0]
             problem.ops = problem.ops[1:]
             diff = goal.difference(start)
-            problem.opStack = self.generatePermutations(op, diff)
+            problem.opStack = self.generate_permutations(op, diff)
 
         if len(problem.opStack) > 0:
-            print('DFGHJKKJHGFDFGHJKJHG')
             for x in problem.opStack:
                 print(x)
 
             op = problem.opStack[0]
             problem.opStack = problem.opStack[1:]
 
-            newDiff = op.a_inst.difference(problem.start)
+            new_diff = op.a_inst.difference(problem.start)
 
-            if len(newDiff) > 0:
-                newProblem = self.buildProblem(problem.start,
-                                               op.a_inst,
-                                               problem.planL,
-                                               Plan(op, tail=problem.planR))
-                if newProblem is not None:
-                    self.problemHeap.put(newProblem)
+            if len(new_diff) > 0:
+                new_problem = self.build_problem(problem.start,
+                                                op.a_inst,
+                                                problem.planL,
+                                                Plan(op, tail=problem.planR))
+                if new_problem is not None:
+                    self.problemHeap.put(new_problem)
             else:
                 plan = Plan(op, head=problem.planL, tail=problem.planR)
                 while plan.head is not None:
                     plan = plan.head
 
-                ok, newProblem = self.testPlan(None, plan)
+                ok, new_problem = self.testPlan(None, plan)
 
                 if ok:
                     return plan
                 else:
-                    self.problemHeap.put(newProblem)
+                    self.problemHeap.put(new_problem)
 
         return None
 
-    def initPlanner(self, start, goal):
-        initialProblem = self.buildProblem(start, goal, None, None)
-        print(initialProblem)
+    def init_planner(self, start, goal):
+        initial_problem = self.build_problem(start, goal, None, None)
+        print(initial_problem)
         self.start = start
         self.goal = goal
-        if initialProblem is not None:
-            self.problemHeap.put(initialProblem)
+        if initial_problem is not None:
+            self.problemHeap.put(initial_problem)
             return True
         else:
             return False
 
-    def getNextPlan(self):
+    def get_next_plan(self):
         plan = None
         # while plan == None and not self.problemHeap.empty():
-        nextProblem = self.problemHeap.get(False)
-        print(nextProblem)
-        plan = self.solveProblem(nextProblem)
+        next_problem = self.problemHeap.get()
+        print(next_problem)
+        plan = self.solve_problem(next_problem)
 
-        # if plan != None:
-        # 	return plan, 'Planning successful'
-        # else:
-        # 	return None, 'Planning failed! Out of options!'
+    # if plan != None:
+    # 	return plan, 'Planning successful'
+    # else:
+    # 	return None, 'Planning failed! Out of options!'
 
 
 if __name__ == '__main__':
@@ -243,8 +244,8 @@ if __name__ == '__main__':
     start = State(evaluator=evaluator)
     goal = State(preds=[pi_1t])
 
-    planner.initPlanner(start, goal)
+    planner.init_planner(start, goal)
     for x in range(3):
-        plan = planner.getNextPlan()
+        plan = planner.get_next_plan()
 
     print(plan)
