@@ -1,0 +1,12 @@
+<operation name="putOnTop">
+	<preconditions>
+		<predicate name="grasped" arguments="a" value="1"/>
+	</preconditions>
+	<postconditions>
+		<predicate name="onTop" arguments="a, b" value="1"/>
+	</postconditions>
+	<run>
+		<rosnode pkg="manipulation" name="simple_action_server" args="a, giskard_file, minThreshold"/> 
+		<opertaion name="fghk" args="fghjk"/>
+	</run>
+</operation>

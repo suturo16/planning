@@ -1,0 +1,12 @@
+<predicates>
+	<predicate name="onTop" args="a b"/>
+	<predicate name="rightOf" args="a b"/>
+	<predicate name="leftOf" args="a b"/>
+	<predicate name="behind" args="a b"/>
+	<predicate name="inFront" args="a b"/>
+	<predicate name="inside" args="a b"/>
+
+	<predicate name="grasped" args="a"/>
+	<predicate name="inReach" args="a"/>
+	<predicate name="container" args="a"/>
+</predicates>
