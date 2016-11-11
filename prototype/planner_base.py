@@ -1,9 +1,5 @@
-from predicate_base import *
 from operator_base import *
-from state_base import *
 from predicate_evaluator import *
-
-import random
 
 try:
     from Queue import PriorityQueue  # ver. < 3.0
@@ -179,9 +175,9 @@ class Planner(object):
 
             if len(new_diff) > 0:
                 new_problem = self.build_problem(problem.start,
-                                                op.a_inst,
-                                                problem.planL,
-                                                Plan(op, tail=problem.planR))
+                                                 op.a_inst,
+                                                 problem.planL,
+                                                 Plan(op, tail=problem.planR))
                 if new_problem is not None:
                     self.problemHeap.put(new_problem)
             else:
