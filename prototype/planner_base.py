@@ -2,11 +2,6 @@ from operator_base import *
 from predicate_evaluator import *
 import heapq
 
-try:
-    from Queue import PriorityQueue  # ver. < 3.0
-except ImportError:
-    from queue import PriorityQueue
-
 
 class Plan(object):
     def __init__(self, op, head=None, tail=None):
@@ -86,7 +81,6 @@ class Planner(object):
         self.goal = None
         self.predBase = pred_base
         self.opBase = op_base
-        # self.problemHeap = PriorityQueue()
         self.problemHeap = []
 
     def generate_permutations(self, op, diff):
@@ -181,7 +175,6 @@ class Planner(object):
                                                  problem.planL,
                                                  Plan(op, tail=problem.planR))
                 if new_problem is not None:
-                    # self.problemHeap.put(new_problem)
                     heapq.heappush(self.problemHeap, new_problem)
             else:
                 plan = Plan(op, head=problem.planL, tail=problem.planR)
@@ -193,7 +186,6 @@ class Planner(object):
                 if ok:
                     return plan
                 else:
-                    # self.problemHeap.put(new_problem)
                     heapq.heappush(self.problemHeap, new_problem)
 
         return None
@@ -204,7 +196,6 @@ class Planner(object):
         self.start = start
         self.goal = goal
         if initial_problem is not None:
-            # self.problemHeap.put(initial_problem)
             heapq.heappush(self.problemHeap, initial_problem)
             return True
         else:
@@ -213,7 +204,6 @@ class Planner(object):
     def get_next_plan(self):
         plan = None
         # while plan == None and not self.problemHeap.empty():
-        # next_problem = self.problemHeap.get()
         next_problem = heapq.heappop(self.problemHeap)
         print(next_problem)
         plan = self.solve_problem(next_problem)
