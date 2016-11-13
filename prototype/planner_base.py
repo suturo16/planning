@@ -157,7 +157,7 @@ class Planner(object):
         if len(problem.opStack) == 0 and len(problem.ops) > 0:
             op = problem.ops[0]
             problem.ops = problem.ops[1:]
-            diff = goal.difference(start)
+            diff = problem.goal.difference(start)
             problem.opStack = self.generate_permutations(op, diff)
 
         if len(problem.opStack) > 0:
@@ -203,15 +203,14 @@ class Planner(object):
 
     def get_next_plan(self):
         plan = None
-        # while plan == None and not self.problemHeap.empty():
-        next_problem = heapq.heappop(self.problemHeap)
-        print(next_problem)
-        plan = self.solve_problem(next_problem)
+        while plan is None and self.problemHeap:
+            next_problem = heapq.heappop(self.problemHeap)
+            plan = self.solve_problem(next_problem)
 
-    # if plan != None:
-    # 	return plan, 'Planning successful'
-    # else:
-    # 	return None, 'Planning failed! Out of options!'
+        if plan is not None:
+            return plan, 'Planning successful.'
+        else:
+            return None, 'Planning failed! Out of options.'
 
 
 if __name__ == '__main__':
@@ -235,7 +234,6 @@ if __name__ == '__main__':
     goal = State(preds=[pi_1t])
 
     planner.init_planner(start, goal)
-    for x in range(3):
-        plan = planner.get_next_plan()
+    plan = planner.get_next_plan()
 
     print(plan)
