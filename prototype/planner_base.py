@@ -136,16 +136,16 @@ class Planner(object):
         cost = 0
         while plan.tail is not None:
             diff = plan.op.a_inst.difference(start)
-            cost += op.cost
+            cost += plan.op.cost
             if len(diff) == 0:
-                current_state = op.a_inst.unify(current_state)
+                current_state = plan.op.a_inst.unify(current_state)
                 plan = plan.tail
             else:
                 plan_l = plan.head
                 plan_l.cost = cost
                 plan.head = None
                 new_problem = self.build_problem(current_state,
-                                                op.a_inst.unify(current_state),
+                                                plan.op.a_inst.unify(current_state),
                                                 plan_l,
                                                 plan)
                 return False, new_problem
