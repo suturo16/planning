@@ -226,8 +226,9 @@ if __name__ == '__main__':
     pi_1t = PredicateInstance(ppool['onTop'], ('apple', 'table'), True)
     pi_2f = PredicateInstance(ppool['grasped'], ('apple',), False)
     pi_3f = PredicateInstance(ppool['container'], ('table',), False)
+    apple_in_reach = PredicateInstance(ppool['inReach'], ('apple',), True)
 
-    baseState1 = State(preds=[pi_1f, pi_2f, pi_3f])
+    baseState1 = State(preds=[pi_1f, pi_2f, pi_3f, apple_in_reach])
     evaluator = PseudoEvaluator(baseState1)
 
     start = State(evaluator=evaluator)
