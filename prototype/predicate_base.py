@@ -16,6 +16,9 @@ class Predicate(object):
     def __eq__(self, other):
         return self.name == other.name
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __hash__(self):
         return self.name.__hash__()
 
@@ -36,6 +39,9 @@ class PredicateInstance(object):
 
     def __eq__(self, other):
         return other is not None and self.pred == other.pred and self.instance == other.instance and self.val == other.val
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __hash__(self):
         return self.pred.__hash__() + self.instance.__hash__()
@@ -73,6 +79,9 @@ class PredStruct(object):
 
     def __eq__(self, other):
         return other is not None and self.a_inst == other.a_inst and self.b_inst == other.b_inst
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
 
 class ParameterizedPredStruct(PredStruct):
