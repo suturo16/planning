@@ -15,7 +15,7 @@ class Plan(object):
 
     def __str__(self):
         if self.tail is not None:
-            return str(self.op) + str(self.tail)
+            return "\n".join([str(self.op), str(self.tail)])
         else:
             return str(self.op)
 
@@ -237,4 +237,6 @@ if __name__ == '__main__':
     planner.init_planner(start, goal)
     plan = planner.get_next_plan()
 
-    print(plan)
+    print("\n"*3)
+    print("Resulting plan:")
+    print(plan[0])
