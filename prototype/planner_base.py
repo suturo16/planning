@@ -13,6 +13,12 @@ class Plan(object):
         if self.tail is not None:
             self.cost += tail.cost
 
+        if head != None:
+            head.tail = self
+
+        if tail != None:
+            tail.head = self
+
     def __str__(self):
         if self.tail is not None:
             return "\n".join([str(self.op), str(self.tail)])
@@ -135,10 +141,10 @@ class Planner(object):
         current_state = self.start
         cost = 0
         while plan.tail is not None:
-            diff = plan.op.a_inst.difference(start)
+            diff = plan.op.a_inst.difference(current_state)
             cost += plan.op.cost
             if len(diff) == 0:
-                current_state = plan.op.a_inst.unify(current_state)
+                current_state = plan.op.b_inst.unify(current_state)
                 plan = plan.tail
             else:
                 plan_l = plan.head
@@ -150,14 +156,27 @@ class Planner(object):
                                                 plan)
                 return False, new_problem
 
-        return True, None
+        current_state = plan.op.b_inst.unify(current_state)
+        current_state.evaluator = self.start.evaluator
+        diff = self.goal.difference(current_state)
+        if len(diff) == 0:
+            return True, None
+        else:
+            current_state.evaluator = self.start.evaluator
+            new_problem = self.build_problem(current_state,
+                                self.goal,
+                                plan,
+                                None)
+
+            return False, new_problem
+
 
     def solve_problem(self, problem):
         print('solving problem...')
         if len(problem.opStack) == 0 and len(problem.ops) > 0:
             op = problem.ops[0]
             problem.ops = problem.ops[1:]
-            diff = problem.goal.difference(start)
+            diff = problem.goal.difference(problem.start)
             problem.opStack = self.generate_permutations(op, diff)
 
         if len(problem.opStack) > 0:
@@ -178,6 +197,7 @@ class Planner(object):
                     heapq.heappush(self.problemHeap, new_problem)
             else:
                 plan = Plan(op, head=problem.planL, tail=problem.planR)
+
                 while plan.head is not None:
                     plan = plan.head
 
@@ -232,7 +252,7 @@ if __name__ == '__main__':
     evaluator = PseudoEvaluator(baseState1)
 
     start = State(evaluator=evaluator)
-    goal = State(preds=[pi_1t])
+    goal = State(preds=[pi_1t, pi_2f])
 
     planner.init_planner(start, goal)
     plan = planner.get_next_plan()

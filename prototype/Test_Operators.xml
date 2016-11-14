@@ -26,4 +26,13 @@
 			<predicate name="grasped" args="a" value="1"/>
 		</postconditions>
 	</operation>
+
+	<operation name="letGo" cost="10">
+		<preconditions>
+			<predicate name="grasped" args="a" value="1"/>
+		</preconditions>
+		<postconditions>
+			<predicate name="grasped" args="a" value="0"/>
+		</postconditions>
+	</operation>
 </operations>
