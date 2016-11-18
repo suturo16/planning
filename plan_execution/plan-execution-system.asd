@@ -8,4 +8,5 @@
     :components
     ((:file "package")
      (:file "toplevel" :depends-on ("package"))
+     (:file "plans" :depends-on ("package"))
      ))))
