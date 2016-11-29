@@ -6,11 +6,14 @@ project(pr2_command_pool)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roslisp
+  actionlib_lisp
+  actionlib_msgs
   std_msgs
+  suturo_manipulation_msgs
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+#find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
