@@ -1,3 +1,8 @@
+"""The preodicate_base module.
+
+
+"""
+
 import xml.etree.ElementTree as ET
 from argument import *
 from state_base import *
@@ -18,7 +23,10 @@ def tupleStr(t):
 
 
 class Predicate(object):
-    """docstring for Predicate"""
+    """Represents a predicate.
+    
+    This class overrides builtin methods for usage on predicates.
+    """
 
     def __init__(self, name, fields):
         super(Predicate, self).__init__()
@@ -45,6 +53,11 @@ class Predicate(object):
 
 
 class PredicateInstance(object):
+    """Represents an instance of a predicate and it's value.
+
+    This class overrides builtin methods for usage on predicate instances.
+    """
+
     def __init__(self, pred, instance, val):
         super(PredicateInstance, self).__init__()
         self.pred = pred
@@ -81,6 +94,7 @@ class PredicateInstance(object):
 
 
 class PredStruct(object):
+    """Holds two predicate instances."""
     def __init__(self, a_inst, b_inst):
         super(PredStruct, self).__init__()
         self.a_inst = a_inst
@@ -100,6 +114,8 @@ class PredStruct(object):
 
 
 class ParameterizedPredStruct(PredStruct):
+    """Holds two predicate instances and parameterizes them."""
+    
     def __init__(self, params, a_inst, b_inst):
         super(ParameterizedPredStruct, self).__init__(a_inst, b_inst)
         self.params = params
@@ -158,6 +174,7 @@ class ParameterizedPredStruct(PredStruct):
 
 
 class PredicatePool(object):
+    """Loads and holds predicates from a xml file."""
     def __init__(self):
         super(PredicatePool, self).__init__()
         self.preds = {}

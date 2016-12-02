@@ -1,9 +1,15 @@
+"""
+The operator_base module.
+
+
+"""
+
 from predicate_base import *
 import xml.etree.ElementTree as ET
 
 
 class OpRelations(object):
-    """docstring for OpRelations"""
+    """Mixin for relation operands for operators"""
 
     def __lt__(self, other):
         return self.cost < other.cost
@@ -22,7 +28,7 @@ class OpRelations(object):
 
 
 class Operator(PredStruct, OpRelations):
-    """docstring for Operator"""
+    """Represents an operator."""
 
     def __init__(self, name, preCon, postCon, cost):
         super(Operator, self).__init__(preCon, postCon)
