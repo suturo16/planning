@@ -85,6 +85,13 @@ class State(object):
 
         return out
 
+
+    # def getPossibilityTree(self, )
+
+    """
+    Checking all fields of self against all fields of other.
+    Forces evaluation of unknown predicates of other
+    """
     def difference(self, other):
         """Check all fields of self against all fields of other.
 

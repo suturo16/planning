@@ -81,13 +81,23 @@ class OperatorPool(object):
 
             operator = OperatorTemplate(o.attrib['name'], params, preCon, postCon, float(o.attrib['cost']))
 
+            placeholders = {}
+
             for c in o:
                 if c.tag == 'preconditions':
                     for p in c:
                         name = p.attrib['name']
                         if name in predPool:
-                            pp = tuple(p.attrib['args'].split())
-                            val = p.attrib['value'] in ['1', 'true']
+                            temp = []
+                            for n in p.attrib['args'].split():
+                                if not n in placeholders:
+                                    placeholders[n] = ArgumentBase(n)
+
+                                
+                                temp.append(placeholders[n]) 
+
+                            pp = tuple(temp)
+                            val = p.attrib['value'] in ['1', 'true', 'True']
                             preCon.put(PredicateInstance(predPool[name], pp, val))
 
                             for x in pp:
@@ -98,8 +108,16 @@ class OperatorPool(object):
                     for p in c:
                         name = p.attrib['name']
                         if name in predPool:
-                            pp = tuple(p.attrib['args'].split())
-                            val = p.attrib['value'] in ['1', 'true']
+                            temp = []
+                            for n in p.attrib['args'].split():
+                                if not n in placeholders:
+                                    placeholders[n] = ArgumentBase(n)
+
+                                
+                                temp.append(placeholders[n]) 
+
+                            pp = tuple(temp)
+                            val = p.attrib['value'] in ['1', 'true', 'True']
                             pred = predPool[name]
                             postCon.put(PredicateInstance(pred, pp, val))
 
