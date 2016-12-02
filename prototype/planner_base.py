@@ -68,10 +68,10 @@ def subsets(a):
     elems = a[:1][0]
     if len(elems) > 0:
         for x in elems:
-            out.add(State(preds=[x]))
+            out.add(State(predicates=[x]))
             for s in subs:
                 out.add(s)
-                out.add(State(preds=[x]).unify(s))
+                out.add(State(predicates=[x]).unify(s))
     else:
         return subs
 
@@ -94,8 +94,8 @@ class Planner(object):
         print('generate permutations for: ' + str(op) + '\n' + str(diff))
         i = 0
         for x in op.b_inst:
-            post_con = op.b_inst.getByTuple(x)
-            opts[i] = diff.getAll(post_con.pred, post_con.val)
+            post_con = op.b_inst.get_by_tuple(x)
+            opts[i] = diff.get_all(post_con.pred, post_con.val)
             i += 1
 
         out = set()
@@ -248,11 +248,11 @@ if __name__ == '__main__':
     pi_3f = PredicateInstance(ppool['container'], ('table',), False)
     apple_in_reach = PredicateInstance(ppool['inReach'], ('apple',), True)
 
-    baseState1 = State(preds=[pi_1f, pi_2f, pi_3f, apple_in_reach])
+    baseState1 = State(predicates=[pi_1f, pi_2f, pi_3f, apple_in_reach])
     evaluator = PseudoEvaluator(baseState1)
 
     start = State(evaluator=evaluator)
-    goal = State(preds=[pi_1t, pi_2f])
+    goal = State(predicates=[pi_1t, pi_2f])
 
     planner.init_planner(start, goal)
     plan = planner.get_next_plan()

@@ -13,10 +13,10 @@ class Predicate(object):
     This class overrides builtin methods for usage on predicates.
     """
 
-    def __init__(self, name, fields):
+    def __init__(self, name, arguments):
         super(Predicate, self).__init__()
         self.name = name
-        self.fields = fields
+        self.fields = arguments
 
     def __str__(self):
         return self.name + str(self.fields)
@@ -79,20 +79,20 @@ class PredicateInstance(object):
 
 
 class PredStruct(object):
-    """Holds two predicate instances."""
-    def __init__(self, a_inst, b_inst):
+    """Holds two states."""
+    def __init__(self, a_state, b_state):
         super(PredStruct, self).__init__()
-        self.a_inst = a_inst
-        self.b_inst = b_inst
+        self.a_state = a_state
+        self.b_state = b_state
 
     def __str__(self):
-        return 'Side-A:' + str(self.a_inst) + '\nSide-B:' + str(self.b_inst)
+        return 'Side-A:' + str(self.a_state) + '\nSide-B:' + str(self.b_state)
 
     def __hash__(self):
-        return self.a_inst.__hash__() + self.b_inst.__hash__()
+        return self.a_state.__hash__() + self.b_state.__hash__()
 
     def __eq__(self, other):
-        return other is not None and self.a_inst == other.a_inst and self.b_inst == other.b_inst
+        return other is not None and self.a_state == other.a_state and self.b_state == other.b_state
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -101,14 +101,22 @@ class PredStruct(object):
 class ParameterizedPredStruct(PredStruct):
     """Holds two predicate instances and parameterizes them."""
     
-    def __init__(self, params, a_inst, b_inst):
-        super(ParameterizedPredStruct, self).__init__(a_inst, b_inst)
+    def __init__(self, params, a_state, b_state):
+        super(ParameterizedPredStruct, self).__init__(a_state, b_state)
         self.params = params
 
     def __str__(self):
         return '--PARAMETERIZED--\n' + super(ParameterizedPredStruct, self).__str__()
 
     def parameterize(self, param, inst):
+        """
+        Parameterize a state.
+
+        Details.
+        :param param: state
+        :param inst:
+        :return:
+        """
         resolved = {}
 
         p_inst = State(evaluator=param.evaluator)
@@ -133,14 +141,14 @@ class ParameterizedPredStruct(PredStruct):
             finalA = State()
             finalB = State()
 
-            for v, a in self.a_inst.iteritems():
+            for v, a in self.a_state.iteritems():
                 t = []
                 for x in a:
                     t.append(resolved[x])
 
                 finalA.put(PredicateInstance(a.pred, tuple(t), a.val))
 
-            for v, b in self.b_inst.iteritems():
+            for v, b in self.b_state.iteritems():
                 t = []
                 for x in b:
                     t.append(resolved[x])
@@ -152,31 +160,38 @@ class ParameterizedPredStruct(PredStruct):
         return None
 
     def parameterizeA(self, inst):
-        return self.buildSolution(self.parameterize(self.a_inst, inst))
+        return self.buildSolution(self.parameterize(self.a_state, inst))
 
     def parameterizeB(self, inst):
-        return self.buildSolution(self.parameterize(self.b_inst, inst))
+        return self.buildSolution(self.parameterize(self.b_state, inst))
 
 
 class PredicatePool(object):
     """Loads and holds predicates from a xml file."""
+
     def __init__(self):
         super(PredicatePool, self).__init__()
-        self.preds = {}
+        self.predicates = {}
 
-    def loadFromXML(self, filepath):
-        tree = ET.parse(filepath)
+    def loadFromXML(self, file_path):
+        """
+        Loads predicates from a xml file into self.predicates.
+
+        :param file_path: Path to the xml file.
+        :return: None
+        """
+        tree = ET.parse(file_path)
         root = tree.getroot()
 
         for p in root:
             name = p.attrib['name']
-            self.preds[name] = Predicate(name, tuple(p.attrib['args'].split()))
+            self.predicates[name] = Predicate(name, tuple(p.attrib['args'].split()))
 
     def __getitem__(self, key):
-        return self.preds[key]
+        return self.predicates[key]
 
     def __contains__(self, key):
-        return key in self.preds
+        return key in self.predicates
 
 
 if __name__ == '__main__':
@@ -214,9 +229,10 @@ if __name__ == '__main__':
     print(pi2)
 
     w = ParameterizedPredStruct(['a', 'b', 'c'],
-                                State(preds=[precon1, precon2, precon3]),
-                                State(preds=[postcon1, postcon2, postcon3, postcon4]))
+                                State(predicates=[precon1, precon2, precon3]),
+                                State(predicates=[postcon1, postcon2, postcon3, postcon4]))
     print(w)
 
-    resolve = w.parameterizeB(State(preds=[pi1, pi3]))
+    print("-"*10)
+    resolve = w.parameterizeB(State(predicates=[pi1, pi3]))
     print(resolve)

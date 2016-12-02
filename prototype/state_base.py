@@ -4,7 +4,7 @@ from predicate_base import *
 
 
 class State(object):
-    """Holds a believed state."""
+    """Holds a beliefstate."""
 
     def __init__(self, evaluator=None, predicates=()):
         super(State, self).__init__()
