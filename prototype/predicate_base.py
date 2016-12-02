@@ -1,5 +1,20 @@
 import xml.etree.ElementTree as ET
+from argument import *
 from state_base import *
+
+def tupleStr(t):
+    out = '('
+    fst = True
+    for x in t:
+        if fst:
+            fst = False
+        else:
+            out+=', '
+
+        out += str(x)
+    
+    out += ')'
+    return out
 
 
 class Predicate(object):
@@ -11,7 +26,7 @@ class Predicate(object):
         self.fields = fields
 
     def __str__(self):
-        return self.name + str(self.fields)
+        return self.name + tupleStr(self.fields)
 
     def __eq__(self, other):
         return self.name == other.name
@@ -53,7 +68,7 @@ class PredicateInstance(object):
         return self.__bool__()
 
     def __str__(self):
-        return self.pred.name + str(self.instance) + ' := ' + str(self.val)
+        return self.pred.name + tupleStr(self.instance) + ' := ' + str(self.val)
 
     def __getitem__(self, idx):
         return self.instance[idx]
@@ -180,23 +195,23 @@ if __name__ == '__main__':
 
     print('onTop == rightOf ' + str(p1 == p2))
 
-    pi1 = PredicateInstance(p1, ('apple', 'desk'), True)
-    pi2 = PredicateInstance(p2, ('apple', 'desk'), False)
-    pi3 = PredicateInstance(p1, ('orange', 'desk'), True)
+    pi1 = PredicateInstance(p1, (Argument('apple'), Argument('desk')), True)
+    pi2 = PredicateInstance(p2, (Argument('apple'), Argument('desk')), False)
+    pi3 = PredicateInstance(p1, (Argument('orange'), Argument('desk')), True)
 
-    postcon1 = PredicateInstance(p1, ('a', 'b'), True)
-    postcon2 = PredicateInstance(p1, ('c', 'b'), True)
-    postcon3 = PredicateInstance(p3, ('a',), False)
-    postcon4 = PredicateInstance(p3, ('c',), False)
+    postcon1 = PredicateInstance(p1, (ArgumentBase('a'), ArgumentBase('b')), True)
+    postcon2 = PredicateInstance(p1, (ArgumentBase('c'), ArgumentBase('b')), True)
+    postcon3 = PredicateInstance(p3, (ArgumentBase('a'),), False)
+    postcon4 = PredicateInstance(p3, (ArgumentBase('c'),), False)
 
-    precon1 = PredicateInstance(p3, ('a',), True)
-    precon2 = PredicateInstance(p3, ('c',), True)
-    precon3 = PredicateInstance(p5, ('b',), True)
+    precon1 = PredicateInstance(p3, (ArgumentBase('a'),), True)
+    precon2 = PredicateInstance(p3, (ArgumentBase('c'),), True)
+    precon3 = PredicateInstance(p5, (ArgumentBase('b'),), True)
 
     print(pi1)
     print(pi2)
 
-    w = ParameterizedPredStruct(['a', 'b', 'c'],
+    w = ParameterizedPredStruct([ArgumentBase('a'), ArgumentBase('b'), ArgumentBase('c')],
                                 State(preds=[precon1, precon2, precon3]),
                                 State(preds=[postcon1, postcon2, postcon3, postcon4]))
     print(w)
