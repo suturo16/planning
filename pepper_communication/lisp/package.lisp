@@ -1,3 +1,3 @@
 (defpackage :pepper-communication-package
-  (:nicknames :pcomm)
+  (:nicknames :pcomm )
   (:use :cl :roslisp))
