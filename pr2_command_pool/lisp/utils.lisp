@@ -19,7 +19,17 @@
 
 (defun delimiterp (c) (position c ":"))
 
-(defun get-joints (config-name)
+(defun strings->KeyValues (strings)
+  (when (>= (length strings) 2)
+    (cons
+     (make-message "diagnostic_msgs/KeyValue"
+                   :key (car strings)
+                   :value (car (cdr strings)))
+     (let ((rest-strings (cdr (cdr strings))))
+       (when rest-strings
+         (strings->KeyValues rest-strings))))))
+
+(defun get-joint-config (config-name)
   (let ((in (open (get-config-yaml-path config-name) :if-does-not-exist nil))
         (out nil))
     (when in
@@ -27,6 +37,9 @@
             while line do (setf out (cons (subseq line 2) out)))
       (close in))
     (reverse out)))
+
+(defun get-controller-specs (controller-name)
+  (file->string (get-controller-yaml-path controller-name)))
 
 (defun get-controller-yaml-path (controller-name)
   (concatenate 'string
