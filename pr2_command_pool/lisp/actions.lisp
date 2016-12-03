@@ -36,6 +36,7 @@
       :controller_yaml controller-specs
       :params (make-array (length params) :initial-contents params))))
 
+; TODO(cpo): Obviously this needs more work. :)
 (defun move-robot-feedback-cb(msg)
   (pprint msg))
 
