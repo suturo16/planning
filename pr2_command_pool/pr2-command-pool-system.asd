@@ -1,6 +1,5 @@
 (defsystem pr2-command-pool-system
-  :depends-on (roslisp std_msgs-msg actionlib actionlib_msgs-msg suturo_manipulation_msgs-msg
-    cram-language cram-reasoning cram-utilities cram-json-prolog)
+  :depends-on (roslisp std_msgs-msg actionlib actionlib_msgs-msg suturo_manipulation_msgs-msg cram-language cram-utilities cram-json-prolog cram-prolog)
   :components
   ((:module "lisp"
     :components
