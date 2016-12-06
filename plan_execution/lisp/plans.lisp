@@ -13,6 +13,6 @@
 (defun put-down-object (location-id arm)
   (let
       ((location (pr2-do::get-drop-location location-id)))
-    (pr2-do::put-object-down-to location :with arm)
+    (pr2-do::put-object-down-to location  arm)
     (pr2-do::open-gripper arm)
     (pr2-do::get-in-base-pose)))
