@@ -14,7 +14,7 @@
 (defun get-object-location (object-id)
   (print object-id))
 
-(defun grasp-object (arm object-location)
+(defun grasp-object (object-location arm)
   (print arm)
   (print object-location))
 
@@ -25,7 +25,7 @@
 (defun get-drop-location (side)
   (print side))
 
-(defun put-object-down-to (arm location)
+(defun put-object-down-to (location arm)
   (print arm)
   (print location))
 
