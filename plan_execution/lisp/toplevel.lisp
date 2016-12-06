@@ -8,7 +8,7 @@
       (ros-info (plan-execution-system) "First plan was not pick-up-object. Won't do anything then.")
       )
    (if (string= (cdr plan) "put-down-object")
-      (put-down-object (pr2-do::get-drop-location (cddr plan)) "right")
+      (put-down-object "right" "right")
       (ros-info (plan-execution-system) "Second plan was not  put-down -object. Won't do anything then.")
       )
 
