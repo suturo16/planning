@@ -8,7 +8,7 @@ PARAM_NODE = "sut_mock_params"
 graspkard = "graspkard"
 
 # Topics
-# None at this point
+pepper_command = "pepper_command"
 
 # Services
 # None at this point
