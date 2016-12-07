@@ -11,6 +11,6 @@ class MoveRobotServer(TemplateActionServer):
         super(MoveRobotServer, self).__init__(constants.move_robot, MoveRobotAction)
 
 if __name__ == '__main__':
-    rospy.init_node(constants.graspkard)
+    rospy.init_node(constants.graspkard, anonymous=True)
     server = MoveRobotServer()
     rospy.spin()
