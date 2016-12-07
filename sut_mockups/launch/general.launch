@@ -1,5 +1,5 @@
 <launch>
     <node name="params" pkg="sut_mockups" type="parameters.py"></node>
-    <node name="pepper_command_publisher" type="pepper_command.py"></node>
+    <node name="pepper_command_publisher" pkg="sut_mockups" type="pepper_command.py"></node>
     <node name="graspkard" pkg="sut_mockups" type="graspkard.py"></node>
 </launch>
