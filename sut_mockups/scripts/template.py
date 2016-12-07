@@ -41,22 +41,18 @@ class TemplatePublisher(object):
 ###########
 
 class TemplateService(object):
-    def __init__(self, name, srv):
+    def __init__(self, name, srv, srv_resp):
         """Initialize a new service.
         :param name: The name of the service. (string)
         :param srv: The type of the service. (class)
         """
         self.srv = srv
+        self.srv_resp = srv_resp
         s = rospy.Service(name, srv, self.execute)
 
     def execute(self, req):
-        """Return an empty response.
-
-        For this to work you have to make sure, that additionally to the self.srv object it's
-        corresponding Response is also available in the global scope. (eg. Empty and EmptyResponse)
-        :param req: The request object.
-        """
-        return globals()[self.srv.__name__+"Response"]()
+        """Return an empty response."""
+        return self.srv_resp()
 
 
 ##########
@@ -67,18 +63,18 @@ import actionlib
 
 class TemplateActionServer(object):
     def __init__(self, action_name, action):
-        """
-        Initialitze a new action server.
+        """Initialitze a new action server.
         :param action_name: name of the action, topics of the action will be named "<node_name>/<action_name>"
         :param action: msg object of the action, imported from respective msgs package
         """
         self.server = actionlib.SimpleActionServer(action_name, action, self.execute, False)
         self.server.start()
 
+    def feedback(self):
+        pass
 
     def execute(self, goal):
-        """
-        Execute whatever action the server should perform. This method can be overridden to have more diverse behaviour.
+        """Execute whatever action the server should perform. This method can be overridden to have more diverse behaviour.
         :param goal: The requested goal for the action.
         """
         self.server.set_succeeded()
