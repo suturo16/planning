@@ -9,6 +9,7 @@ This module has three purposes:
 """
 
 import rospy
+import threading
 
 #############
 # Publisher #
@@ -23,11 +24,16 @@ class TemplatePublisher(object):
         :queue_size: Like rospy.Publisher
         :rate: Rate at which the messages shoul be published in hz. (int)
         """
-        pub = rospy.Publisher(topic, msg_type, queue_size=queue_size)
-        rate = rospy.Rate(10)  # 10hz
+        self.pub = rospy.Publisher(topic, msg_type, queue_size=queue_size)
+        self.rate = rospy.Rate(10)  # 10hz
+        self.msg_gen = msg_gen
+        threading.Thread(target=self.publish).start()
+
+    def publish(self):
+        """Start publishing."""
         while not rospy.is_shutdown():
-            pub.publish(msg_gen())
-            rate.sleep()
+            self.pub.publish(self.msg_gen())
+            self.rate.sleep()
 
 
 ###########
