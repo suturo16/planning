@@ -43,6 +43,10 @@ qtcreator-*
 # Emacs
 .#*
 \#*.*\#
+*#
+
+# Lisp stuff
+*.fasl
 
 # Catkin custom files
 CATKIN_IGNORE
