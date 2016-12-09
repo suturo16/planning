@@ -9,23 +9,19 @@
   (print arm))
 
 (defun is-object-in-view (object-id)
-  (print object-id))
+  T)
 
 (defun get-object-location (object-id)
   (print object-id))
 
-(defun grasp-object (object-location arm)
+(defun move-arm-to-object (object-location arm)
   (print arm)
   (print object-location))
-
-(defun lift-object (arm &optional  (height 1.0))
-  (print arm)
-  (print height))
 
 (defun get-drop-location (side)
   (print side))
 
-(defun put-object-down-to (location arm)
+(defun move-object-with-arm (location arm)
   (print arm)
   (print location))
 

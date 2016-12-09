@@ -5,6 +5,6 @@
 (defun execute-pepper-command (command)
   "Here the command retrieved from the pepper-listener should be executed."
   (print "this is the given command: " command)
-  (pexecution::execute (list "pick-up-object" "put-down-object" command))  
+  (pexecution::execute (list "grasp-object" "place-object" command))  
  )
 
