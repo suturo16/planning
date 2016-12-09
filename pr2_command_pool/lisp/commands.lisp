@@ -11,8 +11,14 @@
 (defun is-object-in-view (object-id)
   (print object-id))
 
-(defun get-object-location (object-id)
-  (print object-id))
+(defun get-object-info (object-id)
+  (let ((pl-resp (prolog-get-values "getObjectInfos" object-id)))
+    (make-object-info
+       :name object-id
+       :frame (first pl-resp)
+       :height (second pl-resp)
+       :width (third pl-resp)
+       :depth (fourth pl-resp))))
 
 (defun grasp-object (arm object-location)
   (print arm)
@@ -23,7 +29,7 @@
   (print height))
 
 (defun get-drop-location (side)
-  (print side))
+  (get-object-info side))
 
 (defun put-object-down-to (arm location)
   (print arm)

@@ -1,6 +1,6 @@
 (in-package :pr2-command-pool-package)
 
-(defun prolog-get-values-eagerly (prolog-function-name &rest arguments)
+(defun prolog-get-values (prolog-function-name &rest arguments)
   "This is the function we mainly use. Call it with (prolog-get-values \"getObjectInfos\" \"zylinder\") and get the values
 frame, height, width and depth as value binding."
   (cram-utilities:force-ll (cram-utilities:lazy-mapcar
