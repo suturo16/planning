@@ -1,17 +1,17 @@
 (in-package :plan-execution-package)
 
-(defun grasp-object (object-id arm)
+(defun grasp-object (object-name arm)
   (let
-      ((visible (pr2-do::is-object-in-view object-id))
-       (obj-loc (pr2-do::get-object-location object-id)))
+      ((visible (pr2-do::is-object-in-view object-name))
+       (obj-info (pr2-do::get-object-info object-name)))
     (if visible
         (progn
-          (pr2-do::move-arm-to-object obj-loc arm)
+          (pr2-do::move-arm-to-object obj-info arm)
           (pr2-do::close-gripper arm))
         (print "Object not in view"))))
 
-(defun place-object (location-id arm)
+(defun place-object (location-name arm)
   (let
-      ((location (pr2-do::get-drop-location location-id)))
-    (pr2-do::move-object-with-arm location  arm)
+      ((loc-info (pr2-do::get-object-info location-name)))
+    (pr2-do::move-object-with-arm loc-info nil arm)
     (pr2-do::open-gripper arm)))
