@@ -2,15 +2,19 @@
 
 ;"in order to prevent the plan from starting again when it is already running
 (defvar *plan-execution-running* NIL)
+(defvar *plans-list*)
 
 (defun reset-values-for-testing ()
   (setq *plan-execution-running* NIL)
+  (setq *plans-list* NIL)
   (print "values reset"))
   
 
 (defun execute (plan)
   (if *plan-execution-running*
-      (print "a plan is already being executed. Wait until it's done before sending a new command")
+      (progn
+        (setq *plans-list* (list *plans-list* plan))
+        (print "a plan is already being executed. Wait until it's done before sending a new command"))
       (progn
         (print "started executing toplevelplan")
         (setq *plan-execution-running* T)
