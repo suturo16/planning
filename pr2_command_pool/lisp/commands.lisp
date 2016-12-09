@@ -28,6 +28,7 @@
   (action-move-robot *move-robot-action-client* "pr2_upper_body" "pr2_grasp_control" "object_frame" frame "width" width "depth" depth "height" height)))
 
 (defun get-drop-location (side)
+  ; side in echten Namen übersetzen (left="red_dropzone", right="yellow_dropzone")
   (print side))
 
 (defun move-object-with-arm (loc-info obj-info arm)
