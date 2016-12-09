@@ -51,14 +51,9 @@
                (get-yaml-path "config")
                config-name))
 
-; TODO(cpo): Make more stable, only works for systems on root level in planning repo
 (defun get-yaml-path (type)
-  (let ((path (sb-unix:posix-getcwd)))
-    (concatenate 'string
-                 (subseq path
-                         0
-                         (position "/" path :from-end t :test #'string-equal))
-                 "/yaml/"
-                 type
-                 "/")))
+  (concatenate 'string
+               (namestring (roslisp::ros-package-path "graspkard"))
+               type
+               "/"))
   
