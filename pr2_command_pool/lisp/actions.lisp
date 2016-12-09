@@ -19,9 +19,11 @@
   "brings the pr2 into base pose")
 
 (defparameter *move-robot-action-client* nil)
+(defparameter *place-object-client* nil)
 
 (defun setup-move-robot-client ()
-  (setf *move-robot-action-client* (actionlib:make-action-client "/graspkard/move_robot" "suturo_manipulation_msgs/MoveRobotAction")))
+  (setf *move-robot-action-client* (actionlib:make-action-client "/graspkard/move_robot" "suturo_manipulation_msgs/MoveRobotAction"))
+  (setf *place-object-client* (actionlib:make-action-client "/graspkard/place_object" "suturo_manipulation_msgs/MoveRobotAction")))
 
 (defun get-move-robot-goal-conv(joint-config controller-config keys-values)
   (get-move-robot-goal
@@ -50,9 +52,10 @@
       (when (or (< current_value 0.05) (< alteration_rate 0.001))
         (invoke-restart 'actionlib:abort-goal)))))
 
-(defun action-move-robot (config-name controller-name &rest keys-values)
+(defun action-move-robot (client config-name controller-name &rest keys-values)
   (handler-bind ((actionlib:feedback-signal #'handle-feedback-signal))
     (actionlib:send-goal-and-wait
-     *move-robot-action-client*
+     client
      (get-move-robot-goal-conv config-name controller-name keys-values)
      :feedback-cb 'move-robot-feedback-cb)))
+
