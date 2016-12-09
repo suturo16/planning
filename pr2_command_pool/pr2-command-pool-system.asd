@@ -9,4 +9,5 @@
      (:file "topics" :depends-on ("package"))
      (:file "actions" :depends-on ("package"))
      (:file "utils" :depends-on ("package"))
-     (:file "prolog" :depends-on ("package"))))))
+     (:file "prolog" :depends-on ("package"))
+     (:file "objects" :depends-on ("package"))))))
