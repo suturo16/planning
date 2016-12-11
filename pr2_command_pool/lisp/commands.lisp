@@ -1,12 +1,10 @@
 (in-package :pr2-command-pool-package)
 
 (defun close-gripper (arm &optional  (strength 1.0))
-  "Let Raphael close the gripper with given id and maybe strength"
-  (print arm)
-  (print strength))
+  (action-move-gripper "close" arm strength))
 
 (defun open-gripper (arm)
-  (print arm))
+  (action-move-gripper "open" arm 1.0))
 
 (defun is-object-in-view (object-id)
   T)
@@ -44,4 +42,5 @@
                      "location_depth" (object-info-depth loc-info)))
 
 (defun get-in-base-pose ()
-  "brings the pr2 into base pose")
+  "Bring PR2 into base pose."
+  (action-move-robot *move-robot-action-client* "pr2_upper_body" "pr2_base_pose_control"))
