@@ -18,7 +18,8 @@
   (print object-name))
 
 (defun get-object-info (object-name)
-  (print object-name))
+  (make-object-info
+   :name object-name))
 
 (defun move-arm-to-object (obj-info arm)
   (let ((frame (object-info-frame obj-info))

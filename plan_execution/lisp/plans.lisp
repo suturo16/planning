@@ -10,8 +10,9 @@
           (pr2-do::close-gripper arm))
         (print "Object not in view"))))
 
-(defun place-object (location-name arm)
+(defun place-object (location-name object-name arm)
   (let
-      ((loc-info (pr2-do::get-object-info location-name)))
-    (pr2-do::move-object-with-arm loc-info nil arm)
+      ((loc-info (pr2-do::get-object-info location-name))
+       (obj-info (pr2-do::get-object-info object-name)))
+    (pr2-do::move-object-with-arm loc-info obj-info arm)
     (pr2-do::open-gripper arm)))
