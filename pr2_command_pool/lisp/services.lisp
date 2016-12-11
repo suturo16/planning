@@ -28,7 +28,7 @@
         (with-fields
             (actionID)
             (call-service srv
-                          ;suturo_knowledge_msgs-srv:LogAction
+                          ;'suturo_knowledge_msgs-srv:LogAction
                           :nameOfAction name
                           :parentActionID parent-id
                           :startTime start
