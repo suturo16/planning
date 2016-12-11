@@ -4,7 +4,7 @@
   ((:module "lisp"
     :components
     ((:file "package")
-     (:file "commands" :depends-on ("package"))
+     (:file "commands" :depends-on ("package" "services" "topics" "actions" "utils" "objects"))
      (:file "services" :depends-on ("package"))
      (:file "topics" :depends-on ("package"))
      (:file "actions" :depends-on ("package"))
