@@ -1,5 +1,14 @@
 (in-package :pr2-command-pool-package)
 
+; constants
+
+; arms
+(defconstant +none+ "n")
+(defconstant +right+ "r")
+(defconstant +left+ "l")
+(defconstant +both+ "b")
+
+
 (defun file->string (path-to-file)
   (let ((in (open path-to-file :if-does-not-exist nil))
         (out ""))
