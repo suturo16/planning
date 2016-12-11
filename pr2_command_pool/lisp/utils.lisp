@@ -3,10 +3,10 @@
 ; constants
 
 ; arms
-(defconstant +none+ "n")
-(defconstant +right+ "r")
-(defconstant +left+ "l")
-(defconstant +both+ "b")
+(defconstant +no-arm+ "n")
+(defconstant +right-arm+ "r")
+(defconstant +left-arm+ "l")
+(defconstant +both-arms+ "b")
 
 
 (defun file->string (path-to-file)

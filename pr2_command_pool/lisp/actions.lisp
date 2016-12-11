@@ -1,23 +1,5 @@
 (in-package :pr2-command-pool-package)
 
-(defun action-open-gripper (arm)
-  "arm: 0 = left, 1 = right, 2 = both, open given gripper")
-
-(defun action-close-gripper (arm strength)
-  "arm: 0 = left, 1 = right, 2 = both, close given gripper with given strength")
-
-(defun action-grasp-object (arm object-pose)
-  "send command to giskard with given object pose, to move given arm to grasping position")
-
-(defun action-lift-object (arm height)
-  "send command to giskard to lift given arm(s) arm: 0 = left, 1 = right, 2 = both")
-
-(defun action-put-down-object (arm location)
-  "move given arm to location")
-
-(defun action-get-in-base-pose ()
-  "brings the pr2 into base pose")
-
 (defparameter *move-robot-action-client* nil)
 (defparameter *place-object-client* nil)
 (defparameter *gripper-client* nil)
@@ -62,14 +44,10 @@
      :feedback-cb 'move-robot-feedback-cb)))
 
 (defun action-move-gripper (type arm strength)
-  (when (not (or (string= type "open") (string= type "close")))
+  (when (not (member type (list "open" "close") :test #'string=))
     (ros-error "action-move-gripper" "Unsupported movement type: ~a." type))
-  (let* ((arm-str (if (string= "left" arm)
-                      "l"
-                      (if (string= "right" arm)
-                          "r"
-                          (ros-error "action-move-gripper"
-                                     "Unsupported arm specification: ~a" arm))))
-         (controller-name (format nil "pr2_~a_~a_gripper" type arm-str))
-         (param-name (format nil "~a_gripper_effort" arm-str)))
+  (when (not (member arm (list +left-arm+ +right-arm+)))
+    (ros-error "action-move-gripper" "Unsupported arm specification: ~a." arm))
+  (let ((controller-name (format nil "pr2_~a_~a_gripper" type arm))
+        (param-name (format nil "~a_gripper_effort" arm)))
     (action-move-robot *gripper-client* "pr2_upper_body" controller-name param-name (write-to-string strength))))
