@@ -1,5 +1,5 @@
 (defsystem pr2-command-pool-system
-  :depends-on (roslisp std_msgs-msg actionlib actionlib_msgs-msg suturo_manipulation_msgs-msg)
+  :depends-on (roslisp std_msgs-msg actionlib actionlib_msgs-msg suturo_manipulation_msgs-msg alexandria)
   :components
   ((:module "lisp"
     :components

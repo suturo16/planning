@@ -3,10 +3,10 @@
 ; constants
 
 ; arms
-(defconstant +no-arm+ "n")
-(defconstant +right-arm+ "r")
-(defconstant +left-arm+ "l")
-(defconstant +both-arms+ "b")
+(alexandria:define-constant +no-arm+ "n" :test #'equal)
+(alexandria:define-constant +right-arm+ "r" :test #'equal)
+(alexandria:define-constant +left-arm+ "l" :test #'equal)
+(alexandria:define-constant +both-arms+ "b" :test #'equal)
 
 ; param types
 (defconstant +double+ (symbol-code 'suturo_manipulation_msgs-msg:TypedParam :DOUBLE))
