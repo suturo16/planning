@@ -50,6 +50,10 @@ language:
 cache:
   - apt
 
+# Travis Notifications
+notifications:
+  slack: suturo16:WcgaDMhvlqolmgETdbMuTxH5
+
 # Configuration variables. All variables are global now, but this can be used to
 # trigger a build matrix for different ROS distributions if desired.
 env:
