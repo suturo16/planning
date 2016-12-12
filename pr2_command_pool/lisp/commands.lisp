@@ -20,11 +20,11 @@
    :name object-name))
 
 (defun move-arm-to-object (obj-info arm)
-  (let ((frame (object-info-frame obj-info))
-        (width (object-info-width obj-info))
-        (height (object-info-height obj-info))
-        (depth (object-info-depth obj-info)))
-  (action-move-robot *move-robot-action-client* "pr2_upper_body" "pr2_grasp_control" "object_frame" frame "width" width "depth" depth "height" height)))
+  (action-move-robot *move-robot-action-client* "pr2_upper_body" "pr2_grasp_control"
+                     (make-param +transform+ nil "object_frame" (object-info-frame obj-info)) 
+                     (make-param +double+ T "object_width" (object-info-width obj-info))
+                     (make-param +double+ T "object_height" (object-info-height obj-info))
+                     (make-param +double+ T "object_depth" (object-info-depth obj-info))))
 
 (defun get-drop-location (side)
   ; side in echten Namen übersetzen (left="red_dropzone", right="yellow_dropzone")
@@ -32,14 +32,14 @@
 
 (defun move-object-with-arm (loc-info obj-info arm)
   (action-move-robot *place-object-client* "pr2_upper_body" "pr2_place_control"
-                     "object_frame" (object-info-frame obj-info)
-                     "object_width" (object-info-width obj-info)
-                     "object_height" (object-info-height obj-info)
-                     "object_depth" (object-info-depth obj-info)
-                     "location_frame" (object-info-frame loc-info)
-                     "location_width" (object-info-width loc-info)
-                     "location_height" (object-info-height loc-info)
-                     "location_depth" (object-info-depth loc-info)))
+                     (make-param +transform+ nil "object_frame" (object-info-frame obj-info))
+                     (make-param +double+ T "object_width" (object-info-width obj-info))
+                     (make-param +double+ T "object_height" (object-info-height obj-info))
+                     (make-param +double+ T "object_depth" (object-info-depth obj-info))
+                     (make-param +transform+ nil "location_frame" (object-info-frame loc-info))
+                     (make-param +double+ T "location_width" (object-info-width loc-info))
+                     (make-param +double+ T "location_height" (object-info-height loc-info))
+                     (make-param +double+ T "location_depth" (object-info-depth loc-info))))
 
 (defun get-in-base-pose ()
   "Bring PR2 into base pose."

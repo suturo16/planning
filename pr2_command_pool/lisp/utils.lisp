@@ -8,6 +8,16 @@
 (defconstant +left-arm+ "l")
 (defconstant +both-arms+ "b")
 
+; param types
+(defconstant +double+ (symbol-code 'suturo_manipulation_msgs-msg:TypedParam :DOUBLE))
+(defconstant +transform+ (symbol-code 'suturo_manipulation_msgs-msg:TypedParam :TRANSFORM))
+
+(defun make-param (type is-const name value)
+  (make-message "suturo_manipulation_msgs/TypedParam"
+                :type type
+                :isConst is-const
+                :name name
+                :value value))
 
 (defun file->string (path-to-file)
   (let ((in (open path-to-file :if-does-not-exist nil))

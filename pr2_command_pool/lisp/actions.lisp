@@ -9,18 +9,17 @@
   (setf *place-object-client* (actionlib:make-action-client "/graspkard/place_object" "suturo_manipulation_msgs/MoveRobotAction"))
   (setf *gripper-client* (actionlib:make-action-client "/graspkard/gripper" "suturo_manipulation_msgs/MoveRobotAction")))
 
-(defun get-move-robot-goal-conv(joint-config controller-config keys-values)
+(defun get-move-robot-goal-conv(joint-config controller-config typed-params)
   (get-move-robot-goal
    (get-joint-config joint-config)
    (get-controller-specs controller-config)
-   keys-values))
+   typed-params))
 
-(defun get-move-robot-goal(joints controller-specs keys-values)
-  (let ((params (strings->keyvalues keys-values)))
-    (actionlib:make-action-goal *move-robot-action-client*
-      :controlled_joints (make-array (length joints) :initial-contents joints)
-      :controller_yaml controller-specs
-      :params (make-array (length params) :initial-contents params))))
+(defun get-move-robot-goal(joints controller-specs typed-params)
+  (actionlib:make-action-goal *move-robot-action-client*
+    :controlled_joints (make-array (length joints) :initial-contents joints)
+    :controller_yaml controller-specs
+    :params (make-array (length typed-params) :initial-contents typed-params)))
 
 (defun move-robot-feedback-cb(msg)
   (with-fields
@@ -36,11 +35,11 @@
       (when (or (< current_value 0.05) (< alteration_rate 0.001))
         (invoke-restart 'actionlib:abort-goal)))))
 
-(defun action-move-robot (client config-name controller-name &rest keys-values)
+(defun action-move-robot (client config-name controller-name &rest typed-params)
   (handler-bind ((actionlib:feedback-signal #'handle-feedback-signal))
     (actionlib:send-goal-and-wait
      client
-     (get-move-robot-goal-conv config-name controller-name keys-values)
+     (get-move-robot-goal-conv config-name controller-name typed-params)
      :feedback-cb 'move-robot-feedback-cb)))
 
 (defun action-move-gripper (type arm strength)
@@ -50,4 +49,5 @@
     (ros-error "action-move-gripper" "Unsupported arm specification: ~a." arm))
   (let ((controller-name (format nil "pr2_~a_~a_gripper" type arm))
         (param-name (format nil "~a_gripper_effort" arm)))
-    (action-move-robot *gripper-client* "pr2_upper_body" controller-name param-name (write-to-string strength))))
+    (action-move-robot *gripper-client* "pr2_upper_body" controller-name
+                       (make-param +double+ T param-name (write-to-string strength)))))
