@@ -6,4 +6,4 @@
   "Here the command retrieved from the pepper-listener should be executed."
   (with-fields ((command-string (data))) command
     (print command-string)
-      (pexecution::execute (list "pick-up-object" "put-down-object" command-string))))
+      (pexecution::execute (list "grasp-object" "place-object" command-string))))

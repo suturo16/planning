@@ -5,3 +5,35 @@
 
 (defun service-get-side-location (side)
   "call prolog service to get location of given side, left or right")
+
+(defun service-log-experiment-description (creator description experiment experiment-name robot)
+  (let ((srv "/log_experiment_description"))
+    (if (not (wait-for-service srv 10))
+        (ros-warn srv "Timed out waiting for service.")
+        (with-fields
+            (success)
+            (call-service srv
+                          ;'suturo_knowledge_msgs-srv:LogExperimentDescription
+                          :creator creator
+                          :description description
+                          :experiment experiment
+                          :experimentName experiment-name
+                          :robot robot)
+          success))))
+
+(defun service-log-task (name parent-id start end params success)
+  (let ((srv "/log_action"))
+    (if (not (wait-for-service srv 10))
+        (ros-warn srv "Timed out waiting for service.")
+        (with-fields
+            (actionID)
+            (call-service srv
+                          ;'suturo_knowledge_msgs-srv:LogAction
+                          :nameOfAction name
+                          :parentActionID parent-id
+                          :startTime start
+                          :endTime end
+                          :parameters params
+                          :success success)
+          actionID))))
+            

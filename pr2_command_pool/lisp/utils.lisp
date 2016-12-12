@@ -1,5 +1,24 @@
 (in-package :pr2-command-pool-package)
 
+; constants
+
+; arms
+(defconstant +no-arm+ "n")
+(defconstant +right-arm+ "r")
+(defconstant +left-arm+ "l")
+(defconstant +both-arms+ "b")
+
+; param types
+(defconstant +double+ (symbol-code 'suturo_manipulation_msgs-msg:TypedParam :DOUBLE))
+(defconstant +transform+ (symbol-code 'suturo_manipulation_msgs-msg:TypedParam :TRANSFORM))
+
+(defun make-param (type is-const name value)
+  (make-message "suturo_manipulation_msgs/TypedParam"
+                :type type
+                :isConst is-const
+                :name name
+                :value value))
+
 (defun file->string (path-to-file)
   (let ((in (open path-to-file :if-does-not-exist nil))
         (out ""))
@@ -44,21 +63,18 @@
 (defun get-controller-yaml-path (controller-name)
   (concatenate 'string
                (get-yaml-path "controller_specs")
-               controller-name))
+               controller-name
+               ".yaml"))
 
 (defun get-config-yaml-path (config-name)
   (concatenate 'string
                (get-yaml-path "config")
-               config-name))
+               config-name
+               ".yaml"))
 
-; TODO(cpo): Make more stable, only works for systems on root level in planning repo
 (defun get-yaml-path (type)
-  (let ((path (sb-unix:posix-getcwd)))
-    (concatenate 'string
-                 (subseq path
-                         0
-                         (position "/" path :from-end t :test #'string-equal))
-                 "/yaml/"
-                 type
-                 "/")))
+  (concatenate 'string
+               (namestring (roslisp::ros-package-path "graspkard"))
+               type
+               "/"))
   
