@@ -1,3 +1,12 @@
 - git:
     local-name: suturo_msgs
     uri: https://github.com/suturo16/suturo_msgs.git
+- git:
+    local-name: cram_core
+    uri: https://github.com/cram2/cram_core.git
+- git:
+    local-name: cram_3rd_party
+    uri: https://github.com/cram2/cram_3rdparty.git
+- git:
+    local-name: cram_json_prolog
+    uri: https://github.com/cram2/cram_json_prolog.git
