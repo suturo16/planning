@@ -25,17 +25,10 @@ frame, height, width and depth as value binding."
      :depth |?Depth|)))
 
 (defun prolog-get-object-infos (name)
-  (cut:with-vars-bound (?frame ?width ?height ?depth)
-      (cut:lazy-car (json-prolog:prolog
-                     `("get_object_infos"
-                       ,(format nil "~a~a" +knowrob-iri-prefix+ name)
-                       ?frame ?width ?height ?depth)))
-    (make-object-info
-     :name name
-     :frame ?frame
-     :height ?height
-     :width ?width
-     :depth ?depth)))
+  (cut:lazy-car (json-prolog:prolog
+                 `("get_object_infos"
+                   ,(format nil "~a~a" +knowrob-iri-prefix+ name)
+                   ?frame ?width ?height ?depth))))
 
 ;;                                         ; Some other templates. Try their worth.
 ;; (defun prolog-get-object-frame-eagerly (prolog-function-name type)

@@ -11,14 +11,16 @@
 (defun is-object-in-view (object-id)
   (print object-id))
 
-(defun get-object-info (object-id)
-  (let ((pl-resp (prolog-get-values "getObjectInfos" object-id)))
+(defun get-object-info (object-name)
+  (cut:with-vars-bound
+      (?frame ?width ?height ?depth)
+      (prolog-get-object-infos object-name)
     (make-object-info
-       :name object-id
-       :frame (first pl-resp)
-       :height (second pl-resp)
-       :width (third pl-resp)
-       :depth (fourth pl-resp))))
+       :name object-name
+       :frame ?frame
+       :height ?height
+       :width ?width
+       :depth ?depth)))
 
 (defun grasp-object (arm object-location)
   (print arm)
