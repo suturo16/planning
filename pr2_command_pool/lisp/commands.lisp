@@ -23,8 +23,7 @@
   (action-move-robot *move-robot-action-client* "pr2_upper_body" "pr2_grasp_control"
                      (make-param +transform+ nil "object_frame" (object-info-frame obj-info)) 
                      (make-param +double+ T "object_width" (object-info-width obj-info))
-                     (make-param +double+ T "object_height" (object-info-height obj-info))
-                     (make-param +double+ T "object_depth" (object-info-depth obj-info))))
+                     (make-param +double+ T "object_height" (object-info-height obj-info))))
 
 (defun get-drop-location (side)
   ; side in echten Namen übersetzen (left="red_dropzone", right="yellow_dropzone")
