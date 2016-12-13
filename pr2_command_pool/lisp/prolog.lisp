@@ -5,9 +5,9 @@
 (defun prolog-get-values (prolog-function-name &rest arguments)
   "This is the function we mainly use. Call it with (prolog-get-values \"getObjectInfos\" \"zylinder\") and get the values
 frame, height, width and depth as value binding."
-  (cram-utilities:force-ll (cram-utilities:lazy-mapcar
+  (cut:force-ll (cut:lazy-mapcar
                             (lambda (bindings)
-                              (cram-utilities:with-vars-bound (common-lisp-user::?resp) bindings
+                              (cut:with-vars-bound (common-lisp-user::?resp) bindings
                                 common-lisp-user::?resp))
                             (json-prolog::prolog (apply 'append `((,prolog-function-name) ,arguments (common-lisp-user::?resp)))))))
 
@@ -15,11 +15,11 @@ frame, height, width and depth as value binding."
 (defun prolog-get-object-infos-simple (name)
   (cut:with-vars-bound (|?Frame| |?Width| |?Height| |?Depth|)
       (cut:lazy-car
-       (json-prolog:prolog-simple
-        (format nil "get_object_infos(knowrob:~a, Frame, Width, Height, Depth)" name)))
+       (json-prolog:prolog-simple 
+        (format nil "get_object_infos(knowrob:~a, Frame, Width, Height, Depth)" name) :lispify T))
     (make-object-info
      :name name
-     :frame |?Frame|
+     :frame (string-downcase |?Frame|)
      :width |?Width|
      :height |?Height|
      :depth |?Depth|)))
@@ -28,7 +28,7 @@ frame, height, width and depth as value binding."
   (cut:lazy-car (json-prolog:prolog
                  `("get_object_infos"
                    ,(format nil "~a~a" +knowrob-iri-prefix+ name)
-                   ?frame ?width ?height ?depth))))
+                   ?frame ?width ?height ?depth) :lispify T)))
 
 ;;                                         ; Some other templates. Try their worth.
 ;; (defun prolog-get-object-frame-eagerly (prolog-function-name type)

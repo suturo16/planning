@@ -17,7 +17,7 @@
       (prolog-get-object-infos object-name)
     (make-object-info
        :name object-name
-       :frame ?frame
+       :frame (string-downcase ?frame)
        :height ?height
        :width ?width
        :depth ?depth)))
