@@ -1,5 +1,7 @@
 (in-package :pr2-command-pool-package)
 
+(alexandria:define-constant +knowrob-iri-prefix+ "http://knowrob.org/kb/knowrob.owl#" :test #'string=)
+
 (defun prolog-get-values (prolog-function-name &rest arguments)
   "This is the function we mainly use. Call it with (prolog-get-values \"getObjectInfos\" \"zylinder\") and get the values
 frame, height, width and depth as value binding."
@@ -8,6 +10,32 @@ frame, height, width and depth as value binding."
                               (cram-utilities:with-vars-bound (common-lisp-user::?resp) bindings
                                 common-lisp-user::?resp))
                             (json-prolog::prolog (apply 'append `((,prolog-function-name) ,arguments (common-lisp-user::?resp)))))))
+
+; 'simple' because it uses the simple call
+(defun prolog-get-object-infos-simple (name)
+  (cut:with-vars-bound (|?Frame| |?Width| |?Height| |?Depth|)
+      (cut:lazy-car
+       (json-prolog:prolog-simple
+        (format nil "get_object_infos(knowrob:~a, Frame, Width, Height, Depth)" name)))
+    (make-object-info
+     :name name
+     :frame |?Frame|
+     :width |?Width|
+     :height |?Height|
+     :depth |?Depth|)))
+
+(defun prolog-get-object-infos (name)
+  (cut:with-vars-bound (?frame ?width ?height ?depth)
+      (cut:lazy-car (json-prolog:prolog
+                     `("get_object_infos"
+                       ,(format nil "~a~a" +knowrob-iri-prefix+ name)
+                       ?frame ?width ?height ?depth)))
+    (make-object-info
+     :name name
+     :frame ?frame
+     :height ?height
+     :width ?width
+     :depth ?depth)))
 
 ;;                                         ; Some other templates. Try their worth.
 ;; (defun prolog-get-object-frame-eagerly (prolog-function-name type)
