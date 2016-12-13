@@ -42,12 +42,11 @@
      (get-move-robot-goal-conv config-name controller-name typed-params)
      :feedback-cb 'move-robot-feedback-cb)))
 
-(defun action-move-gripper (type arm strength)
-  (when (not (member type (list "open" "close") :test #'string=))
-    (ros-error "action-move-gripper" "Unsupported movement type: ~a." type))
+(defun action-move-gripper (target-width arm strength)
   (when (not (member arm (list +left-arm+ +right-arm+)))
     (ros-error "action-move-gripper" "Unsupported arm specification: ~a." arm))
-  (let ((controller-name (format nil "pr2_~a_~a_gripper" type arm))
+  (let ((controller-name (format nil "pr2_~a_gripper" arm))
         (param-name (format nil "~a_gripper_effort" arm)))
     (action-move-robot *gripper-client* "pr2_upper_body" controller-name
+                       (make-param +double+ T "target-width" (write-to-string target-width))
                        (make-param +double+ T param-name (write-to-string strength)))))

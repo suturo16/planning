@@ -1,10 +1,10 @@
 (in-package :pr2-command-pool-package)
 
 (defun close-gripper (arm &optional  (strength 1.0))
-  (action-move-gripper "close" arm strength))
+  (action-move-gripper 0.0 arm strength))
 
 (defun open-gripper (arm)
-  (action-move-gripper "open" arm 1.0))
+  (action-move-gripper 1.0 arm 1.0))
 
 (defun is-object-in-view (object-id)
   T)
