@@ -31,7 +31,7 @@
   (print side))
 
 (defun move-object-with-arm (loc-info obj-info arm)
-  (action-move-robot *place-object-client* "pr2_upper_body" "pr2_place_control"
+  (action-move-robot *move-robot-action-client* "pr2_upper_body" "pr2_place_control"
                      (make-param +transform+ nil "object_frame" (object-info-frame obj-info))
                      (make-param +double+ T "object_width" (object-info-width obj-info))
                      (make-param +double+ T "object_height" (object-info-height obj-info))

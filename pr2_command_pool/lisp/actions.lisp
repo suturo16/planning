@@ -1,13 +1,9 @@
 (in-package :pr2-command-pool-package)
 
 (defparameter *move-robot-action-client* nil)
-(defparameter *place-object-client* nil)
-(defparameter *gripper-client* nil)
 
 (defun setup-move-robot-client ()
-  (setf *move-robot-action-client* (actionlib:make-action-client "/graspkard/move_robot" "suturo_manipulation_msgs/MoveRobotAction"))
-  (setf *place-object-client* (actionlib:make-action-client "/graspkard/place_object" "suturo_manipulation_msgs/MoveRobotAction"))
-  (setf *gripper-client* (actionlib:make-action-client "/graspkard/gripper" "suturo_manipulation_msgs/MoveRobotAction")))
+  (setf *move-robot-action-client* (actionlib:make-action-client "/graspkard/move_robot" "suturo_manipulation_msgs/MoveRobotAction")))
 
 (defun get-move-robot-goal-conv(joint-config controller-config typed-params)
   (get-move-robot-goal
