@@ -19,6 +19,13 @@
                 :name name
                 :value value))
 
+(defun start-grip-pub (transform))
+
+(defun stop-grip-pub ())
+
+(defun calculate-transform (parent-frame frame)
+  )
+
 (defun file->string (path-to-file)
   (let ((in (open path-to-file :if-does-not-exist nil))
         (out ""))
