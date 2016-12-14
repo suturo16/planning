@@ -41,8 +41,10 @@
 (defun action-move-gripper (target-width arm strength)
   (when (not (member arm (list +left-arm+ +right-arm+)))
     (ros-error "action-move-gripper" "Unsupported arm specification: ~a." arm))
-  (let ((controller-name (format nil "pr2_~a_gripper" arm))
+  (let ((arm-str (if (string= +left-arm+ arm) "left" "right"))
         (param-name (format nil "~a_gripper_effort" arm)))
-    (action-move-robot *move-robot-action-client* "pr2_upper_body" controller-name
+    (action-move-robot *move-robot-action-client*
+                       (format nil "pr2_~a_gripper" arm-str)
+                       "gripper_control"
                        (make-param +double+ T "target-width" (write-to-string target-width))
                        (make-param +double+ T param-name (write-to-string strength)))))
