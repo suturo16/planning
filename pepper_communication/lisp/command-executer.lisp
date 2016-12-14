@@ -8,16 +8,19 @@
  "Here the command retrieved from the pepper-listener should be executed."
   (with-fields ((command-string (data))) command
     (print command-string)
-    (if (eq (last *commands-list*) NIL)
-        (push (list "grasp-object" "place-object" command-string) *commands-list*)
+    (if (or (string= command-string "left") (string= command-string "right"))
         (progn
-          (handler-case (pexecution::execute (first (last *commands-list*)))
-           (plan-execution-package::toplvl-being-executed ()
-             (progn
-               (print "toplvl is busy. Command is saved and will be executed later")
-               (push (list "grasp-object" "place-object" command-string) *commands-list*)))
-           (plan-execution-package::toplvl-completed-execution ()
-             (progn
-               (print "toplvl has completed execution and can be called with new command.")
-               (setq *commands-list* (butlast *commands-list*)))))))))
+          (if (eq (last *commands-list*) NIL)
+              (push (list "grasp-object" "place-object" command-string) *commands-list*)
+              (progn
+                (handler-case (pexecution::execute (first (last *commands-list*)))
+                  (plan-execution-package::toplvl-being-executed ()
+                    (progn
+                      (print "toplvl is busy. Command is saved and will be executed later")
+                      (push (list "grasp-object" "place-object" command-string) *commands-list*)))
+                  (plan-execution-package::toplvl-completed-execution ()
+                    (progn
+                      (print "toplvl has completed execution and can be called with new command.")
+                      (setq *commands-list* (butlast *commands-list*))))))))
+        (print "invalid command"))))
 
