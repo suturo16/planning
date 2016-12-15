@@ -101,7 +101,8 @@
 (defun get-controller-yaml-path (controller-name)
   (concatenate 'string
                (get-yaml-path "controller_specs")
-               controller-name))
+               controller-name
+               ".yaml"))
 
 (defun get-config-yaml-path (config-name)
   (concatenate 'string
