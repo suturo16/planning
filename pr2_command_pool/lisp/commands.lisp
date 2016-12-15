@@ -41,10 +41,10 @@
     (action-move-robot *move-robot-action-client*
                        (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_place_control_~a" arm)
-                       (make-param +transform+ nil "location_frame"
-                                   (format nil "~a ~a" (object-info-frame loc-info) "/base_link"))
-                       (make-param +transform+ nil "object_frame"
-                                   (format nil "~a ~a" (object-info-frame obj-info) (format nil "/~a_wrist_roll_link" arm)))
+                       (make-param +transform+ T "location_frame"
+                                   (pose->string (extract-pose-from-transform "/base_link" (object-info-frame loc-info))))
+                       (make-param +transform+ T "object_frame"
+                                   (pose->string (extract-pose-from-transform (format nil "/~a_wrist_roll_link" arm) (object-info-frame obj-info))))
                        (make-param +double+ T "object_width" (object-info-width obj-info))
                        (make-param +double+ T "object_height" (object-info-height obj-info))
                        (make-param +double+ T (format nil "~a_gripper_effort" arm) (write-to-string 50)))))

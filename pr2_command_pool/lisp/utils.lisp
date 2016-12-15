@@ -12,6 +12,8 @@
 (defconstant +double+ (symbol-code 'suturo_manipulation_msgs-msg:TypedParam :DOUBLE))
 (defconstant +transform+ (symbol-code 'suturo_manipulation_msgs-msg:TypedParam :TRANSFORM))
 
+(defparameter *transform-listener* nil)
+
 (defun make-param (type is-const name value)
   (make-message "suturo_manipulation_msgs/TypedParam"
                 :type type
@@ -19,12 +21,28 @@
                 :name name
                 :value value))
 
-(defun start-grip-pub (transform))
+(defun init-transform-listener ()
+  (setf *transform-listener* (make-instance 'cl-tf:transform-listener)))
 
-(defun stop-grip-pub ())
+(defun get-transform-listener ()
+  (if *transform-listener*
+      *transform-listener*
+      (init-transform-listener)))
 
-(defun calculate-transform (parent-frame frame)
-  )
+(defun extract-pose-from-transform (parent-frame frame)
+  (let ((target-transform-stamped (cl-tf:lookup-transform (get-transform-listener) frame parent-frame)))
+    (cl-tf:pose-stamped->pose (cl-tf:stamped-transform->pose-stamped target-transform-stamped))))
+
+(defun pose->string (pose)
+  (with-fields
+      ((px (x position))
+       (py (y position))
+       (pz (z position))
+       (qx (x quaternion))
+       (qy (y quaternion))
+       (qz (z quaternion))
+       (qw (w quaternion))) pose
+    (format nil "~a ~a ~a ~a ~a ~a ~a" px py pz qx qy qz qw)))
 
 (defun file->string (path-to-file)
   (let ((in (open path-to-file :if-does-not-exist nil))
