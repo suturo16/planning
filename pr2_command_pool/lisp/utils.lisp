@@ -30,19 +30,32 @@
       (init-transform-listener)))
 
 (defun extract-pose-from-transform (parent-frame frame)
-  (let ((target-transform-stamped (cl-tf:lookup-transform (get-transform-listener) frame parent-frame)))
-    (cl-tf:pose-stamped->pose (cl-tf:stamped-transform->pose-stamped target-transform-stamped))))
+  (cl-tf:wait-for-transform (get-transform-listener)
+                            :source-frame frame
+                            :target-frame parent-frame
+                            :timeout 1)
+  (let ((target-transform-stamped
+          (cl-tf:lookup-transform
+           (get-transform-listener)
+           parent-frame
+           frame)))
+     (cl-tf:transform->pose target-transform-stamped)))
 
-(defun pose->string (pose)
-  (with-fields
-      ((px (x position))
-       (py (y position))
-       (pz (z position))
-       (qx (x quaternion))
-       (qy (y quaternion))
-       (qz (z quaternion))
-       (qw (w quaternion))) pose
-    (format nil "~a ~a ~a ~a ~a ~a ~a" px py pz qx qy qz qw)))
+(defun tf-pose->string (pose)
+  (let ((origin (cl-tf:origin pose))
+        (orientation (cl-tf:orientation pose)))
+    (multiple-value-bind (axis angle) (cl-tf:quaternion->axis-angle orientation)
+      (let ((normalized-axis (cl-tf:normalize-vector axis))
+            (normalized-angle (cl-tf:normalize-angle angle)))
+        (format nil "~a ~a ~a ~a ~a ~a ~a"
+                (cl-tf:x origin)
+                (cl-tf:y origin)
+                (cl-tf:z origin)
+                (cl-tf:x normalized-axis)
+                (cl-tf:y normalized-axis)
+                (cl-tf:z normalized-axis)
+                normalized-angle)))))
+        
 
 (defun file->string (path-to-file)
   (let ((in (open path-to-file :if-does-not-exist nil))
