@@ -91,7 +91,8 @@
         (out nil))
     (when in
       (loop for line = (read-line in nil)
-            while line do (setf out (cons (subseq line 2) out)))
+            while line do (when (not (string= "#" (subseq line 0 1)))
+                              (setf out (cons (subseq line 2) out))))
       (close in))
     (reverse out)))
 
