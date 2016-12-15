@@ -10,6 +10,9 @@
     (print command-string)
     (if (or (string= command-string "left") (string= command-string "right"))
         (progn
+        (if (string= command-string "left")
+            (setq command-string "yellow_dropzone")
+            (setq command-string "red_dropzone"))
           (if (eq (last *commands-list*) NIL)
               (push (list "grasp-object" "place-object" command-string) *commands-list*)
               (progn
