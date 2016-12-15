@@ -9,15 +9,19 @@
 (defun is-object-in-view (object-id)
   T)
 
-(defun get-object-location (object-name)
- (print object-name))
+(defun get-object-info (object-name)
+  (cut:with-vars-bound
+      (?frame ?width ?height ?depth)
+      (prolog-get-object-infos object-name)
+    (make-object-info
+       :name object-name
+       :frame (string-downcase ?frame)
+       :height ?height
+       :width ?width
+       :depth ?depth)))
 
 (defun get-object-dimensions (object-name)
   (print object-name))
-
-(defun get-object-info (object-name)
-  (make-object-info
-   :name object-name))
 
 (defun move-arm-to-object (obj-info arm)
   (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
@@ -30,8 +34,7 @@
                        (make-param +double+ T "object_height" (object-info-height obj-info)))))
 
 (defun get-drop-location (side)
-  ; side in echten Namen übersetzen (left="red_dropzone", right="yellow_dropzone")
-  (print side))
+  (get-object-info side))
 
 (defun move-object-with-arm (loc-info obj-info arm)
   (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
@@ -44,7 +47,7 @@
                                    (pose->string (extract-pose-from-transform (format nil "/~a_wrist_roll_link" arm) (object-info-frame obj-info))))
                        (make-param +double+ T "object_width" (object-info-width obj-info))
                        (make-param +double+ T "object_height" (object-info-height obj-info))
-                       (make-param +double+ T (format nil "~a_gripper_effort" arm) 50))))
+                       (make-param +double+ T (format nil "~a_gripper_effort" arm) (write-to-string 50)))))
 
 (defun get-in-base-pose ()
   "Bring PR2 into base pose."

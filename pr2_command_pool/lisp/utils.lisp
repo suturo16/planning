@@ -88,8 +88,7 @@
 (defun get-controller-yaml-path (controller-name)
   (concatenate 'string
                (get-yaml-path "controller_specs")
-               controller-name
-               ".yaml"))
+               controller-name))
 
 (defun get-config-yaml-path (config-name)
   (concatenate 'string
@@ -102,4 +101,3 @@
                (namestring (roslisp::ros-package-path "graspkard"))
                type
                "/"))
-  
