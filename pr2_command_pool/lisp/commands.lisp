@@ -44,7 +44,7 @@
                                    (format nil "~a ~a" (object-info-frame obj-info) (format nil "/~a_wrist_roll_link" arm)))
                        (make-param +double+ T "object_width" (object-info-width obj-info))
                        (make-param +double+ T "object_height" (object-info-height obj-info))
-                       (make-param +double+ T (format nil "~a_gripper_effort" arm) 50))))
+                       (make-param +double+ T (format nil "~a_gripper_effort" arm) (write-to-string 50)))))
 
 (defun get-in-base-pose ()
   "Bring PR2 into base pose."
