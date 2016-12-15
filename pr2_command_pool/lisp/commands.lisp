@@ -23,10 +23,6 @@
 (defun get-object-dimensions (object-name)
   (print object-name))
 
-(defun get-object-info (object-name)
-  (make-object-info
-   :name object-name))
-
 (defun move-arm-to-object (obj-info arm)
   (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
     (action-move-robot *move-robot-action-client*
