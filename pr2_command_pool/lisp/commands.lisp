@@ -51,4 +51,19 @@
 
 (defun get-in-base-pose ()
   "Bring PR2 into base (mantis) pose."
-  (action-move-robot *move-robot-action-client* "pr2_upper_body" "pr2_upper_body_joint_control"))
+  (action-move-robot *move-robot-action-client* "pr2_upper_body" "pr2_upper_body_joint_control"
+                     (make-param "torso_lift_joint" +double+ T "0.25")
+                     (make-param "l_shoulder_pan_joint" +double+ T "1.23679")
+                     (make-param "l_shoulder_lift_joint" +double+ T "-0.247593")
+                     (make-param "l_upper_arm_roll_joint" +double+ T "0.614271")
+                     (make-param "l_elbow_flex_joint" +double+ T "-1.38094")
+                     (make-param "l_forearm_roll_joint" +double+ T "-4.94757")
+                     (make-param "l_wrist_flex_joint" +double+ T "-1.56861")
+                     (make-param "l_wrist_roll_joint" +double+ T "0")
+                     (make-param "r_shoulder_pan_joint" +double+ T "-1.23679")
+                     (make-param "r_shoulder_lift_joint" +double+ T "-0.247593")
+                     (make-param "r_upper_arm_roll_joint" +double+ T "-0.614271")
+                     (make-param "r_elbow_flex_joint" +double+ T "-1.38094")
+                     (make-param "r_forearm_roll_joint" +double+ T "4.94757")
+                     (make-param "r_wrist_flex_joint" +double+ T "-1.56861")
+                     (make-param "r_wrist_roll_joint" +double+ T "0")))
