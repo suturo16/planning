@@ -30,8 +30,8 @@
                        (format nil "pr2_grasp_control_~a" arm)
                        (make-param +transform+ nil "object_frame"
                                    (format nil "~a ~a" (object-info-frame obj-info) "/base_link")) 
-                       (make-param +double+ T "object_width" (object-info-width obj-info))
-                       (make-param +double+ T "object_height" (object-info-height obj-info)))))
+                       (make-param +double+ T "object_width" (write-to-string (object-info-width obj-info)))
+                       (make-param +double+ T "object_height" (write-to-string (object-info-height obj-info))))))
 
 (defun get-drop-location (side)
   (get-object-info side))
