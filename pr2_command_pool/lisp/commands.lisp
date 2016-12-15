@@ -50,5 +50,5 @@
                        (make-param +double+ T (format nil "~a_gripper_effort" arm) (write-to-string 50)))))
 
 (defun get-in-base-pose ()
-  "Bring PR2 into base pose."
-  (action-move-robot *move-robot-action-client* "pr2_upper_body" "pr2_base_pose_control"))
+  "Bring PR2 into base (mantis) pose."
+  (action-move-robot *move-robot-action-client* "pr2_upper_body" "pr2_upper_body_joint_control"))
