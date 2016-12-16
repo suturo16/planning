@@ -1,5 +1,8 @@
 (in-package :pr2-command-pool-package)
 
+(defparameter *temp-goal-loc* nil)
+(defparameter *temp-obj-loc* nil)
+
 (defun close-gripper (arm &optional  (strength 50))
   (action-move-gripper 0.0 arm strength))
 
@@ -24,6 +27,10 @@
   (print object-name))
 
 (defun move-arm-to-object (obj-info arm)
+  (setq *temp-goal-loc*
+        (tf-pose->string (extract-pose-from-transform "/base_link" "/red_dropzone")))
+  (setq *temp-obj-loc*
+        (tf-pose->string (extract-pose-from-transform "/base_link" (object-info-name obj-info))))
   (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
     (action-move-robot *move-robot-action-client*
                        (format nil "pr2_upper_body_~a_arm" arm-str)
@@ -42,9 +49,9 @@
                        (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_place_control_~a" arm)
                        (make-param +transform+ T "location_frame"
-                                   (tf-pose->string (extract-pose-from-transform "/base_link" (object-info-frame loc-info))))
+                                   *temp-goal-loc*)
                        (make-param +transform+ T "object_frame"
-                                   (tf-pose->string (extract-pose-from-transform (format nil "/~a_wrist_roll_link" arm) (object-info-frame obj-info))))
+                                   *temp-obj-loc*)
                        (make-param +double+ T "object_width" (object-info-width obj-info))
                        (make-param +double+ T "object_height" (object-info-height obj-info))
                        (make-param +double+ T (format nil "~a_gripper_effort" arm) (write-to-string 50)))))
