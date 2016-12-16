@@ -7,7 +7,7 @@
   (action-move-gripper 0.0 arm strength))
 
 (defun open-gripper (arm)
-  (action-move-gripper 1.0 arm 1.0))
+  (action-move-gripper 0.09 arm 70))
 
 (defun is-object-in-view (object-id)
   T)
@@ -30,7 +30,7 @@
   (setq *temp-goal-loc*
         (tf-pose->string (extract-pose-from-transform "/base_link" "/red_dropzone")))
   (setq *temp-obj-loc*
-        (tf-pose->string (extract-pose-from-transform "/base_link" (object-info-name obj-info))))
+        (tf-pose->string (extract-pose-from-transform "/r_wrist_roll_link" (object-info-name obj-info))))
   (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
     (action-move-robot *move-robot-action-client*
                        (format nil "pr2_upper_body_~a_arm" arm-str)
@@ -52,8 +52,8 @@
                                    *temp-goal-loc*)
                        (make-param +transform+ T "object_frame"
                                    *temp-obj-loc*)
-                       (make-param +double+ T "object_width" (object-info-width obj-info))
-                       (make-param +double+ T "object_height" (object-info-height obj-info))
+                       (make-param +double+ T "object_width" (write-to-string (object-info-width obj-info)))
+                       (make-param +double+ T "object_height" (write-to-string (object-info-height obj-info)))
                        (make-param +double+ T (format nil "~a_gripper_effort" arm) (write-to-string 50)))))
 
 (defun get-in-base-pose ()

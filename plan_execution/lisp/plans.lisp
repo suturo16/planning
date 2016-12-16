@@ -11,7 +11,7 @@
           (print "grasp object:: move arm to object")
           (pr2-do::move-arm-to-object obj-info arm)
           (print "grasp object:: close gripper")
-          (pr2-do::close-gripper arm 0.4)
+          (pr2-do::close-gripper arm 50)
           (print "grasp object:: done"))
         (print "Object not in view"))))
 
