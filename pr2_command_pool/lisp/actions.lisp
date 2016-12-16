@@ -3,7 +3,7 @@
 (defparameter *move-robot-action-client* nil)
 
 (defun setup-move-robot-client ()
-  (setf *move-robot-action-client* (actionlib:make-action-client "/graspkard/move_robot" "suturo_manipulation_msgs/MoveRobotAction")))
+  (setf *move-robot-action-client* (actionlib:make-action-client "/movement_server/movement_server" "suturo_manipulation_msgs/MoveRobotAction")))
 
 (defun get-move-robot-goal-conv(joint-config controller-config typed-params)
   (get-move-robot-goal
