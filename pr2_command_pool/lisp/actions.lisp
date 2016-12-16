@@ -5,6 +5,12 @@
 (defun setup-move-robot-client ()
   (setf *move-robot-action-client* (actionlib:make-action-client "/movement_server/movement_server" "suturo_manipulation_msgs/MoveRobotAction")))
 
+(defun get-move-robot-client ()
+  (if *move-robot-action-client*
+      *move-robot-action-client*
+      (setup-move-robot-client)))
+
+
 (defun get-move-robot-goal-conv(joint-config controller-config typed-params)
   (get-move-robot-goal
    (get-joint-config joint-config)
@@ -15,6 +21,7 @@
   (actionlib:make-action-goal *move-robot-action-client*
     :controlled_joints (make-array (length joints) :initial-contents joints)
     :controller_yaml controller-specs
+    :feedbackValue "feedback"
     :params (make-array (length typed-params) :initial-contents typed-params)))
 
 (defun move-robot-feedback-cb(msg)
@@ -28,7 +35,7 @@
     (with-fields
         (current_value alteration_rate)
         feedback-msg
-      (when (or (< current_value 0.05) (< alteration_rate 0.001))
+      (when (or (< current_value 0.01) (< (abs alteration_rate) 0.00001))
         (invoke-restart 'actionlib:abort-goal)))))
 
 (defun action-move-robot (client config-name controller-name &rest typed-params)
@@ -43,7 +50,7 @@
     (ros-error "action-move-gripper" "Unsupported arm specification: ~a." arm))
   (let ((arm-str (if (string= +left-arm+ arm) "left" "right"))
         (param-name (format nil "~a_gripper_effort" arm)))
-    (action-move-robot *move-robot-action-client*
+    (action-move-robot (get-move-robot-client)
                        (format nil "pr2_~a_gripper" arm-str)
                        "gripper_control"
                        (make-param +double+ T "target-width" (write-to-string target-width))

@@ -29,7 +29,7 @@
                        (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_grasp_control_~a" arm)
                        (make-param +transform+ nil "object_frame"
-                                   (format nil "~a ~a" (object-info-frame obj-info) "/base_link")) 
+                                   (format nil "~a ~a" (object-info-name obj-info) "base_link")) 
                        (make-param +double+ T "object_width" (write-to-string (object-info-width obj-info)))
                        (make-param +double+ T "object_height" (write-to-string (object-info-height obj-info))))))
 
