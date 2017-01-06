@@ -1,4 +1,5 @@
 <launch>
     <node name="params" pkg="sut_mockups" type="parameters.py"></node>
     <node name="graspkard" pkg="sut_mockups" type="graspkard.py"></node>
+    <node name="logger" pkg="sut_mockups" type="simpler_logger.py"></node>
 </launch>
