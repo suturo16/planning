@@ -6,19 +6,22 @@ MAP_FRAME = "/map"
 PARAM_NODE = "sut_mock_params"
 
 graspkard = "graspkard"
+simple_logger = "simple_logger"
 
 # Topics
 # None at this point
 
 # Services
-# None at this point
+log_action = "log_action"
+log_experiment_description = "log_experiment_description"
 
 # Actions
 move_robot = "move_robot"
 
 # Convenience dictionary
 nodes2names = {
-    graspkard: [move_robot]
+    graspkard: [move_robot],
+    simple_logger: [log_action, log_experiment_description],
 }
 
 
