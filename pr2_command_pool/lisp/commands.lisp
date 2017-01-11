@@ -1,33 +1,76 @@
 (in-package :pr2-command-pool-package)
 
-(defun close-gripper (arm &optional  (strength 1.0))
-  "Let Raphael close the gripper with given id and maybe strength"
-  (print arm)
-  (print strength))
+(defparameter *temp-goal-loc* nil)
+(defparameter *temp-obj-loc* nil)
+
+(defun close-gripper (arm &optional  (strength 50))
+  (action-move-gripper 0.0 arm strength))
 
 (defun open-gripper (arm)
-  (print arm))
+  (action-move-gripper 0.09 arm 70))
 
 (defun is-object-in-view (object-id)
-  (print object-id))
+  T)
 
-(defun get-object-location (object-id)
-  (print object-id))
+(defun get-object-info (object-name)
+  (cut:with-vars-bound
+      (?frame ?width ?height ?depth)
+      (prolog-get-object-infos object-name)
+    (make-object-info
+       :name object-name
+       :frame (string-downcase ?frame)
+       :height ?height
+       :width ?width
+       :depth ?depth)))
 
-(defun grasp-object (arm object-location)
-  (print arm)
-  (print object-location))
+(defun get-object-dimensions (object-name)
+  (print object-name))
 
-(defun lift-object (arm &optional  (height 1.0))
-  (print arm)
-  (print height))
+(defun move-arm-to-object (obj-info arm)
+  (setq *temp-goal-loc*
+        (tf-pose->string (extract-pose-from-transform "/base_link" "/red_dropzone")))
+  (setq *temp-obj-loc*
+        (tf-pose->string (extract-pose-from-transform "/r_wrist_roll_link" (object-info-name obj-info))))
+  (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
+    (action-move-robot *move-robot-action-client*
+                       (format nil "pr2_upper_body_~a_arm" arm-str)
+                       (format nil "pr2_grasp_control_~a" arm)
+                       (make-param +transform+ nil "object_frame"
+                                   (format nil "~a ~a" (object-info-name obj-info) "base_link")) 
+                       (make-param +double+ T "object_width" (write-to-string (object-info-width obj-info)))
+                       (make-param +double+ T "object_height" (write-to-string (object-info-height obj-info))))))
 
 (defun get-drop-location (side)
-  (print side))
+  (get-object-info side))
 
-(defun put-object-down-to (arm location)
-  (print arm)
-  (print location))
+(defun move-object-with-arm (loc-info obj-info arm)
+  (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
+    (action-move-robot *move-robot-action-client*
+                       (format nil "pr2_upper_body_~a_arm" arm-str)
+                       (format nil "pr2_place_control_~a" arm)
+                       (make-param +transform+ T "location_frame"
+                                   *temp-goal-loc*)
+                       (make-param +transform+ T "object_frame"
+                                   *temp-obj-loc*)
+                       (make-param +double+ T "object_width" (write-to-string (object-info-width obj-info)))
+                       (make-param +double+ T "object_height" (write-to-string (object-info-height obj-info)))
+                       (make-param +double+ T (format nil "~a_gripper_effort" arm) (write-to-string 50)))))
 
 (defun get-in-base-pose ()
-  "brings the pr2 into base pose")
+  "Bring PR2 into base (mantis) pose."
+  (action-move-robot *move-robot-action-client* "pr2_upper_body" "pr2_upper_body_joint_control"
+                     (make-param "torso_lift_joint" +double+ T "0.25")
+                     (make-param "l_shoulder_pan_joint" +double+ T "1.23679")
+                     (make-param "l_shoulder_lift_joint" +double+ T "-0.247593")
+                     (make-param "l_upper_arm_roll_joint" +double+ T "0.614271")
+                     (make-param "l_elbow_flex_joint" +double+ T "-1.38094")
+                     (make-param "l_forearm_roll_joint" +double+ T "-4.94757")
+                     (make-param "l_wrist_flex_joint" +double+ T "-1.56861")
+                     (make-param "l_wrist_roll_joint" +double+ T "0")
+                     (make-param "r_shoulder_pan_joint" +double+ T "-1.23679")
+                     (make-param "r_shoulder_lift_joint" +double+ T "-0.247593")
+                     (make-param "r_upper_arm_roll_joint" +double+ T "-0.614271")
+                     (make-param "r_elbow_flex_joint" +double+ T "-1.38094")
+                     (make-param "r_forearm_roll_joint" +double+ T "4.94757")
+                     (make-param "r_wrist_flex_joint" +double+ T "-1.56861")
+                     (make-param "r_wrist_roll_joint" +double+ T "0")))
