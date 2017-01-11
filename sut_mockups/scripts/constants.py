@@ -9,7 +9,7 @@ graspkard = "graspkard"
 simple_logger = "simple_logger"
 
 # Topics
-# None at this point
+pepper_command = "pepper_command"
 
 # Services
 log_action = "log_action"
