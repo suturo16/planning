@@ -18,7 +18,7 @@
    typed-params))
 
 (defun get-move-robot-goal(joints controller-specs typed-params)
-  (actionlib:make-action-goal *move-robot-action-client*
+  (actionlib:make-action-goal (get-move-robot-client)
     :controlled_joints (make-array (length joints) :initial-contents joints)
     :controller_yaml controller-specs
     :feedbackValue "feedback"
