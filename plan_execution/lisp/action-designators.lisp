@@ -2,14 +2,14 @@
 
 (def-fact-group move-robot-actions (action-desig)
   ; grasp
-  (<- (action-desig ?desig (grasp ?arm ?obj-info))
+  (<- (action-desig ?desig (grasp ((arm ?arm) (obj-info ?obj-info))))
     (desig-prop ?desig (:type :grasp))
     (desig-prop ?desig (:arm ?arm))
     (desig-prop ?desig (:object ?object))
     (lisp-fun pr2-do::get-object-info ?object ?obj-info))
 
   ; place
-  (<- (action-desig ?desig (place ?arm ?obj-info ?target))
+  (<- (action-desig ?desig (place ((arm ?arm) (obj-info ?obj-info) (target ?target))))
     (desig-prop ?desig (:type :place))
     (desig-prop ?desig (:arm ?arm))
     (desig-prop ?desig (:target ?target))
@@ -17,7 +17,7 @@
     (lisp-fun pr2-do::get-object-info ?object ?obj-info))
 
   ; cut
-  (<- (action-desig ?desig (cut ?arm ?knife-info ?cake-info))
+  (<- (action-desig ?desig (cut ((arm ?arm) (knife ?knife-info) (cake ?cake-info))))
     (desig-prop ?desig (:type :cut))
     (desig-prop ?desig (:arm ?arm))
     (desig-prop ?desig (:knife ?knife))
@@ -26,7 +26,7 @@
     (lisp-fun pr2-do::get-object-info ?cake ?cake-info))
 
   ; test
-  (<- (action-desig ?desig (test ?obj-info))
+  (<- (action-desig ?desig (test ((obj-info ?obj-info))))
     (desig-prop ?desig (:type :test))
     (desig-prop ?desig (:object ?object))
     (lisp-fun pr2-do::get-object-info ?object ?obj-info)))

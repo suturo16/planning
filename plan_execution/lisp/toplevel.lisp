@@ -37,3 +37,18 @@
         (print "toplevel plan finished")
         (setq *plan-execution-running* NIL)
         (signal 'toplvl-completed-execution))))
+
+(defun execute-cram (task)
+  (with-pr2-process-modules
+    (process-module-alias :manipulation 'giskard-manipulation)
+    (execute-desigs (task->designators task))))
+
+(defun execute-desigs (desigs)
+  (when desigs
+    (pm-execute :manipulation (car desigs))
+    (execute-desigs (cdr desigs))))
+
+(defun task->designators (task)
+  ; TODO: Do a real conversion.
+  (list
+   (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "cylinder")))))
