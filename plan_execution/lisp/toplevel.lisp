@@ -38,7 +38,9 @@
         (setq *plan-execution-running* NIL)
         (signal 'toplvl-completed-execution))))
 
-(defun execute-cram (task)
+(cram-language:def-top-level-cram-function execute-cram (task)
+  (when (eq (node-status) :SHUTDOWN)
+    (start-ros-node "planning"))
   (with-pr2-process-modules
     (process-module-alias :manipulation 'giskard-manipulation)
     (execute-desigs (task->designators task))))

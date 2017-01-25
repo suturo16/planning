@@ -1,18 +1,18 @@
 (in-package :pr2-command-pool-package)
 
-(defparameter *temp-goal-loc* nil)
-(defparameter *temp-obj-loc* nil)
-
 (defun close-gripper (arm &optional  (strength 50))
+  "Call action to close gripper."
   (action-move-gripper 0.0 arm strength))
 
 (defun open-gripper (arm)
+  "Call action to open gripper."
   (action-move-gripper 0.09 arm 70))
 
 (defun is-object-in-view (object-id)
   T)
 
 (defun get-object-info (object-name)
+  "Get object infos using prolog interface."
   (cut:with-vars-bound
       (?frame ?width ?height ?depth)
       (prolog-get-object-infos object-name)
@@ -23,14 +23,8 @@
        :width ?width
        :depth ?depth)))
 
-(defun get-object-dimensions (object-name)
-  (print object-name))
-
 (defun move-arm-to-object (obj-info arm)
-  (setq *temp-goal-loc*
-        (tf-pose->string (extract-pose-from-transform "/base_link" "/red_dropzone")))
-  (setq *temp-obj-loc*
-        (tf-pose->string (extract-pose-from-transform "/r_wrist_roll_link" (object-info-name obj-info))))
+  "Call action to move arm to an object."
   (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
     (action-move-robot *move-robot-action-client*
                        (format nil "pr2_upper_body_~a_arm" arm-str)
@@ -40,24 +34,22 @@
                        (make-param +double+ T "object_width" (write-to-string (object-info-width obj-info)))
                        (make-param +double+ T "object_height" (write-to-string (object-info-height obj-info))))))
 
-(defun get-drop-location (side)
-  (get-object-info side))
-
 (defun move-object-with-arm (loc-info obj-info arm)
+  "Call action to place an object at a location."
   (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
     (action-move-robot *move-robot-action-client*
                        (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_place_control_~a" arm)
                        (make-param +transform+ T "location_frame"
-                                   *temp-goal-loc*)
+                                   (format nil "~a ~a" (object-info-frame loc-info) "/base_link"))
                        (make-param +transform+ T "object_frame"
-                                   *temp-obj-loc*)
+                                   (format nil "~a ~a" (object-info-frame obj-info) "/base_link"))
                        (make-param +double+ T "object_width" (write-to-string (object-info-width obj-info)))
                        (make-param +double+ T "object_height" (write-to-string (object-info-height obj-info)))
                        (make-param +double+ T (format nil "~a_gripper_effort" arm) (write-to-string 50)))))
 
 (defun get-in-base-pose ()
-  "Bring PR2 into base (mantis) pose."
+  "Call action to bring PR2 into base (mantis) pose."
   (action-move-robot *move-robot-action-client* "pr2_upper_body" "pr2_upper_body_joint_control"
                      (make-param "torso_lift_joint" +double+ T "0.25")
                      (make-param "l_shoulder_pan_joint" +double+ T "1.23679")
