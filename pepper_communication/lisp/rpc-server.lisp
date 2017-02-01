@@ -8,7 +8,7 @@
             |cutCake|
             |stressLevel|
             |nextTask|
-            |updateConnection|)
+            |updateObserverClient|)
           :s-xml-rpc-exports))
 
 (defun |sleepSomeTime| ()
@@ -31,7 +31,7 @@
   "Returns the identifier of the next task, as is in the commands list."
   (last *commands-list*))
 
-(defun |updateConnection| (host port client-id)
+(defun |updateObserverClient| (host port client-id)
   "Update clients' information about host and port, using the client id as primary key."
   (let ((client-key
           (case client-id
@@ -45,7 +45,7 @@ Valid values for client-key are:
 0 or \"pepper\" for pepper
 1 or \"turtle\" for the turtlebot"))
     (when (not client-key)
-       (return-from |updateConnection| error-message))
+       (return-from |updateObserverClient| error-message))
     (when (stringp port)
       (setf port (parse-integer port)))
     (if (gethash client-key *clients*)
