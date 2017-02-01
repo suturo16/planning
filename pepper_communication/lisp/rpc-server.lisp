@@ -6,10 +6,13 @@
     (roslisp:start-ros-node "planning"))
   (import '(|sleepSomeTime|
             |cutCake|
+            |stressLevel|
+            |nextTask|
             |updateConnection|)
           :s-xml-rpc-exports))
 
 (defun |sleepSomeTime| ()
+  "Waits 3 seconds, before responding. For debugging pusposes."
   (sleep 3))
   
 (defun |cutCake| ()
@@ -20,8 +23,36 @@
     (publish-msg pub :data "cut-cake")
     stress-level))
 
+(defun |stressLevel| ()
+  "Returns the current stress level, represented by the length of tasks."
+  (length *commands-list*))
+
+(defun |nextTask| ()
+  "Returns the identifier of the next task, as is in the commands list."
+  (last *commands-list*))
+
 (defun |updateConnection| (host port client-id)
   "Update clients' information about host and port, using the client id as primary key."
-  (if (member client-id (alexandria:hash-table-keys *clients*))
-      "update client"
-      "add client"))
+  (let ((client-key
+          (case client-id
+            ((0 "0" "pepper") :pepper)
+            ((1 "1" "turtle") :turtle)
+            (otherwise nil)))
+        (error-message
+          "ERROR:
+Usage: updateConnection(host, port, client-key)
+Valid values for client-key are:
+0 or \"pepper\" for pepper
+1 or \"turtle\" for the turtlebot"))
+    (when (not client-key)
+       (return-from |updateConnection| error-message))
+    (when (stringp port)
+      (setf port (parse-integer port)))
+    (if (gethash client-key *clients*)
+        ((lambda (client)
+           (setf (client-host client) host)
+           (setf (client-port client) port))
+         (gethash client-key *clients*))
+        (setf (gethash client-key *clients*)
+              (make-client :host host :port port)))
+    'SUCCESS))
