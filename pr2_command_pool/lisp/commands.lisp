@@ -14,11 +14,12 @@
 
 (defun get-object-info (object-name)
   (cut:with-vars-bound
-      (?frame ?width ?height ?depth)
+      (?frame ?timestamp ?width ?height ?depth)
       (prolog-get-object-infos object-name)
     (make-object-info
        :name object-name
        :frame (string-downcase ?frame)
+       :timestamp ?timestamp
        :height ?height
        :width ?width
        :depth ?depth)))
