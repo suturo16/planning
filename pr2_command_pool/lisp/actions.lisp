@@ -34,9 +34,9 @@
   (let ((feedback-msg (actionlib:feedback signal)))
     (with-fields
         (current_value alteration_rate)
-        feedback-msg
-      (when (< current_value 0.05)
-        (invoke-restart 'actionlib:abort-goal)))))
+        feedback-msg)
+    (when (< current_value 0.05)
+      (invoke-restart 'actionlib:abort-goal))))
 
 (defun action-move-robot (client config-name controller-name &rest typed-params)
   (handler-bind ((actionlib:feedback-signal #'handle-feedback-signal))

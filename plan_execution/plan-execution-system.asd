@@ -1,14 +1,15 @@
 (defsystem plan-execution-system
-  :depends-on (roslisp
+  :depends-on (cram-language
+               roslisp
                std_msgs-msg
                pr2-command-pool-system
                turtle-command-pool-system
-               cram-language
                cram-designators
                cram-prolog
                cram-process-modules
                cram-language-designator-support
-               )
+               cram-beliefstate)
+               
   :components
   ((:module "lisp"
     :components
