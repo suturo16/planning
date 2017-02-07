@@ -48,6 +48,11 @@
     (execute-desigs (cdr desigs))))
 
 (defun task->designators (task)
-  ; TODO: Do a real conversion.
-  (list
-   (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "cylinder")))))
+  (ecase task
+    (:grasp-cylinder
+     (list
+      (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "cylinder")))))
+    (:cut
+     (list
+      (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "knife")))
+      (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "knife") (:cake "cake")))))))

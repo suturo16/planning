@@ -1,6 +1,6 @@
 (in-package :plan-execution-package)
 
-(defun grasp-object (obj-info arm)
+(cram-language:def-cram-function grasp-object (obj-info arm)
   (print "grasp object:: check is object is visible")
   (let ((visible (pr2-do::is-object-in-view (pr2-do::object-info-name obj-info))))
     (if visible
@@ -14,7 +14,7 @@
           (print "grasp object:: done"))
         (print "Object not in view"))))
 
-(defun place-object (obj-info loc-info arm)
+(cram-language:def-cram-function place-object (obj-info loc-info arm)
   (print "place object:: move object with arm")
   (pr2-do::move-object-with-arm loc-info obj-info arm)
   (print "place object:: open gripper ")
