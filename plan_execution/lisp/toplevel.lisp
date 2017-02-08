@@ -16,21 +16,20 @@
    (progn
      (if (fboundp (intern (string-upcase (car (last *plans-list*))) 'plan-execution-package))
          (progn
-           (funcall (intern (string-upcase (car (last *plans-list*))) 'plan-execution-package))
-           (setq test (butlast test)))
+           (funcall (intern (string-upcase (car (last *plans-list*))) 'plan-execution-package))))
            (print "This function is not defined, or the plan doesn't exist.")))
 
 
 ;fucntions for testing stuff
 ;this currently has to be the top lvl function, because one cannot nest these.
-  (def-top-level-cram-function testy ()
-    (setf (value *executing*) NIL)
-    (par
-      (progn
-        (execute "test-function"))
-      (progn
-        (sleep 5)
-        (setf (value *executing*) T)))))
+(def-top-level-cram-function testy ()
+  (setf (value *executing*) NIL)
+  (par
+   (progn
+     (execute "test-function"))
+   (progn
+     (sleep 5)
+     (setf (value *executing*) T))))
 
 
 
