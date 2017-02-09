@@ -27,8 +27,7 @@
 (defun move-arm-to-object (obj-info arm)
   "Call action to move arm to an object."
   (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
-    (action-move-robot *move-robot-action-client*
-                       (format nil "pr2_upper_body_~a_arm" arm-str)
+    (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_grasp_control_~a" arm)
                        (make-param +transform+ nil "object_frame"
                                    (format nil "~a ~a" (object-info-name obj-info) "base_link")) 
@@ -38,8 +37,7 @@
 (defun move-object-with-arm (loc-info obj-info arm)
   "Call action to place an object at a location."
   (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
-    (action-move-robot *move-robot-action-client*
-                       (format nil "pr2_upper_body_~a_arm" arm-str)
+    (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_place_control_~a" arm)
                        (make-param +transform+ T "location_frame"
                                    (format nil "~a ~a" (object-info-frame loc-info) "/base_link"))
@@ -50,8 +48,8 @@
                        (make-param +double+ T (format nil "~a_gripper_effort" arm) (write-to-string 50)))))
 
 (defun get-in-base-pose ()
-  "Call action to bring PR2 into base (mantis) pose."
-  (action-move-robot *move-robot-action-client* "pr2_upper_body" "pr2_upper_body_joint_control"
+  "Bring PR2 into base (mantis) pose."
+  (action-move-robot "pr2_upper_body" "pr2_upper_body_joint_control"
                      (make-param +double+ T "torso_lift_joint" "0.25")
                      (make-param +double+ T "l_shoulder_pan_joint" "1.23679")
                      (make-param +double+ T "l_shoulder_lift_joint" "-0.247593")
