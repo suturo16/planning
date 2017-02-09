@@ -21,6 +21,6 @@
   (pr2-do::open-gripper arm)
   (print "place object:: done"))
 
-(defun cut-object (arm knife-info obj-info)
+(cram-language:def-cram-function cut-object (arm knife-info obj-info)
   (pr2-do::slice obj-info)
   (pr2-do::push-aside obj-info))
