@@ -1,26 +1,33 @@
 (in-package :plan-execution-package)
 
-(cram-language:def-top-level-cram-function execute (plan)  
-  (execute-cram plan))
-    
-;chris stuff
-(cram-language:def-cram-function execute-cram (task)
+(cram-language:def-top-level-cram-function execute (task)
+  "Execute the given task."
+  ; Start a node if necessary.
   (when (eq (node-status) :SHUTDOWN)
     (start-ros-node "planning"))
+  
+  ; Use the PR2 process modules.
   (with-pr2-process-modules
+    ; Give our pm an alias, so it's less of a hassle to call it later.
     (process-module-alias :manipulation 'giskard-manipulation)
-    (execute-desigs (intern (string-upcase (task->designators task))))))
+    
+    ; Translate the task to designators and execute them.
+    (execute-desigs (task->designators task))))
 
 (defun execute-desigs (desigs)
+  "Execute the given designators with the manipulation pm."
   (when desigs
     (pm-execute :manipulation (car desigs))
+    
+    ; Call the function recursively with the rest of the list.
     (execute-desigs (cdr desigs))))
 
-(defun task->designators (task)  
-  (ecase task
-    ('grasp-cylinder
+(defun task->designators (task)
+  "Use a simple switch to translate a task to a list of designators."
+  (alexandria:switch (task :test #'equal)
+    ("grasp cylinder"
      (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "cylinder")))))
-    ('cut
+    ("cut cake"
      (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "knife")))
            (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "knife") (:cake "cake")))))))
 

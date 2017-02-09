@@ -20,6 +20,3 @@
   (print "place object:: open gripper ")
   (pr2-do::open-gripper arm)
   (print "place object:: done"))
-
-(defun test-function ()
-  (print "whoppie!"))

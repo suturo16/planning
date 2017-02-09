@@ -27,7 +27,5 @@
 
   ; test
   (<- (action-desig ?desig (test ((obj-info ?obj-info))))
-    (desig-prop ?desig (:type :test))
-    (desig-prop ?desig (:object ?object))
-    (lisp-fun pr2-do::get-object-info ?object ?obj-info)))
+    (desig-prop ?desig (:type :test))))
   
