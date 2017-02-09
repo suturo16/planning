@@ -18,7 +18,7 @@
    typed-params))
 
 (defun get-move-robot-goal(joints controller-specs typed-params)
-  (actionlib:make-action-goal *move-robot-action-client*
+  (actionlib:make-action-goal (get-move-robot-client)
     :controlled_joints (make-array (length joints) :initial-contents joints)
     :controller_yaml controller-specs
     :feedbackValue "feedback"
@@ -34,9 +34,9 @@
   (let ((feedback-msg (actionlib:feedback signal)))
     (with-fields
         (current_value alteration_rate)
-        feedback-msg
-      (when (< current_value 0.05)
-        (invoke-restart 'actionlib:abort-goal)))))
+        feedback-msg)
+    (when (< current_value 0.05)
+      (invoke-restart 'actionlib:abort-goal))))
 
 (defun action-move-robot (config-name controller-name &rest typed-params)
   (handler-bind ((actionlib:feedback-signal #'handle-feedback-signal))
