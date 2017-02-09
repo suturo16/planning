@@ -1,7 +1,7 @@
 (in-package :plan-execution-package)
 
 (defun grasp-object (object-name arm)
-  (print "grasp object:: check is object is visible")
+  (print "grasp object:: check if object is visible")
   (let ((visible (pr2-do::is-object-in-view object-name))
         (obj-info (pr2-do::get-object-info object-name)))
     (if visible
@@ -24,3 +24,7 @@
     (print "place object:: open gripper ")
     (pr2-do::open-gripper arm)
     (print "place object:: done")))
+
+(defun cut-object (arm knife-info obj-info)
+  (pr2-do::slice obj-info)
+  (pr2-do::push-aside obj-info))

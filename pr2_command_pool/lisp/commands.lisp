@@ -75,3 +75,11 @@
                      (make-param +double+ T "r_forearm_roll_joint" "4.94757")
                      (make-param +double+ T "r_wrist_flex_joint" "-1.56861")
                      (make-param +double+ T "r_wrist_roll_joint" "0")))
+
+(defun slice (obj-info)
+  (print "slicing")
+  (print obj-info))
+
+(defun push-aside (obj-info)
+  (print "push aside")
+  (print obj-info))
