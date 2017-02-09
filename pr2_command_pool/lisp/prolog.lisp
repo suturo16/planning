@@ -29,7 +29,7 @@ frame, height, width and depth as value binding."
   (cut:lazy-car (json-prolog:prolog
                  `("get_object_infos"
                    ,(format nil "~a~a" +knowrob-iri-prefix+ name)
-                   ?frame ?timestamp ?width ?height ?depth) :lispify T)))
+                   ?frame ?timestamp ?width ?height ?depth) :lispify T :package :pr2-do)))
 
 ;;                                         ; Some other templates. Try their worth.
 ;; (defun prolog-get-object-frame-eagerly (prolog-function-name type)
