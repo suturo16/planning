@@ -11,14 +11,15 @@
 (defun is-object-in-view (object-id)
   T
 
-  (defun get-object-info (object-name)
-    "Get object infos using prolog interface."
-    (cut:with-vars-bound
-        (?frame ?width ?height ?depth)
-        (prolog-get-object-infos object-name)
-      (make-object-info
+(defun get-object-info (object-name)
+  "Get object infos using prolog interface."
+  (cut:with-vars-bound
+      (?frame ?timestamp ?width ?height ?depth)
+      (prolog-get-object-infos object-name)
+    (make-object-info
        :name object-name
        :frame (string-downcase ?frame)
+       :timestamp ?timestamp
        :height ?height
        :width ?width
        :depth ?depth))))
@@ -51,18 +52,18 @@
 (defun get-in-base-pose ()
   "Call action to bring PR2 into base (mantis) pose."
   (action-move-robot *move-robot-action-client* "pr2_upper_body" "pr2_upper_body_joint_control"
-                     (make-param "torso_lift_joint" +double+ T "0.25")
-                     (make-param "l_shoulder_pan_joint" +double+ T "1.23679")
-                     (make-param "l_shoulder_lift_joint" +double+ T "-0.247593")
-                     (make-param "l_upper_arm_roll_joint" +double+ T "0.614271")
-                     (make-param "l_elbow_flex_joint" +double+ T "-1.38094")
-                     (make-param "l_forearm_roll_joint" +double+ T "-4.94757")
-                     (make-param "l_wrist_flex_joint" +double+ T "-1.56861")
-                     (make-param "l_wrist_roll_joint" +double+ T "0")
-                     (make-param "r_shoulder_pan_joint" +double+ T "-1.23679")
-                     (make-param "r_shoulder_lift_joint" +double+ T "-0.247593")
-                     (make-param "r_upper_arm_roll_joint" +double+ T "-0.614271")
-                     (make-param "r_elbow_flex_joint" +double+ T "-1.38094")
-                     (make-param "r_forearm_roll_joint" +double+ T "4.94757")
-                     (make-param "r_wrist_flex_joint" +double+ T "-1.56861")
-                     (make-param "r_wrist_roll_joint" +double+ T "0")))
+                     (make-param +double+ T "torso_lift_joint" "0.25")
+                     (make-param +double+ T "l_shoulder_pan_joint" "1.23679")
+                     (make-param +double+ T "l_shoulder_lift_joint" "-0.247593")
+                     (make-param +double+ T "l_upper_arm_roll_joint" "0.614271")
+                     (make-param +double+ T "l_elbow_flex_joint" "-1.38094")
+                     (make-param +double+ T "l_forearm_roll_joint" "-4.94757")
+                     (make-param +double+ T "l_wrist_flex_joint" "-1.56861")
+                     (make-param +double+ T "l_wrist_roll_joint" "0")
+                     (make-param +double+ T "r_shoulder_pan_joint" "-1.23679")
+                     (make-param +double+ T "r_shoulder_lift_joint" "-0.247593")
+                     (make-param +double+ T "r_upper_arm_roll_joint" "-0.614271")
+                     (make-param +double+ T "r_elbow_flex_joint" "-1.38094")
+                     (make-param +double+ T "r_forearm_roll_joint" "4.94757")
+                     (make-param +double+ T "r_wrist_flex_joint" "-1.56861")
+                     (make-param +double+ T "r_wrist_roll_joint" "0")))
