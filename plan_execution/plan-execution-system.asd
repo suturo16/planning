@@ -4,6 +4,7 @@
                std_msgs-msg
                pr2-command-pool-system
                turtle-command-pool-system
+               planning-common-system
                cram-designators
                cram-prolog
                cram-process-modules
