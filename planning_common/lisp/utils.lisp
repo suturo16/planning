@@ -14,6 +14,11 @@
 
 (defparameter *transform-listener* nil)
 
+(defun ensure-node-is-running ()
+  "Ensure a node is running. Start one otherwise."
+  (unless (eq (node-status) :RUNNING)
+    (start-ros-node "planning")))
+
 (defun make-param (type is-const name value)
   (make-message "suturo_manipulation_msgs/TypedParam"
                 :type type

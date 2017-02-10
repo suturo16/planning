@@ -11,6 +11,7 @@
    :+double+
    :+transform+
 
+   :ensure-node-is-running
    :make-param
    :get-transform-listener
    :extract-pose-from-transform
