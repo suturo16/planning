@@ -31,6 +31,29 @@ frame, height, width and depth as value binding."
                    ,(format nil "~a~a" +knowrob-iri-prefix+ name)
                    ?frame ?timestamp ?width ?height ?depth) :lispify T)))
 
+(defun prolog-seen-since (name frame-id timestamp)
+  (json-prolog:prolog
+                 (list "seen_since"
+                  (format nil "~a~a" +knowrob-iri-prefix+ name)
+                  frame-id timestamp) :lispify T))
+
+(defun prolog-connect-frames (parent-frame-id child-frame-id)
+  (json-prolog:prolog
+                 '("connect_frames"
+                   parent-frame-id child-frame-id) :lispify T))
+
+
+(defun prolog-disconnect-frames (parent-frame-id child-frame-id)
+  (json-prolog:prolog
+                 '("disconnect_frames"
+                   parent-frame-id child-frame-id) :lispify T))
+
+
+
+
+
+
+
 ;;                                         ; Some other templates. Try their worth.
 ;; (defun prolog-get-object-frame-eagerly (prolog-function-name type)
 ;;   "Returns the pose of the object with given id as PoseStamped. For now the function-name is getObjectPose"
