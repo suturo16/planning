@@ -29,7 +29,7 @@ frame, height, width and depth as value binding."
   (cut:lazy-car (json-prolog:prolog
                  `("get_object_infos"
                    ,(format nil "~a~a" +knowrob-iri-prefix+ name)
-                   ?frame ?timestamp ?width ?height ?depth) :lispify T)))
+                   ?frame ?timestamp ?width ?height ?depth) :lispify T :package :pr2-do)))
 
 (defun prolog-seen-since (name frame-id timestamp)
   (json-prolog:prolog
