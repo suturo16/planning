@@ -31,11 +31,11 @@ frame, height, width and depth as value binding."
                    ,(format nil "~a~a" +knowrob-iri-prefix+ name)
                    ?frame ?timestamp ?width ?height ?depth) :lispify T :package :pr2-do)))
 
-(defun prolog-seen-since (name frame-id timestamp)
-  (json-prolog:prolog
-                 (list "seen_since"
-                  (format nil "~a~a" +knowrob-iri-prefix+ name)
-                  frame-id timestamp) :lispify T))
+(defun prolog-seen-since (name frame-id)
+ (cut:lazy-car (json-prolog:prolog
+                 `("seen_since"
+                  ,(format nil "~a~a" +knowrob-iri-prefix+ name)
+                  ,frame-id ?timestamp) :lispify T :package :pr2-do)))
 
 (defun prolog-connect-frames (parent-frame-id child-frame-id)
   (json-prolog:prolog
