@@ -7,8 +7,10 @@
 
 (defun get-move-robot-client ()
   (if *move-robot-action-client*
-      *move-robot-action-client*
-      (setup-move-robot-client)))
+      (unless (actionlib:connected-to-server *move-robot-action-client*)
+        (setup-move-robot-client))
+      (setup-move-robot-client))
+  *move-robot-action-client*)
 
 (defun get-move-robot-goal-conv(joint-config controller-config typed-params)
   (get-move-robot-goal
