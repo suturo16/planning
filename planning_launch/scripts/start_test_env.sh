@@ -1,4 +1,4 @@
-roslaunch sut_mockups conv.launch &
+roslaunch planning_launch mockups_w_knowledge.launch &
 sleep 5s
 rostopic pub percepteros/object_detection suturo_perception_msgs/ObjectDetection "name: 'cylinder'
 pose:
