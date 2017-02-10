@@ -1,9 +1,5 @@
 (in-package :pepper-communication-package)
 
-(defstruct client host port)
-
-(defparameter *clients*  (alexandria:alist-hash-table '((:pepper . nil) (:turtle . nil))))
-
 ; Adjust the IP adress and port if necessary
 (defparameter *host* "134.102.161.102")
 (defparameter *port* 8080)
@@ -27,10 +23,12 @@ REMOTE-FUNCTION: Function name to call on remote host.
 ARGS: Arguments for the remote function.
 
 Call function on remote host."
-  (apply 'fire-rpc remote-function
-   (client-host (gethash client *clients*))
-   (client-port (gethash client *clients*))
-   args))
+  (if (gethash client *clients*)
+      (apply 'fire-rpc remote-function
+             (client-host (gethash client *clients*))
+             (client-port (gethash client *clients*))
+             args)
+      (format t "No credentials for client ~a found." client)))
 
 (defun fire-rpc (remote-function host port &rest args)  
   "Calls remote function of server with given hostname and port.
