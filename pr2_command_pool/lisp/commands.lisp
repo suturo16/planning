@@ -30,7 +30,7 @@
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_grasp_control_~a" arm)
                        (make-param +transform+ nil "object_frame"
-                                   (format nil "~a ~a" (object-info-name obj-info) "base_link")) 
+                                   (format nil "~a ~a" (object-info-name obj-info) "/base_link")) 
                        (make-param +double+ T "object_width" (write-to-string (object-info-width obj-info)))
                        (make-param +double+ T "object_height" (write-to-string (object-info-height obj-info))))))
 
@@ -65,6 +65,11 @@
                      (make-param +double+ T "r_forearm_roll_joint" "4.94757")
                      (make-param +double+ T "r_wrist_flex_joint" "-1.56861")
                      (make-param +double+ T "r_wrist_roll_joint" "0")))
+
+(defun grasp-knife (knife-info)
+  "Grasp a knife with the right arm."
+  (action-move-robot "TODO!" "pr2_upper_body_right_arm"
+                     (make-param +transform+ NIL "knife_frame" (format nil  "~a ~a" (object-info-frame knife-info) "/base_link"))))
 
 (defun slice (obj-info)
   (print "slicing")
