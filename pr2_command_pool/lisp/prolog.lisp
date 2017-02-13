@@ -13,13 +13,14 @@ frame, height, width and depth as value binding."
 
 ; 'simple' because it uses the simple call
 (defun prolog-get-object-infos-simple (name)
-  (cut:with-vars-bound (|?Frame| |?Width| |?Height| |?Depth|)
+  (cut:with-vars-bound (|?Frame| |?Timestamp| |?Width| |?Height| |?Depth|)
       (cut:lazy-car
        (json-prolog:prolog-simple 
-        (format nil "get_object_infos(knowrob:~a, Frame, Width, Height, Depth)" name) :lispify T))
+        (format nil "get_object_infos(knowrob:~a, Frame, Timestamp, Width, Height, Depth)" name) :lispify T))
     (make-object-info
      :name name
      :frame (string-downcase |?Frame|)
+     :timestamp |?Timestamp|
      :width |?Width|
      :height |?Height|
      :depth |?Depth|)))
@@ -28,7 +29,7 @@ frame, height, width and depth as value binding."
   (cut:lazy-car (json-prolog:prolog
                  `("get_object_infos"
                    ,(format nil "~a~a" +knowrob-iri-prefix+ name)
-                   ?frame ?width ?height ?depth) :lispify T :package :pr2-do)))
+                   ?frame ?timestamp ?width ?height ?depth) :lispify T :package :pr2-do)))
 
 ;;                                         ; Some other templates. Try their worth.
 ;; (defun prolog-get-object-frame-eagerly (prolog-function-name type)

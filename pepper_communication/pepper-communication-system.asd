@@ -1,5 +1,9 @@
 (defsystem pepper-communication-system
-  :depends-on (roslisp std_msgs-msg plan-execution-system s-xml-rpc)
+  :depends-on (roslisp
+               std_msgs-msg
+               plan-execution-system
+               planning-common-system
+               s-xml-rpc)
   :components
   ((:module "lisp"
     :components
