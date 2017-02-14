@@ -25,6 +25,20 @@ frame, height, width and depth as value binding."
      :height |?Height|
      :depth |?Depth|)))
 
+(defun prolog-connect-frames (parentFrameID childFrameID)
+"Connects the two given frames, so that tf can publish one transformation from parent to child.
+"
+ (cut:lazy-car (json-prolog:prolog
+                `("connect_frames"
+                 ,(format nil "~a~a" +knowrob-iri-prefix+ parentFrameID)
+                 ,(format nil "~a~a" +knowrob-iri-prefix+ childFrameID)) :lispify T :package :pr2-do )))
+
+(defun prolog-disconnect-frames (parentFrameID childFrameID)
+  (cut:lazy-car (json-prolog:prolog
+                `("disconnect_frames"
+                  ,(format nil "~a~a" +knowrob-iri-prefix+ parentFrameID)
+                  ,(format nil "~a~a" +knowrob-iri-prefix+ childFrameID)) :lispify T :package :pr2-do)))
+
 (defun prolog-get-object-infos (name)
   (cut:lazy-car (json-prolog:prolog
                  `("get_object_infos"

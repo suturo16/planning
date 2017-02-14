@@ -11,6 +11,9 @@
 (defun is-object-in-view (object-id)
   T)
 
+(defun check-object-location (object-info)
+  T)
+
 (defun get-object-info (object-name)
   "Get object infos using prolog interface."
   (cut:with-vars-bound
