@@ -68,8 +68,28 @@
 
 (defun grasp-knife (knife-info)
   "Grasp a knife with the right arm."
-  (action-move-robot "TODO!" "pr2_upper_body_right_arm"
-                     (make-param +transform+ NIL "knife_frame" (format nil  "~a ~a" (object-info-frame knife-info) "/base_link"))))
+  (let* ((blade-% 0.65)
+         (blade-length (* blade-% (object-info-width knife-info)))
+         (grip-length (* (1- blade-%) (object-info-width knife-info)))
+         (grip-height (object-info-height knife-info)))
+    (action-move-robot "TODO!"
+                       "pr2_upper_body_right_arm"
+                       (make-param +transform+ NIL "knife_frame" (format nil  "~a ~a" (object-info-frame knife-info) "/base_link"))
+                       (make-param +double+ T "blade_length" blade-length)
+                       (make-param +double+ T "grip_length" grip-length)
+                       (make-param +double+ T "grip_height" grip-height))))
+
+(defun cut-cake (cake-info knife-info arm)
+  (let ((arm-str (if (string= arm +left-arm+) "left" "right"))
+        (knife-length (object-info-width knife-info)))
+    (action-move-robot "TODO!"
+                       (format nil "pr2_upper_body_~a_arm" arm-str)
+                       (make-param +transform+ NIL "cake_tf" (format nil "~a ~a" (object-info-frame cake-info) "/base_link"))
+                       (make-param +transform+ NIL "knife_tf" (format nil "~a ~a" (object-info-frame knife-info) (format nil "~a_wrist_roll_link" arm)))
+                       (make-param +double+ T "knife_length" knife-length))))
+                       
+        
+
 
 (defun slice (obj-info)
   (print "slicing")
