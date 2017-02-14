@@ -37,3 +37,16 @@
                           :success success)
           actionID))))
             
+(defun service-connect-frames (parentFrameID childFrameID)
+  (let ((srv "/connect_frames_service")
+        (success nil))
+    (if (not (wait-for-service srv 10))
+        (ros-warn srv "Timed out waiting for service.")
+        (with-fields
+            (success)
+            (call-service srv
+                          ;'suturo_knowledge_msgs-srv:ConnectFrames
+                          :parentFrame parentFrameID
+                          :childFrame childFrameID
+                          :success success)
+            success))))
