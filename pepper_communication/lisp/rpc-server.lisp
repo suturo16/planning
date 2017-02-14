@@ -49,9 +49,13 @@
 (defun |updateObserverClient| (client-id host port)
   "Update clients' information about host and port, using the client id as primary key."
   (let ((client-key
-          (case client-id
-            ((+pepper-client-id+ "0" "pepper") :pepper)
-            ((+turtle-client-id+ "2" "turtle") :turtle)
+          (alexandria:switch (client-id :test #'equal)
+            (+pepper-client-id+ :pepper)
+            ((prin1-to-string +pepper-client-id+) :pepper)
+            ("pepper" :pepper)
+            (+turtle-client-id+ :turtle)
+            ((prin1-to-string +turtle-client-id+) :turtle)
+            ("turtle" :turtle)
             (otherwise nil)))
         (error-message
           "ERROR:
@@ -59,7 +63,7 @@ Usage: updateConnection(host, port, client-key)
 Valid values for client-key are:
 0 or \"pepper\" for pepper
 2 or \"turtle\" for the turtlebot"))
-    
+
     (when (not client-key)
        (return-from |updateObserverClient| error-message))
     (when (stringp port)
