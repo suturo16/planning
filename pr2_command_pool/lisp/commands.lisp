@@ -11,6 +11,9 @@
 (defun is-object-in-view (object-id)
   T)
 
+(defun check-object-location (object-info)
+  T)
+
 (defun get-object-info (object-name)
   "Get object infos using prolog interface."
   (cut:with-vars-bound
@@ -66,10 +69,10 @@
                      (make-param +double+ T "r_wrist_flex_joint" "-1.56861")
                      (make-param +double+ T "r_wrist_roll_joint" "0")))
 
-(defun slice (obj-info)
+(defun slice (obj-info arm)
   (print "slicing")
   (print obj-info))
 
-(defun push-aside (obj-info)
+(defun push-aside (obj-info arm)
   (print "push aside")
   (print obj-info))

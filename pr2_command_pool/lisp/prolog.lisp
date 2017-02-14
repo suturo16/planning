@@ -25,6 +25,13 @@ frame, height, width and depth as value binding."
      :height |?Height|
      :depth |?Depth|)))
 
+(defun prolog-disconnect-frames (parentFrameID childFrameID)
+"disconnects two given frames from each other. (TF)"
+  (cut:lazy-car (json-prolog:prolog
+                `("disconnect_frames"
+                  ,(format nil "~a~a" +knowrob-iri-prefix+ parentFrameID)
+                  ,(format nil "~a~a" +knowrob-iri-prefix+ childFrameID)) :lispify T :package :pr2-do)))
+
 (defun prolog-get-object-infos (name)
   (cut:lazy-car (json-prolog:prolog
                  `("get_object_infos"

@@ -1,4 +1,4 @@
-(in-package :pr2-command-pool-package)
+(in-package :planning-common-package)
 
 ; constants
 
@@ -13,6 +13,11 @@
 (defconstant +transform+ (symbol-code 'suturo_manipulation_msgs-msg:TypedParam :TRANSFORM))
 
 (defparameter *transform-listener* nil)
+
+(defun ensure-node-is-running ()
+  "Ensure a node is running. Start one otherwise."
+  (unless (eq (node-status) :RUNNING)
+    (start-ros-node "planning")))
 
 (defun make-param (type is-const name value)
   (make-message "suturo_manipulation_msgs/TypedParam"
