@@ -38,8 +38,7 @@
           actionID))))
             
 (defun service-connect-frames (parentFrameID childFrameID)
-  (let ((srv "/connect_frames_service")
-        (success nil))
+  (let ((srv "/connect_frames_service"))
     (if (not (wait-for-service srv 10))
         (ros-warn srv "Timed out waiting for service.")
         (with-fields
@@ -49,3 +48,15 @@
                           :parentFrame parentFrameID
                           :childFrame childFrameID)
             success))))
+
+(defun service-run-pipeline (&rest objects)
+  (let ((srv "/percepteros/set_pipeline"))
+    (if (not (wait-for-service srv 10))
+        (ros-warn srv "Timed out waiting for service.")
+        (with-fields
+            (failedObjects)
+            (call-service srv
+                          'suturo_perception_msgs-srv:RunPipeline
+                          :objects objects)
+            failedObjects))))
+

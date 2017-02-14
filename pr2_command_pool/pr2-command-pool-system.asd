@@ -4,6 +4,7 @@
                actionlib
                actionlib_msgs-msg
                suturo_manipulation_msgs-msg
+               suturo_perception_msgs-srv
                alexandria
                cl-tf
                cram-language
