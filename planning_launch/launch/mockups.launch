@@ -1,6 +1,6 @@
 <launch>
-    <node name="params" pkg="sut_mockups" type="parameters.py"></node>
-    <node name="movement_server" pkg="sut_mockups" type="graspkard.py"></node>
-    <node name="logger" pkg="sut_mockups" type="simple_logger.py"></node>
-    <node name="percepteros" pkg="sut_mockups" type="percepteros.py"></node>
+    <node name="params" pkg="sut_mockups" type="parameters.py" output="screen"></node>
+    <node name="movement_server" pkg="sut_mockups" type="graspkard.py" output="screen"></node>
+    <node name="logger" pkg="sut_mockups" type="simple_logger.py" output="screen"></node>
+    <node name="percepteros" pkg="sut_mockups" type="percepteros.py" output="screen"></node>
 </launch>
