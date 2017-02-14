@@ -7,6 +7,7 @@ PARAM_NODE = "sut_mock_params"
 
 graspkard = "graspkard"
 simple_logger = "simple_logger"
+percepteros = "percepteros"
 
 # Topics
 pepper_command = "pepper_command"
@@ -15,6 +16,8 @@ pepper_command = "pepper_command"
 log_action = "log_action"
 log_experiment_description = "log_experiment_description"
 
+set_pipeline = "set_pipeline"
+
 # Actions
 move_robot = "move_robot"
 
@@ -22,6 +25,7 @@ move_robot = "move_robot"
 nodes2names = {
     graspkard: [move_robot],
     simple_logger: [log_action, log_experiment_description],
+    percepteros: [set_pipeline],
 }
 
 
