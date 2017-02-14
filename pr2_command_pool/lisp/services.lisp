@@ -47,6 +47,5 @@
             (call-service srv
                           ;'suturo_knowledge_msgs-srv:ConnectFrames
                           :parentFrame parentFrameID
-                          :childFrame childFrameID
-                          :success success)
+                          :childFrame childFrameID)
             success))))
