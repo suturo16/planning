@@ -13,9 +13,9 @@ TODO: Retrieve IP address automatically. Import package ip-interfaces from exter
      "updateObserverClient"
      remote-host
      remote-port
+     client-id
      local-host
-     local-port
-     client-id)))
+     local-port)))
 
 (defun fire-rpc-to-client (client remote-function &rest args)
   "CLIENT: The id of the client as saved in *clients*.
