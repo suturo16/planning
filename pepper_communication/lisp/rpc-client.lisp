@@ -48,3 +48,4 @@ If host or port is nil, default is used."
   (nth-value 1
              (sb-bsd-sockets:socket-name
               (second (first s-xml-rpc::*server-processes*)))))
+
