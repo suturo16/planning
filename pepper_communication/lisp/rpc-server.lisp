@@ -1,6 +1,6 @@
 (in-package :pepper-communication-package)
 
-;; Active clients saved in a hash map. Update map and use those credentials for remote calls to pepper ans turtle.
+;; Active clients saved in a hash map. Update map and use those credentials for remote calls to pepper and turtle.
 (defstruct client host port)
 (defparameter *clients*  (alexandria:alist-hash-table '((:pepper . nil) (:turtle . nil))))
 
