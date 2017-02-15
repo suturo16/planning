@@ -108,11 +108,15 @@
                        (make-param +double+ T "knife_height" (object-info-height knife-info))
                        (make-param +double+ T "handle_length" handle-length))))
 
-
-(defun slice (obj-info)
-  (print "slicing")
-  (print obj-info))
-
-(defun push-aside (obj-info)
-  (print "push aside")
-  (print obj-info))
+(defun push-aside (cake-info cake-piece-info arm)
+  (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
+    (action-move-robot (format nil "pr2_shove_~a" arm)
+                       (format nil "pr2_upper_body_~a_arm" arm-str)
+                       (make-param +transform+ NIL "cake_tf" (format nil "~a ~a" (object-info-frame cake-info) "base_link"))
+                       (make-param +double+ T "cake_length" (object-info-depth cake-info))
+                       (make-param +double+ T "cake_width" (object-info-width cake-info))
+                       (make-param +double+ T "cake_height" (object-info-height cake-info))
+                       (make-param +transform+ NIL "cake_piece_tf" (format nil "~a ~a" (object-info-frame cake-piece-info) "base_link"))
+                       (make-param +double+ T "cake_piece_length" (object-info-depth cake-piece-info))
+                       (make-param +double+ T "cake_piece_width" (object-info-width cake-piece-info))
+                       (make-param +double+ T "cake_piece_height" (object-info-height cake-piece-info)))))
