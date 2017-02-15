@@ -1,21 +1,24 @@
 (in-package :pepper-communication-package)
 
-; Adjust the IP adress and port if necessary
+                                        ; Adjust the IP adress and port if necessary
 (defparameter *host* "134.102.161.102")
 (defparameter *port* 8080)
 
-(defun update-connection-credentials (local-host remote-host remote-port client-id)
-  "Needs local ip address and remote ip adress and port.
-Sends local host and port information of the calling machine to the addressee, for keep them up-to-date.
+(defun update-connection-credentials (local-host &optional &key (client-id 1) remote-host remote-port client)
+  "LOCAL-HOST: The local computers IP address.
+CLIENT-ID: Id of the calling system. 0 = pepper, 1 = PR2, 2 = turtle
+REMOTE-HOST: Address of the server to call.
+REMOTE-PORT: Port of the server to call.
+CLIENT: Set to :pepper or :turtle instead of setting host and port manually, to retrieve information from the clients list.
+
+Sends local host and port information of the calling machine to the addressee, to keep them up-to-date.
 TODO: Retrieve IP address automatically. Import package ip-interfaces from external resources."
-  (let ((local-port (get-local-port))) 
-    (fire-rpc
-     "updateObserverClient"
-     remote-host
-     remote-port
-     client-id
-     local-host
-     local-port)))
+  
+  (unless (and remote-host remote-port)
+    (setf remote-host (client-host (gethash client *clients*)))
+    (setf remote-port (client-port (gethash client *clients*))))
+  
+  (fire-rpc "updateObserverClient" remote-host remote-port client-id local-host (get-local-port)))
 
 (defun fire-rpc-to-client (client remote-function &rest args)
   "CLIENT: The id of the client as saved in *clients*.
