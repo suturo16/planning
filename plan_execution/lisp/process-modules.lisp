@@ -25,8 +25,11 @@
          (place-object obj-info target-info arm)))
 
       (cut
-       ; CUT! CUT! CUT! BLOOD EVERYWHERE!!!!
-       nil)
+       ; CUT! CUT! CUT! CAKE CRUMBS EVERYWHERE!!!!
+       (let ((arm (cdr (assoc 'arm specs)))
+             (knife-info (cdr (assoc 'knife specs)))
+             (cake-info (cdr (assoc 'cake specs))))                        
+         (cut-object arm knife-info cake-info)))
 
       (test
        ; Just a test stub to appease one's sanity.
