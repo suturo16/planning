@@ -22,8 +22,9 @@
   (print "place object:: done"))
 
 (cram-language:def-cram-function cut-object (arm knife-info obj-info)
+  ;for ms2 we assume the robot has the knife already in his hand
   (if (pr2-do::is-object-in-view obj-info)
       (progn 
-        (pr2-do::slice obj-info arm)
+        (pr2-do::cut-cake obj-info arm)
         (pr2-do::push-aside obj-info arm))
       (print "cannot see object which I am supposed to cut")))
