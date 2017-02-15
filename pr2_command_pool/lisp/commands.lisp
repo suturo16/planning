@@ -11,6 +11,22 @@
 (defun is-object-in-view (object-id)
   T)
 
+(defun check-object-location (object-info)
+  (when object-info
+    (get-in-base-pose)
+    ;turn head
+    (service-run-pipeline "knife" "box")
+    (when (seen-since object-info)
+      T)))
+
+(defun seen-since (obj-info)
+  (let ((name (object-info-name obj-info))
+        (frame-id (object-info-frame obj-info))
+        (timestamp (object-info-timestamp obj-info)))
+    (if (prolog-seen-since name frame-id timestamp)
+        T
+        NIL)))
+    
 (defun get-object-info (object-name)
   "Get object infos using prolog interface."
   (cut:with-vars-bound

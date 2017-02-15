@@ -13,6 +13,9 @@ frame, height, width and depth as value binding."
 
 ; 'simple' because it uses the simple call
 (defun prolog-get-object-infos-simple (name)
+  (print (format nil
+                 "prolog-get-object-infos-simple is now deprecated.~%
+Use prolog-get-object-infos instead."))
   (cut:with-vars-bound (|?Frame| |?Timestamp| |?Width| |?Height| |?Depth|)
       (cut:lazy-car
        (json-prolog:prolog-simple 
@@ -26,10 +29,26 @@ frame, height, width and depth as value binding."
      :depth |?Depth|)))
 
 (defun prolog-get-object-infos (name)
+  "Call prolog function get_object_infos."
   (cut:lazy-car (json-prolog:prolog
                  `("get_object_infos"
                    ,(format nil "~a~a" +knowrob-iri-prefix+ name)
                    ?frame ?timestamp ?width ?height ?depth) :lispify T :package :pr2-do)))
+
+(defun prolog-seen-since (name frame-id timestamp)
+  "Call prolog function seen_since. Returns an empty list if successful or nil otherwise."
+  (json-prolog:prolog
+                 `("seen_since"
+                  ,(format nil "~a~a" +knowrob-iri-prefix+ name)
+                  ,frame-id ,timestamp) :lispify T :package :pr2-do))
+
+(defun prolog-disconnect-frames (parent-frame-id child-frame-id)
+  "Call prolog function disconnect_frames. Returns nothing."
+  (json-prolog:prolog
+                 '("disconnect_frames"
+                   parent-frame-id child-frame-id) :lispify T :package :pr2-do))
+
+
 
 ;;                                         ; Some other templates. Try their worth.
 ;; (defun prolog-get-object-frame-eagerly (prolog-function-name type)

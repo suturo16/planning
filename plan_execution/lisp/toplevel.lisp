@@ -1,14 +1,14 @@
 (in-package :plan-execution-package)
 
 (defun execute (task)
-  "Start a node and excute the given task."
-  ; Start a node if necessary
-  (when (eq (node-status) :SHUTDOWN)
-    (start-ros-node "planning"))
-  (execute-plan task))
+  "Start a node and execute the given task."
+  (common:ensure-node-is-running)
+  (execute-task task))
+  
 
-(cram-language:def-top-level-cram-function execute-plan (task)
+(cram-language:def-top-level-cram-function execute-task (task)
   "Execute the given task."
+  (roslisp::ensure-node-is-running)
   ; Use the PR2 process modules.
   (with-pr2-process-modules
     ; Give our pm an alias, so it's less of a hassle to call it later.

@@ -46,12 +46,14 @@ class TemplateService(object):
         :param name: The name of the service. (string)
         :param srv: The type of the service. (class)
         """
+        self.name = name
         self.srv = srv
         self.srv_resp = srv_resp
-        s = rospy.Service(name, srv, self.execute)
+        self.service = rospy.Service(name, srv, self.execute)
 
     def execute(self, req):
         """Return an empty response."""
+        rospy.loginfo("Service {} received request:\n{}".format(rospy.resolve_name(self.name), req))
         return self.srv_resp()
 
 
