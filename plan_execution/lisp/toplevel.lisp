@@ -9,13 +9,35 @@
 (cram-language:def-top-level-cram-function execute-task (task)
   "Execute the given task."
   (roslisp::ensure-node-is-running)
-  ; Use the PR2 process modules.
-  (with-pr2-process-modules
-    ; Give our pm an alias, so it's less of a hassle to call it later.
-    (process-module-alias :manipulation 'giskard-manipulation)
+  
+  ;; settings for semrec
+  (beliefstate::register-owl-namespace "knowrob" 
+                                       "http://knowrob.org/kb/knowrob.owl#"  cpl-impl::log-id)
+  (beliefstate::register-owl-namespace "cram_log" 
+                                       "http://knowrob.org/kb/cram_log.owl#" cpl-impl::log-id)
+
+  ;; Logging context
+  (let ((log-node (beliefstate:start-node "EXECUTE-TASK" nil)))
+    (beliefstate::annotate-resource "taskToExecute" task "knowrob")
     
-    ; Translate the task to designators and execute them.
-    (execute-desigs (task->designators task))))
+    ;; Use the PR2 process modules.
+    (with-pr2-process-modules
+      ;; Give our pm an alias, so it's less of a hassle to call it later.
+      (process-module-alias :manipulation 'giskard-manipulation)
+      
+      ;; Translate the task to designators and execute them.
+      (execute-desigs (task->designators task)))
+
+    (beliefstate:stop-node log-node :success T))
+  
+  ;; logs extraction
+  (beliefstate::set-experiment-meta-data
+   "performedInMap" 
+   "http://knowrob.org/kb/IAI-kitchen.owl#IAIKitchenMap_PM580j" :type 
+   :resource :ignore-namespace t)
+
+  ;; Use (beliefstate:extract-files) to export report data after execution. 
+  )
 
 (defun execute-desigs (desigs)
   "Execute the given designators with the manipulation pm."
