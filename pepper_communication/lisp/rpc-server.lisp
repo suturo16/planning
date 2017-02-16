@@ -1,6 +1,6 @@
 (in-package :pepper-communication-package)
 
-;; Active clients saved in a hash map. Update map and use those credentials for remote calls to pepper ans turtle.
+;; Active clients saved in a hash map. Update map and use those credentials for remote calls to pepper and turtle.
 (defstruct client host port)
 (defparameter *clients*  (alexandria:alist-hash-table '((:pepper . nil) (:turtle . nil))))
 
@@ -39,7 +39,13 @@
          -1)))
 
 (defun |stressLevel| ()
-  "Returns the current stress level, represented by the length of tasks in task-buffer."
+  "Returns the current stress level, represented by the length of tasks in task-buffer,
+or -1 if the subscriber is unavailable."
+  (when (or
+         (not *pepper-subscriber*)
+         (not (roslisp::thread-alive-p (roslisp::topic-thread (roslisp::subscriber-subscription *pepper-subscriber*)))))
+    (return-from |stressLevel| -1))
+  
   (roslisp-queue:queue-size (roslisp::buffer (roslisp::subscriber-subscription *pepper-subscriber*))))
 
 (defun |nextTask| ()
@@ -65,7 +71,7 @@ Valid values for client-key are:
 2 or \"turtle\" for the turtlebot"))
 
     (when (not client-key)
-       (return-from |updateObserverClient| error-message))
+      (return-from |updateObserverClient| error-message))
     (when (stringp port)
       (setf port (parse-integer port)))
     
@@ -78,3 +84,6 @@ Valid values for client-key are:
               (make-client :host host :port port)))
     
     'SUCCESS))
+
+     
+     

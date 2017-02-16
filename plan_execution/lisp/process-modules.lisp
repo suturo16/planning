@@ -15,7 +15,7 @@
        ; Grasp the specified object with the specified arm.
        (let ((arm (car (cdr (assoc 'arm specs))))
              (obj-info (car (cdr (assoc 'obj-info specs)))))
-         (grasp-object obj-info arm)))
+         (grasp obj-info arm)))
 
       (place
        ; Place the specified object, which is in the gripper of the specified arm, on the specified target.
@@ -25,8 +25,11 @@
          (place-object obj-info target-info arm)))
 
       (cut
-       ; CUT! CUT! CUT! BLOOD EVERYWHERE!!!!
-       nil)
+       ; CUT! CUT! CUT! CAKE CRUMBS EVERYWHERE!!!!
+       (let ((arm (cdr (assoc 'arm specs)))
+             (knife-info (cdr (assoc 'knife specs)))
+             (cake-info (cdr (assoc 'cake specs))))                        
+         (cut-object arm knife-info cake-info)))
 
       (test
        ; Just a test stub to appease one's sanity.

@@ -8,8 +8,8 @@
   "Call action to open gripper."
   (action-move-gripper 0.09 arm 70))
 
-(defun is-object-in-view (object-id)
-  T)
+(defun run-full-pipeline ()
+  (service-run-pipeline "box" "knife" "cylinder"))
 
 (defun check-object-location (object-info)
   (when object-info
