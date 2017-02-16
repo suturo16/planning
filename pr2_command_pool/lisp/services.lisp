@@ -28,7 +28,7 @@
         (with-fields
             (actionID)
             (call-service srv
-                          ;'suturo_knowledge_msgs-srv:LogAction
+                          'suturo_knowledge_msgs-srv:LogAction
                           :nameOfAction name
                           :parentActionID parent-id
                           :startTime start
@@ -37,16 +37,16 @@
                           :success success)
           actionID))))
             
-(defun service-connect-frames (parentFrameID childFrameID)
+(defun service-connect-frames (parent-frame-id child-frame-id)
   (let ((srv "/connect_frames_service"))
     (if (not (wait-for-service srv 10))
         (ros-warn srv "Timed out waiting for service.")
         (with-fields
             (success)
             (call-service srv
-                          ;'suturo_knowledge_msgs-srv:ConnectFrames
-                          :parentFrame parentFrameID
-                          :childFrame childFrameID)
+                          'suturo_knowledge_msgs-srv:ConnectFrames
+                          :parentFrame parent-frame-id
+                          :childFrame child-frame-id)
             success))))
 
 (defun service-run-pipeline (&rest objects)
