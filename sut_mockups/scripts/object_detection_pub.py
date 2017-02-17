@@ -109,5 +109,5 @@ if __name__ == '__main__':
     # gen = detection_gen()
     # print "\n"*3
     # print gen()
-    pub = TemplatePublisher("~" + object_detection, ObjectDetection, detection_gen(), rate=5)
+    pub = TemplatePublisher("~" + object_detection, ObjectDetection, detection_gen(), rate=0.5)
     rospy.spin()
