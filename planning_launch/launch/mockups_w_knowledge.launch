@@ -1,5 +1,4 @@
 <launch>
     <include file="$(find planning_launch)/launch/mockups.launch" />
-    <include file="$(find object_state)/launch/prolog.launch" />
-    <include file="$(find object_state)/launch/subscriber_py.launch" />
+    <include file="$(find object_state)/launch/object_state.launch" />
 </launch>
