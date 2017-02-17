@@ -3,7 +3,7 @@
 MAP_FRAME = "/map"
 
 # Nodes
-PARAM_NODE = "sut_mock_params"
+PARAM_NODE = "sut_mock"
 
 graspkard = "graspkard"
 simple_logger = "simple_logger"
@@ -11,6 +11,7 @@ percepteros = "percepteros"
 
 # Topics
 pepper_command = "pepper_command"
+object_detection = "object_detection"
 
 # Services
 log_action = "log_action"
@@ -25,7 +26,7 @@ move_robot = "move_robot"
 nodes2names = {
     graspkard: [move_robot],
     simple_logger: [log_action, log_experiment_description],
-    percepteros: [set_pipeline],
+    percepteros: [object_detection, set_pipeline],
 }
 
 

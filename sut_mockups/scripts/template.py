@@ -22,10 +22,10 @@ class TemplatePublisher(object):
         :param msg_type: The type of the message. (class)
         :param msg_gen: A function generating the messages to be published. (function)
         :queue_size: Like rospy.Publisher
-        :rate: Rate at which the messages shoul be published in hz. (int)
+        :rate: Rate at which the messages should be published in hz. (int)
         """
         self.pub = rospy.Publisher(topic, msg_type, queue_size=queue_size)
-        self.rate = rospy.Rate(10)  # 10hz
+        self.rate = rospy.Rate(rate)  # 10hz
         self.msg_gen = msg_gen
         threading.Thread(target=self.publish).start()
 
