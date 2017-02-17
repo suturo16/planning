@@ -26,7 +26,22 @@
     (if (prolog-seen-since name frame-id timestamp)
         T
         NIL)))
-    
+
+(defun connect-objects (parent-info child-info)
+  (service-connect-frames
+   (format nil "/~a" (object-info-name parent-info))
+   (format nil "/~a" (object-info-name child-info))))
+
+(defun disconnect-objects (parent-info child-info)
+  (prolog-disconnect-frames
+   (format nil "/~a" (object-info-name parent-info))
+   (format nil "/~a" (object-info-name child-info))))
+
+(defun connect-obj-with-gripper (obj-info arm)
+  (service-connect-frames
+   (format nil "/~a_wrist_roll_link" arm)
+   (format nil "/~a" (object-info-name obj-info))))
+   
 (defun get-object-info (object-name)
   "Get object infos using prolog interface."
   (cut:with-vars-bound
