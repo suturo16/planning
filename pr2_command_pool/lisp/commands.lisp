@@ -9,7 +9,7 @@
   (action-move-gripper 0.09 arm 70))
 
 (defun run-full-pipeline ()
-  (service-run-pipeline "box" "knife" "cylinder"))
+  (service-run-pipeline))
 
 (defun check-object-location (object-info)
   (when object-info

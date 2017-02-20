@@ -19,16 +19,16 @@
 
       (place
        ; Place the specified object, which is in the gripper of the specified arm, on the specified target.
-       (let ((arm (cdr (assoc 'arm specs)))
-             (obj-info (cdr (assoc 'obj-info specs)))
-             (target-info (cdr (assoc 'target specs))))
+       (let ((arm (car (cdr (assoc 'arm specs))))
+             (obj-info (car (cdr (assoc 'obj-info specs))))
+             (target-info (car (cdr (assoc 'target specs)))))
          (place-object obj-info target-info arm)))
 
       (cut
        ; CUT! CUT! CUT! CAKE CRUMBS EVERYWHERE!!!!
-       (let ((arm (cdr (assoc 'arm specs)))
-             (knife-info (cdr (assoc 'knife specs)))
-             (cake-info (cdr (assoc 'cake specs))))                        
+       (let ((arm (car (cdr (assoc 'arm specs))))
+             (knife-info (car (cdr (assoc 'knife specs))))
+             (cake-info (car (cdr (assoc 'cake specs)))))                        
          (cut-object arm knife-info cake-info)))
 
       (test
