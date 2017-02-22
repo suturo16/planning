@@ -15,8 +15,7 @@
         (beliefstate::annotate-resource "arm" arm "knowrob")
         (alexandria:switch ((pr2-do::object-info-name obj-info))
           ("knife" (pr2-do::grasp-knife obj-info arm))
-          ("cylinder" (grasp-object obj-info arm)))
-        (format t "something good has happened.............."))
+          ("cylinder" (grasp-object obj-info arm))))
       ;; else complain
       (ros-error "grasp" "Object not found")))
 
