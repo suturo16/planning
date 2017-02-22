@@ -47,8 +47,9 @@ def detection_gen():
     seq = 0
 
     def _create_obj(_type):
+        num = len(data[_type])
         return DetectedObject(
-            name = _type.lower() + str(len(data[_type])),
+            name = _type.lower() + str(num if num != 0 else ""),
             type = getattr(ObjectDetection, _type, random.randint(len(default_types)+5, 100)),
             width = round(random.uniform(0.01, 0.5), 2),
             height = round(random.uniform(0.01, 0.5), 2),
