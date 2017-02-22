@@ -7,36 +7,31 @@
   
 
 (cram-language:def-top-level-cram-function execute-task (task)
-  "Execute the given task."
+  "Execute the given task in semrec context."
   (roslisp::ensure-node-is-running)
   
   ;; settings for semrec
+   (beliefstate:enable-logging T)
   (beliefstate::register-owl-namespace "knowrob" 
                                        "http://knowrob.org/kb/knowrob.owl#"  cpl-impl::log-id)
   (beliefstate::register-owl-namespace "cram_log" 
                                        "http://knowrob.org/kb/cram_log.owl#" cpl-impl::log-id)
 
-  ;; Logging context
-  (let ((log-node (beliefstate:start-node "EXECUTE-TASK" nil)))
-    (beliefstate::annotate-resource "taskToExecute" task "knowrob")
+  ;; Use the PR2 process modules.
+  (with-pr2-process-modules
+    ;; Give our pm an alias, so it's less of a hassle to call it later.
+    (process-module-alias :manipulation 'giskard-manipulation)
     
-    ;; Use the PR2 process modules.
-    (with-pr2-process-modules
-      ;; Give our pm an alias, so it's less of a hassle to call it later.
-      (process-module-alias :manipulation 'giskard-manipulation)
-      
-      ;; Translate the task to designators and execute them.
-      (execute-desigs (task->designators task)))
-
-    (beliefstate:stop-node log-node :success T))
+    ;; Translate the task to designators and execute them.
+    (execute-desigs (task->designators task)))
   
   ;; logs extraction
   (beliefstate::set-experiment-meta-data
    "performedInMap" 
    "http://knowrob.org/kb/IAI-kitchen.owl#IAIKitchenMap_PM580j" :type 
    :resource :ignore-namespace t)
-
-  ;; Use (beliefstate:extract-files) to export report data after execution. 
+  
+  ;;(beliefstate:extract-files)
   )
 
 (defun execute-desigs (desigs)
@@ -55,4 +50,3 @@
     ("cut cake"
      (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "knife")))
            (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "knife") (:cake "cake")))))))
-
