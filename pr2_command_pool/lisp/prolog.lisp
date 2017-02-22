@@ -45,8 +45,8 @@ Use prolog-get-object-infos instead."))
 (defun prolog-disconnect-frames (parent-frame-id child-frame-id)
   "Call prolog function disconnect_frames. Returns nothing."
   (json-prolog:prolog
-                 '("disconnect_frames"
-                   parent-frame-id child-frame-id) :lispify T :package :pr2-do))
+                 `("disconnect_frames"
+                   ,parent-frame-id ,child-frame-id) :lispify T :package :pr2-do))
 
 
 

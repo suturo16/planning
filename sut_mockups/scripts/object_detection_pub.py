@@ -41,7 +41,7 @@ class DetectedObject():
 def detection_gen():
     param_name = get_param_name(percepteros, object_detection)
     
-    default_types = ['BOX', 'CONE', 'CYLINDER', 'DROPZONE', 'MISC', 'SPHERE']
+    default_types = ['BOX', 'CONE', 'CYLINDER', 'DROPZONE', 'MISC', 'SPHERE', 'KNIFE']
     data = {}
     global seq
     seq = 0
@@ -76,8 +76,6 @@ def detection_gen():
             # Shorten overful obj list
             while not len(data[t]) <= _obj_count:
                 data[t].pop()
-        # print "----------HERE------------"
-        # print _types
 
 
     def _generator():
@@ -109,5 +107,5 @@ if __name__ == '__main__':
     # gen = detection_gen()
     # print "\n"*3
     # print gen()
-    pub = TemplatePublisher("~" + object_detection, ObjectDetection, detection_gen(), rate=5)
+    pub = TemplatePublisher("~" + object_detection, ObjectDetection, detection_gen(), rate=0.5)
     rospy.spin()
