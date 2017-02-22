@@ -11,7 +11,7 @@
   (roslisp::ensure-node-is-running)
   
   ;; settings for semrec
-   (beliefstate:enable-logging T)
+  (beliefstate:enable-logging T)
   (beliefstate::register-owl-namespace "knowrob" 
                                        "http://knowrob.org/kb/knowrob.owl#"  cpl-impl::log-id)
   (beliefstate::register-owl-namespace "cram_log" 
