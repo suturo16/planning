@@ -13,9 +13,9 @@
 
 (defun check-object-location (object-info)
   (when object-info
-    (get-in-base-pose)
+    ;(get-in-base-pose)
     ;turn head
-    (service-run-pipeline "knife" "box")
+    ;(service-run-pipeline)
     (when (seen-since object-info)
       T)))
 
@@ -97,7 +97,14 @@
                      (make-param +double+ T "l_wrist_flex_joint" "-1.56861")
                      (make-param +double+ T "l_wrist_roll_joint" "0")))
 
-(alexandria:define-constant +blade-%+ 0.65)
+(alexandria:define-constant +blade-%+ 0.63)
+
+;; temp constants for knife dimensions
+(alexandria:define-constant +handle-length+ 0.115)
+(alexandria:define-constant +handle-height+ 0.05)
+(alexandria:define-constant +blade-length+ 0.172)
+(alexandria:define-constant +blade-height+ 0.057)
+
 
 (defun grasp-knife (knife-info arm)
   "Grasp a knife with the right arm."
@@ -107,8 +114,8 @@
     (action-move-robot "knife_grasp"
                        (format nil "pr2_upper_body_~a_arm" arm-str)
                        (make-param +transform+ NIL "knife_frame" (format nil  "~a ~a" (object-info-name knife-info) "base_link"))
-                       (make-param +double+ T "blade_height" (write-to-string blade-height))
-                       (make-param +double+ T "grip_length" (write-to-string grip-length)))))
+                       (make-param +double+ T "blade_height" (write-to-string +blade-height+))
+                       (make-param +double+ T "handle_length" (write-to-string +handle-length+)))))
 
 (defun detach-knife-from-rack (knife-info arm)
   "Move the knife away from the rack."
@@ -130,8 +137,8 @@
                        (make-param +double+ T "cake_width_y" (write-to-string (object-info-depth cake-info)))
                        (make-param +double+ T "cake_height_z" (write-to-string (object-info-height cake-info)))
                        (make-param +transform+ NIL "knife_tf" (format nil "~a ~a" (object-info-name knife-info) (format nil "~a_wrist_roll_link" arm)))
-                       (make-param +double+ T "knife_height" (write-to-string (object-info-height knife-info)))
-                       (make-param +double+ T "handle_length" (write-to-string handle-length))
+                       (make-param +double+ T "blade_height" (write-to-string +blade-height+))  ; (write-to-string (object-info-height knife-info)))
+                       (make-param +double+ T "handle_length" (write-to-string +handle-length+))
                        (make-param +double+ T "slice_width" (write-to-string slice-width)))))
 
 (defun cut-cake (cake-info knife-info arm slice-width)
@@ -145,8 +152,8 @@
                        (make-param +double+ T "cake_width_y" (write-to-string (object-info-depth cake-info)))
                        (make-param +double+ T "cake_height_z" (write-to-string (object-info-height cake-info)))
                        (make-param +transform+ NIL "knife_tf" (format nil "~a ~a" (object-info-name knife-info) (format nil "~a_wrist_roll_link" arm)))
-                       (make-param +double+ T "knife_height" (write-to-string (object-info-height knife-info)))
-                       (make-param +double+ T "handle_length" (write-to-string handle-length))
+                       (make-param +double+ T "blade_height" (write-to-string +blade-height+)) ; (write-to-string (object-info-height knife-info)))
+                       (make-param +double+ T "handle_length" (write-to-string +handle-length+))
                        (make-param +double+ T "slice_width" (write-to-string slice-width)))))
 
 ; Won't be implemented for now.

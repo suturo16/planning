@@ -8,7 +8,7 @@
   (if (pr2-do::check-object-location obj-info)
       ; grasp it
       (seq
-        (alexandria:switch ((pr2-do::object-info-name obj-info))
+        (alexandria:switch ((pr2-do::object-info-name obj-info) :test #'equal)
           ("knife" (pr2-do::grasp-knife obj-info arm))
           ("cylinder" (grasp-object obj-info arm)))
         (pr2-do::connect-obj-with-gripper obj-info arm)
