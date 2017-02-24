@@ -50,8 +50,11 @@
   (let ((origin (cl-tf:origin pose))
         (orientation (cl-tf:orientation pose)))
     (multiple-value-bind (axis angle) (cl-tf:quaternion->axis-angle orientation)
-      (let ((normalized-axis (cl-tf:normalize-vector axis))
-            (normalized-angle (cl-tf:normalize-angle angle)))
+      (let* ((normalized-axis
+               (if (eql angle 0.0d0)
+                   (cl-tf:make-3d-vector 1 0 0)
+                   (cl-tf:normalize-vector axis)))
+             (normalized-angle (cl-tf:normalize-angle angle)))
         (format nil "~a ~a ~a ~a ~a ~a ~a"
                 (cl-tf:x origin)
                 (cl-tf:y origin)
@@ -60,6 +63,10 @@
                 (cl-tf:y normalized-axis)
                 (cl-tf:z normalized-axis)
                 normalized-angle)))))
+
+(defun tf-lookup->string (parent-frame frame)
+  (tf-pose->string
+   (extract-pose-from-transform parent-frame frame)))
         
 
 (defun file->string (path-to-file)

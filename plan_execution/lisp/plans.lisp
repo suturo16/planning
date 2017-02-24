@@ -18,6 +18,10 @@
       ; else complain
       (ros-error "grasp" "Object ~a not found" (pr2-do::object-info-name obj-info))))
 
+(defun grasp-knife (knife-info arm)
+  (pr2-do::grasp-knife knife-info arm)
+  (pr2-do::detach-knife-from-rack knife-info arm))
+
 (defun grasp-object (obj-info arm)
   (ros-info "grasp-object" "Open gripper")
   (pr2-do::open-gripper arm)

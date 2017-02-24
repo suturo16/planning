@@ -110,6 +110,15 @@
                        (make-param +double+ T "blade_height" (write-to-string blade-height))
                        (make-param +double+ T "grip_length" (write-to-string grip-length)))))
 
+(defun detach-knife-from-rack (knife-info arm)
+  "Move the knife away from the rack."
+  (let* ((arm-str (if (string= arm +left-arm+) "left" "right")))
+    (action-move-robot (format nil "pr2_knife_detatch_~a" arm)
+                       (format nil "pr2_upper_body_~a_arm" arm-str)
+                       (make-param +transform+ NIL "knife_frame" (format nil  "~a ~a" (object-info-name knife-info)
+                                                                         (format nil "~a_wrist_roll_link" arm)))
+                       (make-param +transform+ T "original_knife_tf" (tf-lookup->string "base_link" (object-info-name knife-info))))))
+
 (defun take-cutting-position (cake-info knife-info arm slice-width)
   "Take a position above the cake, ready to cut it."
   (let ((arm-str (if (string= arm +left-arm+) "left" "right"))
