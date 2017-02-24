@@ -61,7 +61,8 @@ def detection_gen():
                 ),
                 orientation = Quaternion(
                     # Same as above, but 4 times
-                    *[round(random.random(), 2) for _ in range(4)]
+                    # *[round(random.random(), 2) for _ in range(4)]
+                    0, 0, 0, 1
                 )
             )
         )
