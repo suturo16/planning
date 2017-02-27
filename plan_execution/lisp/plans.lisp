@@ -20,7 +20,7 @@
 
 (defun grasp-knife (knife-info arm)
   (pr2-do::grasp-knife knife-info arm)
-  (pr2-do::detach-knife-from-rack knife-info arm))
+  (pr2-do::close-gripper arm 100))
 
 (defun grasp-object (obj-info arm)
   (ros-info "grasp-object" "Open gripper")
@@ -37,6 +37,9 @@
   (ros-info "place-object" "Open gripper.")
   (pr2-do::open-gripper arm)
   (ros-info "place-object" "Done."))
+
+(cram-language:def-cram-function detach-object-from-rack (obj-info arm)
+  (pr2-do::detach-knife-from-rack obj-info arm))
 
 (cram-language:def-cram-function cut-object (arm knife-info cake-info)
   "Cut obj with knife in arm."

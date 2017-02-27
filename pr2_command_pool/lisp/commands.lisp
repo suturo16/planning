@@ -82,25 +82,25 @@
   "Bring PR2 into base (mantis) pose."
   (action-move-robot "pr2_upper_body" "pr2_upper_body_joint_control"
                      (make-param +double+ T "torso_lift_joint" "0.25")
-                     (make-param +double+ T "r_shoulder_pan_joint" "-1.23679")
-                     (make-param +double+ T "r_shoulder_lift_joint" "-0.247593")
-                     (make-param +double+ T "r_upper_arm_roll_joint" "-0.614271")
-                     (make-param +double+ T "r_elbow_flex_joint" "-1.38094")
-                     (make-param +double+ T "r_forearm_roll_joint" "4.94757")
-                     (make-param +double+ T "r_wrist_flex_joint" "-1.56861")
-                     (make-param +double+ T "r_wrist_roll_joint" "0")
                      (make-param +double+ T "l_shoulder_pan_joint" "1.23679")
                      (make-param +double+ T "l_shoulder_lift_joint" "-0.247593")
                      (make-param +double+ T "l_upper_arm_roll_joint" "0.614271")
                      (make-param +double+ T "l_elbow_flex_joint" "-1.38094")
                      (make-param +double+ T "l_forearm_roll_joint" "-4.94757")
                      (make-param +double+ T "l_wrist_flex_joint" "-1.56861")
-                     (make-param +double+ T "l_wrist_roll_joint" "0")))
+                     (make-param +double+ T "l_wrist_roll_joint" "0")
+                     (make-param +double+ T "r_shoulder_pan_joint" "-1.23679")
+                     (make-param +double+ T "r_shoulder_lift_joint" "-0.247593")
+                     (make-param +double+ T "r_upper_arm_roll_joint" "-0.614271")
+                     (make-param +double+ T "r_elbow_flex_joint" "-1.38094")
+                     (make-param +double+ T "r_forearm_roll_joint" "4.94757")
+                     (make-param +double+ T "r_wrist_flex_joint" "-1.56861")
+                     (make-param +double+ T "r_wrist_roll_joint" "0")))
 
 (alexandria:define-constant +blade-%+ 0.63)
 
 ;; temp constants for knife dimensions
-(alexandria:define-constant +handle-length+ 0.115)
+(alexandria:define-constant +handle-length+ 0.09)
 (alexandria:define-constant +handle-height+ 0.05)
 (alexandria:define-constant +blade-length+ 0.172)
 (alexandria:define-constant +blade-height+ 0.057)
@@ -111,8 +111,8 @@
   (let* ((arm-str (if (string= arm +left-arm+) "left" "right"))
          (grip-length (* (1- +blade-%+) (object-info-width knife-info)))
          (blade-height (object-info-height knife-info)))
-    (action-move-robot "knife_grasp"
-                       (format nil "pr2_upper_body_~a_arm" arm-str)
+    (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
+                       "knife_grasp"
                        (make-param +transform+ NIL "knife_frame" (format nil  "~a ~a" (object-info-name knife-info) "base_link"))
                        (make-param +double+ T "blade_height" (write-to-string +blade-height+))
                        (make-param +double+ T "handle_length" (write-to-string +handle-length+)))))
@@ -120,8 +120,8 @@
 (defun detach-knife-from-rack (knife-info arm)
   "Move the knife away from the rack."
   (let* ((arm-str (if (string= arm +left-arm+) "left" "right")))
-    (action-move-robot (format nil "pr2_knife_detatch_~a" arm)
-                       (format nil "pr2_upper_body_~a_arm" arm-str)
+    (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
+                       (format nil "pr2_detach_knife_~a" arm)
                        (make-param +transform+ NIL "knife_frame" (format nil  "~a ~a" (object-info-name knife-info)
                                                                          (format nil "~a_wrist_roll_link" arm)))
                        (make-param +transform+ T "original_knife_tf" (tf-lookup->string "base_link" (object-info-name knife-info))))))
@@ -130,8 +130,8 @@
   "Take a position above the cake, ready to cut it."
   (let ((arm-str (if (string= arm +left-arm+) "left" "right"))
         (handle-length (* (1- +blade-%+) (object-info-width knife-info))))
-    (action-move-robot (format nil "pr2_cut_position_~a" arm)
-                       (format nil "pr2_upper_body_~a_arm" arm-str)
+    (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
+                       (format nil "pr2_cut_position_~a" arm)
                        (make-param +transform+ NIL "cake_tf" (format nil "~a ~a" (object-info-name cake-info) "base_link"))
                        (make-param +double+ T "cake_length_x" (write-to-string (object-info-width cake-info)))
                        (make-param +double+ T "cake_width_y" (write-to-string (object-info-depth cake-info)))
@@ -145,8 +145,8 @@
   "Cut the cake."
   (let ((arm-str (if (string= arm +left-arm+) "left" "right"))
         (handle-length (* (1- +blade-%+) (object-info-width knife-info))))
-    (action-move-robot (format nil "pr2_cut_~a" arm)
-                       (format nil "pr2_upper_body_~a_arm" arm-str)
+    (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
+                       (format nil "pr2_cut_~a" arm)
                        (make-param +transform+ NIL "cake_tf" (format nil "~a ~a" (object-info-name cake-info) "base_link"))
                        (make-param +double+ T "cake_length_x" (write-to-string (object-info-width cake-info)))
                        (make-param +double+ T "cake_width_y" (write-to-string (object-info-depth cake-info)))

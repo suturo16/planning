@@ -109,7 +109,7 @@
     (reverse out)))
 
 (defun get-controller-specs (controller-name)
-  (file->string (get-controller-yaml-path controller-name)))
+  (file->string (get-controller-path controller-name)))
 
 (defun get-controller-yaml-path (controller-name)
   (concatenate 'string
@@ -123,6 +123,26 @@
                config-name
                ".yaml"))
 
+(defun get-controller-path (controller-name)
+  (let* ((file (concatenate 'string
+                            (get-yaml-path "controller_specs")
+                            controller-name))
+         (yaml (probe-file (concatenate 'string file ".yaml")))
+         (giskard (probe-file (concatenate 'string file ".giskard"))))
+    (if yaml
+        yaml
+        giskard)))
+
+(defun get-config-path (config-name)
+  (let* ((file (concatenate 'string
+                            (get-yaml-path "config")
+                            config-name))
+         (yaml (probe-file (concatenate 'string file ".yaml")))
+         (giskard (probe-file (concatenate 'string file ".giskard"))))
+    (if yaml
+        yaml
+        giskard)))
+    
 (defun get-yaml-path (type)
   (concatenate 'string
                (namestring (roslisp::ros-package-path "graspkard"))
