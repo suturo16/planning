@@ -21,7 +21,7 @@
       (desig-prop ?desig (:type :detach))
       (desig-prop ?desig (:arm ?arm))
       (desig-prop ?desig (:object ?object))
-      (lisp-fun pr2::get-object-info ?object ?obj-info))
+      (lisp-fun pr2-do::get-object-info ?object ?obj-info))
       
 
   ; cut
