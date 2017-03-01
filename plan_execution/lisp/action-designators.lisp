@@ -16,6 +16,14 @@
     (desig-prop ?desig (:object ?object))
     (lisp-fun pr2-do::get-object-info ?object ?obj-info))
 
+  ; detach
+  (<- (action-desig ?desig (cut ((arm ?arm) (obj-info ?obj-info))))
+      (desig-prop ?desig (:type :detach))
+      (desig-prop ?desig (:arm ?arm))
+      (desig-prop ?desig (:object ?object))
+      (lisp-fun pr2-do::get-object-info ?object ?obj-info))
+      
+
   ; cut
   (<- (action-desig ?desig (cut ((arm ?arm) (knife ?knife-info) (cake ?cake-info))))
     (desig-prop ?desig (:type :cut))

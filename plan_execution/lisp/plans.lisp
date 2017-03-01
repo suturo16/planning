@@ -15,17 +15,22 @@
       (with-logging-node "GRASP-OBJECT"
         (beliefstate::annotate-resource "objectInfo" (pr2-do::object-info-name obj-info) "knowrob")
         (beliefstate::annotate-resource "arm" arm "knowrob")
+                                        ;; grasp it
         (seq
-          (alexandria:switch ((pr2-do::object-info-name obj-info))
-            ("knife" (pr2-do::grasp-knife obj-info arm))
-            ("cylinder" (grasp-object obj-info arm)))
-          (pr2-do::connect-obj-with-gripper obj-info arm)
-          (ros-info "grasp" "Connected object ~a with arm ~a."
-                    (pr2-do::object-info-name obj-info)
-                    arm)))
-      ;; else complain
-      (ros-error "grasp" "Object ~a not found" (pr2-do::object-info-name obj-info))))
-    
+         (alexandria:switch ((pr2-do::object-info-name obj-info) :test #'equal)
+                            ("Knife" (pr2-do::grasp-knife obj-info arm))
+                            ("Cylinder" (grasp-object obj-info arm)))
+         (pr2-do::connect-obj-with-gripper obj-info arm)
+         (ros-info "grasp" "Connected object ~a with arm ~a."
+                   (pr2-do::object-info-name obj-info)
+                   arm)))
+                                        ;; else complain
+        (ros-error "grasp" "Object ~a not found" (pr2-do::object-info-name obj-info))))
+  
+(defun grasp-knife (knife-info arm)
+  (pr2-do::grasp-knife knife-info arm)
+  (pr2-do::close-gripper arm 100))
+
 (defun grasp-object (obj-info arm)
   (ros-info "grasp-object" "Open gripper")
   (pr2-do::open-gripper arm)
@@ -46,6 +51,10 @@
     (pr2-do::open-gripper arm)
     (ros-info "place-object" "Done.")))
 
+
+(cram-language:def-cram-function detach-object-from-rack (obj-info arm)
+  (pr2-do::detach-knife-from-rack obj-info arm))
+
 (cram-language:def-cram-function cut-object (arm knife-info cake-info &optional (slice-width 0.01))
   "Cut obj with knife in arm."
   (if (pr2-do::check-object-location cake-info)
@@ -58,8 +67,8 @@
         (pr2-do::take-cutting-position knife-info cake-info arm slice-width)
         (ros-info "cut-object" "Cutting.")
         (pr2-do::cut-cake knife-info cake-info arm slice-width)
-        ; TODO(cpo): get cake-piece-info
-        ; (pr2-do::push-aside cake-info cake-piece-info)
+        ;; TODO(cpo): get cake-piece-info
+        ;; (pr2-do::push-aside cake-info cake-piece-info)
         (ros-info "cut-object" "Done."))
       ;; else complain
       (ros-error "cut-object" "Cannot find object '~a', which I am supposed to cut."

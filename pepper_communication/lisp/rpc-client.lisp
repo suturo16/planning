@@ -1,6 +1,6 @@
 (in-package :pepper-communication-package)
 
-                                        ; Adjust the IP adress and port if necessary
+;; Adjust the IP adress and port if necessary
 (defparameter *host* "134.102.161.102")
 (defparameter *port* 8080)
 

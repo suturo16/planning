@@ -24,6 +24,12 @@
              (target-info (car (cdr (assoc 'target specs)))))
          (place-object obj-info target-info arm)))
 
+      (detach
+       ; Detach object from rack.
+       (let ((arm (car (cdr (assoc 'arm specs))))
+             (obj-info (car (cdr (assoc 'obj-info specs)))))
+         (detach-object-from-rack obj-info arm)))
+      
       (cut
        ; CUT! CUT! CUT! CAKE CRUMBS EVERYWHERE!!!!
        (let ((arm (car (cdr (assoc 'arm specs))))

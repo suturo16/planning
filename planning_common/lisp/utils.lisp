@@ -50,8 +50,11 @@
   (let ((origin (cl-tf:origin pose))
         (orientation (cl-tf:orientation pose)))
     (multiple-value-bind (axis angle) (cl-tf:quaternion->axis-angle orientation)
-      (let ((normalized-axis (cl-tf:normalize-vector axis))
-            (normalized-angle (cl-tf:normalize-angle angle)))
+      (let* ((normalized-axis
+               (if (eql angle 0.0d0)
+                   (cl-tf:make-3d-vector 1 0 0)
+                   (cl-tf:normalize-vector axis)))
+             (normalized-angle (cl-tf:normalize-angle angle)))
         (format nil "~a ~a ~a ~a ~a ~a ~a"
                 (cl-tf:x origin)
                 (cl-tf:y origin)
@@ -60,6 +63,10 @@
                 (cl-tf:y normalized-axis)
                 (cl-tf:z normalized-axis)
                 normalized-angle)))))
+
+(defun tf-lookup->string (parent-frame frame)
+  (tf-pose->string
+   (extract-pose-from-transform parent-frame frame)))
         
 
 (defun file->string (path-to-file)
@@ -102,7 +109,7 @@
     (reverse out)))
 
 (defun get-controller-specs (controller-name)
-  (file->string (get-controller-yaml-path controller-name)))
+  (file->string (get-controller-path controller-name)))
 
 (defun get-controller-yaml-path (controller-name)
   (concatenate 'string
@@ -116,6 +123,26 @@
                config-name
                ".yaml"))
 
+(defun get-controller-path (controller-name)
+  (let* ((file (concatenate 'string
+                            (get-yaml-path "controller_specs")
+                            controller-name))
+         (yaml (probe-file (concatenate 'string file ".yaml")))
+         (giskard (probe-file (concatenate 'string file ".giskard"))))
+    (if yaml
+        yaml
+        giskard)))
+
+(defun get-config-path (config-name)
+  (let* ((file (concatenate 'string
+                            (get-yaml-path "config")
+                            config-name))
+         (yaml (probe-file (concatenate 'string file ".yaml")))
+         (giskard (probe-file (concatenate 'string file ".giskard"))))
+    (if yaml
+        yaml
+        giskard)))
+    
 (defun get-yaml-path (type)
   (concatenate 'string
                (namestring (roslisp::ros-package-path "graspkard"))

@@ -46,9 +46,14 @@
   "Use a simple switch to translate a task to a list of designators."
   (alexandria:switch (task :test #'equal)
     ("grasp cylinder"
-     (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "cylinder")))))
+     (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Cylinder")))))
+    ("grasp knife"
+     (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Knife")))))
+    ("just cut"
+      (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box"))))
     ("cut cake"
-     (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "knife")))
-           (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "knife") (:cake "box")))))))
+     (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Knife")))
+           (make-designator :action `((:type :detach) (:arm ,pr2-do::+right-arm+) (:object "Knife")))
+           (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box")))))))
 
 

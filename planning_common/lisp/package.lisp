@@ -16,6 +16,7 @@
    :get-transform-listener
    :extract-pose-from-transform
    :tf-pose->string
+   :tf-lookup->string
    :file->string
    :split
    :strings->KeyValues
