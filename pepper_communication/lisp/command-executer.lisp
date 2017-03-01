@@ -23,4 +23,8 @@
             +pr2-client-id+ my-ip (get-local-port))
   ;; Let Perception see.
   (pr2-do::run-full-pipeline))
-  
+
+(defun init-planning-without-pepper ()
+  (start-ros-node "planning")
+  (pr2-do::setup-move-robot-client)
+  (pr2-do::service-run-pipeline "Cake"))
