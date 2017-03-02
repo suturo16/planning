@@ -31,6 +31,7 @@
   (pr2-do::close-gripper arm 50)
   (ros-info "grasp-object" "Done."))
 
+
 (cram-language:def-cram-function place-object (obj-info loc-info arm)
   (ros-info "place-object" "Move object with arm.")
   (pr2-do::move-object-with-arm loc-info obj-info arm)
@@ -38,8 +39,10 @@
   (pr2-do::open-gripper arm)
   (ros-info "place-object" "Done."))
 
+
 (cram-language:def-cram-function detach-object-from-rack (obj-info arm)
   (pr2-do::detach-knife-from-rack obj-info arm))
+
 
 (cram-language:def-cram-function cut-object (arm knife-info cake-info)
   "Cut obj with knife in arm."
