@@ -134,7 +134,7 @@
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_detach_knife_~a" arm)
                        (make-param +transform+ NIL "knife_frame" (format nil  "~a ~a" (object-info-name knife-info)
-                                                                         (format nil "~a_wrist_roll_link" arm)))
+                                                                 (format nil "~a_wrist_roll_link" arm)))
                        (make-param +transform+ T "original_knife_tf" (tf-lookup->string "base_link" (object-info-name knife-info))))))
 
 (defun take-cutting-position (cake-info knife-info arm slice-width)
