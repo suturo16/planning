@@ -9,7 +9,13 @@
   (action-move-gripper 0.09 arm 70))
 
 (defun run-full-pipeline ()
-  (service-run-pipeline))
+  (ros-info "run-full-pipeline" "recognizing Knife....")
+  (service-run-pipeline "Knife")
+  (sleep 10)
+  (ros-info "run-full-pipeline" "recognizing Cake...")
+  (service-run-pipeline "Cake")
+  (sleep 10)
+  (print "done recognizing things. You can start planning now!"))
 
 (defun check-object-location (object-info)
   (when object-info
