@@ -43,10 +43,10 @@
    (format nil "/~a" (object-info-name parent-info))
    (format nil "/~a" (object-info-name child-info))))
 
-(defun disconnect-object-from-arm (object arm)
+(defun disconnect-obj-from-arm (obj-info arm)
   (prolog-disconnect-frames
    (format nil "/~a_wrist_roll_link" arm)
-   (format nil "/~a" object)))
+   (format nil "/~a" ( object-info-name obj-info))))
 
 (defun connect-obj-with-gripper (obj-info arm)
   (service-connect-frames

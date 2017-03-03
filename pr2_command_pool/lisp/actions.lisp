@@ -36,7 +36,7 @@
     (with-fields
         (current_value)
         feedback-msg
-      (when (< current_value 0.01 )
+      (when (< current_value 0.001 )
         (invoke-restart 'actionlib:abort-goal)))))
 
 (defun action-move-robot (config-name controller-name &rest typed-params)
