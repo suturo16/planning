@@ -111,7 +111,7 @@
 (alexandria:define-constant +blade-%+ 0.63)
 
 ;; temp constants for knife dimensions
-(alexandria:define-constant +handle-length+ 0.09)
+(alexandria:define-constant +handle-length+ 0.08)
 (alexandria:define-constant +handle-height+ 0.05)
 (alexandria:define-constant +blade-length+ 0.172)
 (alexandria:define-constant +blade-height+ 0.057)

@@ -12,7 +12,7 @@
           ("Knife" (pr2-do::grasp-knife obj-info arm))
           ("Cylinder" (grasp-object obj-info arm)))
         (pr2-do::connect-obj-with-gripper obj-info arm)
-        (ros-info "grasp" "Connected object ~a with arm ~a."
+        (ros-info "grasp" "Connected object ~a with arm~a."
                   (pr2-do::object-info-name obj-info)
                   arm))
       ; else complain
@@ -21,6 +21,19 @@
 (defun grasp-knife (knife-info arm)
   (pr2-do::grasp-knife knife-info arm)
   (pr2-do::close-gripper arm 100))
+
+(defun ms2-grasp-knife (knife-info arm)
+  (ros-info "ms2-grasp-knife" "connect Knife frame to ododm.")
+  (pr2-do::service-connect-frames "/odom_combined"  "/Knife")
+  (ros-info "ms2-grasp-knife" "grasp the knife.")
+  (pr2-do::grasp-knife knife-info arm)
+  (ros-info "ms2-grasp-knife" "close-gripper")
+  (pr2-do::close-gripper arm 100)
+  (ros-info "ms2-grasp-knife" "reconnect frames from odom to arm")
+  (pr2-do::prolog-disconnect-frames "/odom_combined" "/Knife")
+  (pr2-do::service-connect-frames "/r_wrist_roll_link" "/Knife")
+  ;;TODO: test detach, add it in here. 
+  )
 
 (defun grasp-object (obj-info arm)
   (ros-info "grasp-object" "Open gripper")
@@ -52,10 +65,18 @@
         (ros-info "cut-object" "Getting into cutting position.")
         (pr2-do::take-cutting-position knife-info cake-info arm 0.01)
         (ros-info "cut-object" "Cutting.")
-        (pr2-do::cut-cake knife-info cake-info arm 0.01)
+        (pr2-do::cut-cake cake-info knife-info arm 0.01)
         ; TODO(cpo): get cake-piece-info
         ; (pr2-do::push-aside cake-info cake-piece-info)
         (ros-info "cut-object" "Done."))
       ; else complain
       (ros-error "cut-object" "Cannot find object '~a', which I am supposed to cut."
                  (pr2-do::object-info-name cake-info))))
+
+(defun ms2-cut-cake (cake-info knife-info arm)
+  (pr2-do::service-connect-frames "/odom_combined" "/Box")
+  (ros-info "ms2-cut-object" "Getting into cutting position.")
+  (pr2-do::take-cutting-position cake-info knife-info arm 0.01)
+  (ros-info "ms2-cut-object" "Cutting.")
+  (pr2-do::cut-cake cake-info knife-info arm 0.01)
+  (ros-info "ms2-cut-cake" "Done."))
