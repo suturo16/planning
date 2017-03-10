@@ -111,8 +111,8 @@
 (alexandria:define-constant +blade-%+ 0.63)
 
 ;; temp constants for knife dimensions
-(alexandria:define-constant +handle-length+ 0.08)
-(alexandria:define-constant +handle-height+ 0.05)
+(alexandria:define-constant +handle-length+ 0.105)
+(alexandria:define-constant +handle-height+ 0.04)
 (alexandria:define-constant +blade-length+ 0.172)
 (alexandria:define-constant +blade-height+ 0.057)
 
@@ -144,8 +144,8 @@
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_cut_position_~a" arm)
                        (make-param +transform+ NIL "cake_tf" (format nil "~a ~a" (object-info-name cake-info) "base_link"))
-                       (make-param +double+ T "cake_length_x" (write-to-string (object-info-width cake-info)))
-                       (make-param +double+ T "cake_width_y" (write-to-string (object-info-depth cake-info)))
+                       (make-param +double+ T "cake_length_x" (write-to-string (object-info-depth cake-info)))
+                       (make-param +double+ T "cake_width_y" (write-to-string (object-info-width cake-info)))
                        (make-param +double+ T "cake_height_z" (write-to-string (object-info-height cake-info)))
                        (make-param +transform+ NIL "knife_tf" (format nil "~a ~a" (object-info-name knife-info) (format nil "~a_wrist_roll_link" arm)))
                        (make-param +double+ T "blade_height" (write-to-string +blade-height+))  ; (write-to-string (object-info-height knife-info)))
@@ -159,8 +159,8 @@
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_cut_~a" arm)
                        (make-param +transform+ NIL "cake_tf" (format nil "~a ~a" (object-info-name cake-info) "base_link"))
-                       (make-param +double+ T "cake_length_x" (write-to-string (object-info-width cake-info)))
-                       (make-param +double+ T "cake_width_y" (write-to-string (object-info-depth cake-info)))
+                       (make-param +double+ T "cake_length_x" (write-to-string (object-info-depth cake-info)))
+                       (make-param +double+ T "cake_width_y" (write-to-string (object-info-width cake-info)))
                        (make-param +double+ T "cake_height_z" (write-to-string (object-info-height cake-info)))
                        (make-param +transform+ NIL "knife_tf" (format nil "~a ~a" (object-info-name knife-info) (format nil "~a_wrist_roll_link" arm)))
                        (make-param +double+ T "blade_height" (write-to-string +blade-height+)) ; (write-to-string (object-info-height knife-info)))

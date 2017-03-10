@@ -1,26 +1,28 @@
-(in-package :plan-execution-package)
+ (in-package :plan-execution-package)
 
 (cram-language:def-cram-function grasp (obj-info arm)
   (ros-info "grasp" "Starting to grasp object ~a with arm ~a."
             (pr2-do::object-info-name obj-info)
             arm)
   (ros-info "grasp" "Check for object.")
-  (if (pr2-do::check-object-location obj-info)
+  ;(if (pr2-do::check-object-location obj-info)
       ; grasp it
       (seq
         (alexandria:switch ((pr2-do::object-info-name obj-info) :test #'equal)
-          ("Knife" (pr2-do::grasp-knife obj-info arm))
+          ("Knife" (grasp-knife obj-info arm))
           ("Cylinder" (grasp-object obj-info arm)))
         (pr2-do::connect-obj-with-gripper obj-info arm)
         (ros-info "grasp" "Connected object ~a with arm~a."
                   (pr2-do::object-info-name obj-info)
                   arm))
       ; else complain
-      (ros-error "grasp" "Object ~a not found" (pr2-do::object-info-name obj-info))))
+    ;(ros-error "grasp" "Object ~a not found" (pr2-do::object-info-name obj-info)))
+  )
 
 (defun grasp-knife (knife-info arm)
-  (pr2-do::grasp-knife knife-info arm)
-  (pr2-do::close-gripper arm 100))
+;; (pr2-do::grasp-knife knife-info arm)
+;; (pr2-do::close-gripper arm 100)
+  (ms2-grasp-knife knife-info arm))
 
 (defun ms2-grasp-knife (knife-info arm)
   (ros-info "ms2-grasp-knife" "connect Knife frame to ododm.")
@@ -30,8 +32,11 @@
   (ros-info "ms2-grasp-knife" "close-gripper")
   (pr2-do::close-gripper arm 100)
   (ros-info "ms2-grasp-knife" "reconnect frames from odom to arm")
+ 
+ ;; (pr2-do::detach-knife-from-rack (pr2-do::get-object-info "Knife") pr2-do::+right-arm+)
   (pr2-do::prolog-disconnect-frames "/odom_combined" "/Knife")
   (pr2-do::service-connect-frames "/r_wrist_roll_link" "/Knife")
+  (pr2-do::get-in-base-pose)
   ;;TODO: test detach, add it in here. 
   )
 
@@ -54,24 +59,29 @@
 
 
 (cram-language:def-cram-function detach-object-from-rack (obj-info arm)
-  (pr2-do::detach-knife-from-rack obj-info arm))
-
+  ;; this doesn't work, I think the axes are wrong since bot moves his torso down
+  (pr2-do::detach-knife-from-rack obj-info arm)
+  ;;(pr2-do::get-in-base-pose)
+  )
+  
 
 (cram-language:def-cram-function cut-object (arm knife-info cake-info)
   "Cut obj with knife in arm."
-  (if (pr2-do::check-object-location cake-info)
+ ; (if (pr2-do::check-object-location cake-info)
       ; if object is found, cut it
       (progn
-        (ros-info "cut-object" "Getting into cutting position.")
-        (pr2-do::take-cutting-position knife-info cake-info arm 0.01)
+        (pr2-do::service-connect-frames "/odom_combined" "/Box")
+        (ros-info "-cut-object" "Getting into cutting position.")
+        (pr2-do::take-cutting-position cake-info knife-info arm 0.01)
         (ros-info "cut-object" "Cutting.")
         (pr2-do::cut-cake cake-info knife-info arm 0.01)
         ; TODO(cpo): get cake-piece-info
         ; (pr2-do::push-aside cake-info cake-piece-info)
         (ros-info "cut-object" "Done."))
       ; else complain
-      (ros-error "cut-object" "Cannot find object '~a', which I am supposed to cut."
-                 (pr2-do::object-info-name cake-info))))
+     ; (ros-error "cut-object" "Cannot find object '~a', which I am supposed to cut."
+     ; (pr2-do::object-info-name cake-info))
+  )
 
 (defun ms2-cut-cake (cake-info knife-info arm)
   (pr2-do::service-connect-frames "/odom_combined" "/Box")
@@ -80,3 +90,9 @@
   (ros-info "ms2-cut-object" "Cutting.")
   (pr2-do::cut-cake cake-info knife-info arm 0.01)
   (ros-info "ms2-cut-cake" "Done."))
+
+(defun ms2-full-demo ()
+  (plan-execution-package::ms2-grasp-knife (pr2-do::get-object-info "Knife") pr2-do::+right-arm+ )
+  (pr2-do::get-in-base-pose)
+  (plan-execution-package::ms2-cut-cake (pr2-do::get-object-info "Box") (pr2-do::get-object-info "Knife") pr2-do::+right-arm+))
+

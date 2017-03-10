@@ -31,23 +31,15 @@
       msg
     (format t "Error Value: ~a~%Alteration Rate: ~a~%~%" current_value alteration_rate)))
 
-;;returns a value which is used to abort different controllers in manipulation
-;;TODO: Fill the list with reasonable values
-(defun pick-right-feedback-value (word sentence)
-  (let ((value 0.05))
-    (if (car (mapcar #'search (list word) (list sentence)))
-        (alexandria:switch (word :test #'equal)
-          ("cake" (setf value 0.001))
-          ("Knife" (setf value 0.002)))
-        (setf value 0.05))))
-
-
+;;grasping knife = 0.05
+;;base pose = 0.05
+;;detach = 0.00005
 (defun handle-feedback-signal (signal)
   (let ((feedback-msg (actionlib:feedback signal)))
     (with-fields
         (current_value)
         feedback-msg
-      (when (< current_value 0.001 )
+      (when (< current_value 0.0005 )
         (invoke-restart 'actionlib:abort-goal)))))
 
 (defun action-move-robot (config-name controller-name &rest typed-params)

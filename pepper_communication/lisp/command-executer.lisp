@@ -28,4 +28,5 @@
 (defun init-planning-without-pepper ()
   (start-ros-node "planning")
   (pr2-do::setup-move-robot-client)
-  (pr2-do::run-full-pipeline))
+ ;;(pr2-do::run-full-pipeline)
+  )
