@@ -3,6 +3,7 @@
 (defun execute (task)
   "Start a node and execute the given task."
   (common:ensure-node-is-running)
+  (format T "command: ~a" task)
   (execute-task task))
   
 

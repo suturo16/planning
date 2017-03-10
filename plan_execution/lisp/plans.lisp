@@ -15,17 +15,17 @@
       (with-logging-node "GRASP-OBJECT"
         (beliefstate::annotate-resource "objectInfo" (pr2-do::object-info-name obj-info) "knowrob")
         (beliefstate::annotate-resource "arm" arm "knowrob")
-                                        ;; grasp it
+        ;; grasp it
         (seq
-         (alexandria:switch ((pr2-do::object-info-name obj-info) :test #'equal)
-                            ("Knife" (pr2-do::grasp-knife obj-info arm))
-                            ("Cylinder" (grasp-object obj-info arm)))
-         (pr2-do::connect-obj-with-gripper obj-info arm)
-         (ros-info "grasp" "Connected object ~a with arm ~a."
-                   (pr2-do::object-info-name obj-info)
-                   arm)))
-                                        ;; else complain
-        (ros-error "grasp" "Object ~a not found" (pr2-do::object-info-name obj-info))))
+          (alexandria:switch ((pr2-do::object-info-name obj-info) :test #'equal)
+            ("Knife" (pr2-do::grasp-knife obj-info arm))
+            ("Cylinder" (grasp-object obj-info arm)))
+          (pr2-do::connect-obj-with-gripper obj-info arm)
+          (ros-info "grasp" "Connected object ~a with arm ~a."
+                    (pr2-do::object-info-name obj-info)
+                    arm)))
+      ;; else complain
+      (ros-error "grasp" "Object ~a not found" (pr2-do::object-info-name obj-info))))
   
 (defun grasp-knife (knife-info arm)
   (pr2-do::grasp-knife knife-info arm)

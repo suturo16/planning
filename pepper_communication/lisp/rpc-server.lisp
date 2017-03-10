@@ -21,13 +21,13 @@
             |updateObserverClient|)
           :s-xml-rpc-exports))
 
-(defun |sleepSomeTime| ()
+(defun |sleepSomeTime| (dummy)
   "Waits 3 seconds, before responding. For debugging pusposes."
   (sleep 3))
 
-(defun |cutCake| ()
-  "Command the PR2 to cut cake."
+(defun |cutCake| (dummy)
   (|do| "cut cake"))
+
 
 (defun |do| (command)
   "Publishes to the command listeners topic and responds with the amount of due tasks.
@@ -35,10 +35,10 @@
   (let ((pub (advertise "/pepper_command" "std_msgs/String")))
     (if  (not (eq (roslisp:node-status) :SHUTDOWN))
          (progn (publish-msg pub :data command)
-                (|stressLevel|))
+                (|stressLevel| "asdf"))
          -1)))
 
-(defun |stressLevel| ()
+(defun |stressLevel| (dummy)
   "Returns the current stress level, represented by the length of tasks in task-buffer,
 or -1 if the subscriber is unavailable."
   (when (or
@@ -71,7 +71,7 @@ Valid values for client-key are:
 2 or \"turtle\" for the turtlebot"))
 
     (when (not client-key)
-      (return-from |updateObserverClient| error-message))
+      (return-from |updateObserverClient| -1))
     (when (stringp port)
       (setf port (parse-integer port)))
     
@@ -83,7 +83,7 @@ Valid values for client-key are:
         (setf (gethash client-key *clients*)
               (make-client :host host :port port)))
     
-    'SUCCESS))
+    0))
 
      
      

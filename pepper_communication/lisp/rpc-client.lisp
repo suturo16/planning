@@ -1,8 +1,10 @@
 (in-package :pepper-communication-package)
 
-;; Adjust the IP adress and port if necessary
-(defparameter *host* "134.102.161.102")
-(defparameter *port* 8080)
+;; Adjust the IP address and port if necessary
+(defparameter *host* "192.168.101.253")
+(defparameter *port* 8000)
+
+(defparameter *local* "192.168.101.97")
 
 (defun update-connection-credentials (local-host &optional &key (client-id 1) remote-host remote-port client)
   "LOCAL-HOST: The local computers IP address.
