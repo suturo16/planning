@@ -36,8 +36,8 @@
 
 (defun extract-pose-from-transform (parent-frame frame)
   (cl-tf:wait-for-transform (get-transform-listener)
-                            :source-frame frame
-                            :target-frame parent-frame
+                            :source-frame parent-frame
+                            :target-frame frame
                             :timeout 1)
   (let ((target-transform-stamped
           (cl-tf:lookup-transform
@@ -59,10 +59,10 @@
                 (cl-tf:x origin)
                 (cl-tf:y origin)
                 (cl-tf:z origin)
-                (cl-tf:x normalized-axis)
-                (cl-tf:y normalized-axis)
-                (cl-tf:z normalized-axis)
-                normalized-angle)))))
+                (- 0 (cl-tf:x normalized-axis))
+                (- 0 (cl-tf:y normalized-axis))
+                (- 0 (cl-tf:z normalized-axis))
+                (- 0 normalized-angle))))))
 
 (defun tf-lookup->string (parent-frame frame)
   (tf-pose->string

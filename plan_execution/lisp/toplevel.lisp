@@ -1,4 +1,4 @@
-(in-package :plan-execution-package)
+ (in-package :plan-execution-package)
 
 (defun execute (task)
   "Start a node and execute the given task."
@@ -54,7 +54,6 @@
       (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box"))))
     ("cut cake"
      (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Knife")))
-           (make-designator :action `((:type :detach) (:arm ,pr2-do::+right-arm+) (:object "Knife")))
+           ;(make-designator :action `((:type :detach) (:arm ,pr2-do::+right-arm+) (:object "Knife")))
            (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box")))))))
-
 
