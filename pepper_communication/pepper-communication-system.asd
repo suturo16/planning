@@ -8,7 +8,8 @@
   ((:module "lisp"
     :components
     ((:file "package")
+     (:file "rpc-server" :depends-on ("package"))
+     (:file "rpc-client" :depends-on ("package"))
      (:file "command-executer" :depends-on ("package"))
      (:file "command-listener" :depends-on ("package"))
-     (:file "rpc-server" :depends-on ("package"))
-     (:file "rpc-client" :depends-on ("package"))))))
+     (:file "pepper-communication-init" :depends-on ("package"))))))

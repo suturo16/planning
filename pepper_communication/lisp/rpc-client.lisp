@@ -1,9 +1,5 @@
 (in-package :pepper-communication-package)
 
-                                        ; Adjust the IP adress and port if necessary
-(defparameter *host* "134.102.161.102")
-(defparameter *port* 8080)
-
 (defun update-connection-credentials (local-host &optional &key (client-id 1) remote-host remote-port client)
   "LOCAL-HOST: The local computers IP address.
 CLIENT-ID: Id of the calling system. 0 = pepper, 1 = PR2, 2 = turtle
@@ -37,14 +33,10 @@ Call function on remote host."
   "Calls remote function of server with given hostname and port.
 Arguments for the remote function can be added, if needed.
 If host or port is nil, default is used."
-  (when host
-    (setf *host* host))
-  (when port
-    (setf *port* port))
   (s-xml-rpc:xml-rpc-call
    (apply 's-xml-rpc:encode-xml-rpc-call remote-function args)
-   :host *host*
-   :port *port*))
+   :host host
+   :port port))
 
 (defun get-local-port ()
   "Returns the local port of the server."
