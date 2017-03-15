@@ -22,10 +22,10 @@ class TemplatePublisher(object):
         :param msg_type: The type of the message. (class)
         :param msg_gen: A function generating the messages to be published. (function)
         :queue_size: Like rospy.Publisher
-        :rate: Rate at which the messages shoul be published in hz. (int)
+        :rate: Rate at which the messages should be published in hz. (int)
         """
         self.pub = rospy.Publisher(topic, msg_type, queue_size=queue_size)
-        self.rate = rospy.Rate(10)  # 10hz
+        self.rate = rospy.Rate(rate)  # 10hz
         self.msg_gen = msg_gen
         threading.Thread(target=self.publish).start()
 
@@ -46,12 +46,14 @@ class TemplateService(object):
         :param name: The name of the service. (string)
         :param srv: The type of the service. (class)
         """
+        self.name = name
         self.srv = srv
         self.srv_resp = srv_resp
-        s = rospy.Service(name, srv, self.execute)
+        self.service = rospy.Service(name, srv, self.execute)
 
     def execute(self, req):
         """Return an empty response."""
+        rospy.loginfo("Service {} received request:\n{}".format(rospy.resolve_name(self.name), req))
         return self.srv_resp()
 
 

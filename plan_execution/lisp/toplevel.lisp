@@ -1,39 +1,59 @@
-(in-package :plan-execution-package)
+ (in-package :plan-execution-package)
 
-;"in order to prevent the plan from starting again when it is already running
-(defvar *plan-execution-running* NIL)
+(defun execute (task)
+  "Start a node and execute the given task."
+  (common:ensure-node-is-running)
+  (format T "command: ~a" task)
+  (execute-task task))
+  
 
+(cram-language:def-top-level-cram-function execute-task (task)
+  "Execute the given task in semrec context."
+  (roslisp::ensure-node-is-running)
+  
+  ;; settings for semrec
+  (beliefstate:enable-logging T)
+  (beliefstate::register-owl-namespace "knowrob" 
+                                       "http://knowrob.org/kb/knowrob.owl#"  cpl-impl::log-id)
+  (beliefstate::register-owl-namespace "cram_log" 
+                                       "http://knowrob.org/kb/cram_log.owl#" cpl-impl::log-id)
 
-(defun reset-values-for-testing ()
-  (setq *plan-execution-running* NIL)
-  (print "values reset"))
+  ;; Use the PR2 process modules.
+  (with-pr2-process-modules
+    ;; Give our pm an alias, so it's less of a hassle to call it later.
+    (process-module-alias :manipulation 'giskard-manipulation)
+    
+    ;; Translate the task to designators and execute them.
+    (execute-desigs (task->designators task)))
+  
+  ;; logs extraction
+  (beliefstate::set-experiment-meta-data
+   "performedInMap" 
+   "http://knowrob.org/kb/IAI-kitchen.owl#IAIKitchenMap_PM580j" :type 
+   :resource :ignore-namespace t)
+  
+  ;;(beliefstate:extract-files)
+  )
 
+(defun execute-desigs (desigs)
+  "Execute the given designators with the manipulation pm."
+  (when desigs
+    (pm-execute :manipulation (car desigs))
+    
+    ; Call the function recursively with the rest of the list.
+    (execute-desigs (cdr desigs))))
 
-(define-condition toplvl-being-executed (simple-condition) ()
-  (:report (lambda (condition stream)
-             (princ "toplevel plan is currently being executed. Please try again later" stream))))
-(define-condition toplvl-completed-execution (simple-condition) ()
-  (:report (lambda (condition stream)
-       (princ "toplevel finished executing a plan."))))
+(defun task->designators (task)
+  "Use a simple switch to translate a task to a list of designators."
+  (alexandria:switch (task :test #'equal)
+    ("grasp cylinder"
+     (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Cylinder")))))
+    ("grasp knife"
+     (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Knife")))))
+    ("just cut"
+      (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box"))))
+    ("cut cake"
+     (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Knife")))
+           ;(make-designator :action `((:type :detach) (:arm ,pr2-do::+right-arm+) (:object "Knife")))
+           (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box")))))))
 
-
-(defun execute (plan)
-  (if *plan-execution-running*
-      (progn
-        (signal 'toplvl-being-executed))
-      (progn
-        (print "started executing toplevelplan")
-        (setq *plan-execution-running* T)
-;       (sleep 5) ;<< for testing only. Might be still usefull
-        (print plan)
-        (print (first plan))
-        (if (string= (first plan) "grasp-object")
-            (grasp-object "cylinder" pr2-do::+right-arm+)
-            (ros-info (plan-execution-system) "First plan was not pick-up-object. Won't do anything then."))
-        (if (string= (second plan) "place-object")
-            (place-object (third plan) "cylinder" pr2-do::+right-arm+)
-            (ros-info (plan-execution-system) "Second plan was not  put-down-object. Won't do anything then."))
-        (pr2-do::get-in-base-pose)
-        (print "toplevel plan finished")
-        (setq *plan-execution-running* NIL)
-        (signal 'toplvl-completed-execution))))

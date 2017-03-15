@@ -7,9 +7,10 @@
 
 (defun get-move-robot-client ()
   (if *move-robot-action-client*
-      *move-robot-action-client*
-      (setup-move-robot-client)))
-
+      (unless (actionlib:connected-to-server *move-robot-action-client*)
+        (setup-move-robot-client))
+      (setup-move-robot-client))
+  *move-robot-action-client*)
 
 (defun get-move-robot-goal-conv(joint-config controller-config typed-params)
   (get-move-robot-goal
@@ -18,7 +19,7 @@
    typed-params))
 
 (defun get-move-robot-goal(joints controller-specs typed-params)
-  (actionlib:make-action-goal *move-robot-action-client*
+  (actionlib:make-action-goal (get-move-robot-client)
     :controlled_joints (make-array (length joints) :initial-contents joints)
     :controller_yaml controller-specs
     :feedbackValue "feedback"
@@ -30,28 +31,32 @@
       msg
     (format t "Error Value: ~a~%Alteration Rate: ~a~%~%" current_value alteration_rate)))
 
+;;grasping knife = 0.05
+;;base pose = 0.05
+;;detach = 0.00005
 (defun handle-feedback-signal (signal)
   (let ((feedback-msg (actionlib:feedback signal)))
     (with-fields
-        (current_value alteration_rate)
+        (current_value)
         feedback-msg
-      (when (< current_value 0.05)
+      (when (< current_value 0.0005 )
         (invoke-restart 'actionlib:abort-goal)))))
 
-(defun action-move-robot (client config-name controller-name &rest typed-params)
+(defun action-move-robot (config-name controller-name &rest typed-params)
   (handler-bind ((actionlib:feedback-signal #'handle-feedback-signal))
     (actionlib:send-goal-and-wait
-     client
+     (get-move-robot-client)
      (get-move-robot-goal-conv config-name controller-name typed-params)
-     :feedback-cb 'move-robot-feedback-cb)))
+     :feedback-cb 'move-robot-feedback-cb
+     :result-timeout 12
+     :exec-timeout 12)))
 
 (defun action-move-gripper (target-width arm strength)
   (when (not (member arm (list +left-arm+ +right-arm+)))
     (ros-error "action-move-gripper" "Unsupported arm specification: ~a." arm))
   (let ((arm-str (if (string= +left-arm+ arm) "left" "right"))
-        (param-name (format nil "~a_gripper_effort" arm)))
-    (action-move-robot (get-move-robot-client)
-                       (format nil "pr2_~a_gripper" arm-str)
+        (effort-param-name (format nil "~a_gripper_effort" arm)))
+    (action-move-robot (format nil "pr2_~a_gripper" arm-str)
                        "gripper_control"
-                       (make-param +double+ T "target-width" (write-to-string target-width))
-                       (make-param +double+ T param-name (write-to-string strength)))))
+                       (make-param +double+ T "target_width" (write-to-string target-width))
+                       (make-param +double+ T effort-param-name (write-to-string strength)))))
