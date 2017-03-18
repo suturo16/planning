@@ -1,7 +1,6 @@
-(defsystem pepper-communication-system
+(defsystem planning-communication-system
   :depends-on (roslisp
                std_msgs-msg
-               plan-execution-system
                planning-common-system
                s-xml-rpc)
   :components
@@ -10,6 +9,4 @@
     ((:file "package")
      (:file "rpc-server" :depends-on ("package"))
      (:file "rpc-client" :depends-on ("package"))
-     (:file "command-executer" :depends-on ("package"))
-     (:file "command-listener" :depends-on ("package"))
-     (:file "pepper-communication-init" :depends-on ("package"))))))
+     (:file "command-handler" :depends-on ("package"))))))

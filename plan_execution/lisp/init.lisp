@@ -1,4 +1,4 @@
-(in-package :pepper-communication-package)
+(in-package :plan-execution-package)
 
 (defun init-planning ()
   "Initialize everything planning needs to run."
@@ -17,14 +17,14 @@
 
 (defun setup-pepper-communication (my-ip &optional (pepper-ip "192.168.101.69") (pepper-port 8000))
   ;; Initialize the RPC-server
-  (init-rpc-server)
+  (pcomm::init-rpc-server)
 
   ;; Put Pepper in our *clients* table.
-  (|updateObserverClient| +pepper-client-id+ pepper-ip pepper-port)
+  (pcomm::|updateObserverClient| pcomm::+pepper-client-id+ pepper-ip pepper-port)
 
   ;; Tell Pepper where we are.
-  (fire-rpc "updateObserverClient" pepper-ip pepper-port
-            +pr2-client-id+ my-ip (get-local-port))
+  (pcomm::fire-rpc "updateObserverClient" pepper-ip pepper-port
+            pcomm::+pr2-client-id+ my-ip (pcomm::get-local-port))
 
   ;; Listen to pepper_command topic
-  (listen-to-pepper))
+  (pcomm::listen-for-commands #'execute))

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>pepper_communication</name>
+  <name>planning_communication</name>
   <version>0.0.1</version>
   <description>The pepper_communication package</description>
 

@@ -1,4 +1,4 @@
-(in-package :pepper-communication-package)
+(in-package :planning-communication-package)
 
 (defun update-connection-credentials (local-host &optional &key (client-id 1) remote-host remote-port client)
   "LOCAL-HOST: The local computers IP address.
