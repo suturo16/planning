@@ -18,4 +18,6 @@
      (:file "services" :depends-on ("package"))
      (:file "actions" :depends-on ("package"))
      (:file "prolog" :depends-on ("package"))
-     (:file "utils" :depends-on ("package"))))))
+     (:file "utils" :depends-on ("package"))
+     (:file "tf-utils" :depends-on ("package"))
+     (:file "yaml-utils" :depends-on ("package"))))))
