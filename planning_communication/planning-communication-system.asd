@@ -9,4 +9,5 @@
     ((:file "package")
      (:file "rpc-server" :depends-on ("package"))
      (:file "rpc-client" :depends-on ("package"))
-     (:file "command-handler" :depends-on ("package"))))))
+     (:file "command-handler" :depends-on ("package"))
+     (:file "init" :depends-on ("package" "rpc-server" "rpc-client" "command-handler"))))))
