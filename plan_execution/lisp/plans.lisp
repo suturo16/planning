@@ -111,6 +111,6 @@
   (ros-info "ms2-cut-cake" "Done."))
 
 (defun ms2-full-demo ()
-  (plan-execution-package::ms2-grasp-knife (pr2-do::get-object-info "Knife") pr2-do::+right-arm+ )
+  (plan-execution-package::ms2-grasp-knife (common:get-object-info "Knife") pr2-do::+right-arm+ )
   (pr2-do::get-in-base-pose)
   (plan-execution-package::ms2-cut-cake (pr2-do::get-object-info "Box") (pr2-do::get-object-info "Knife") pr2-do::+right-arm+))

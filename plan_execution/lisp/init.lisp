@@ -8,7 +8,7 @@
   (pcomm::setup-pepper-communication #'execute my-ip)
   
   ;; Initialize action client
-  (pr2-do::setup-move-robot-client)
+  (common::setup-move-robot-client)
   
   ;; Let Perception see.
   ;;(pr2-do::run-full-pipeline)

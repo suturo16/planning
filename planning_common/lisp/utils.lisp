@@ -148,3 +148,43 @@
                (namestring (roslisp::ros-package-path "graspkard"))
                type
                "/"))
+
+(defun run-full-pipeline ()
+  (ros-info "run-full-pipeline" "recognizing Knife....")
+  (service-run-pipeline "Knife")
+  (sleep 10)
+  (ros-info "run-full-pipeline" "recognizing Cake...")
+  (service-run-pipeline "Cake")
+  (sleep 10)
+  (print "done recognizing things. You can start planning now!"))
+
+(defun seen-since (obj-info)
+  (let ((name (object-info-name obj-info))
+        (frame-id (object-info-frame obj-info))
+        (timestamp (object-info-timestamp obj-info)))
+    (if (prolog-seen-since name frame-id timestamp)
+        T
+        NIL)))
+
+(defun connect-objects (parent-info child-info)
+  (service-connect-frames
+   (format nil "/~a" (object-info-name parent-info))
+   (format nil "/~a" (object-info-name child-info))))
+
+(defun disconnect-objects (parent-info child-info)
+  (prolog-disconnect-frames
+   (format nil "/~a" (object-info-name parent-info))
+   (format nil "/~a" (object-info-name child-info))))
+
+(defun get-object-info (object-name)
+  "Get object infos using prolog interface."
+  (cut:with-vars-bound
+      (?frame ?timestamp ?width ?height ?depth)
+      (prolog-get-object-infos object-name)
+    (make-object-info
+       :name object-name
+       :frame (string-downcase ?frame)
+       :timestamp ?timestamp
+       :height ?height
+       :width ?width
+       :depth ?depth)))
