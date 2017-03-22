@@ -8,15 +8,6 @@
   "Call action to open gripper."
   (action-move-gripper 0.09 arm 70))
 
-(defun run-full-pipeline ()
-  (ros-info "run-full-pipeline" "recognizing Knife....")
-  (service-run-pipeline "Knife")
-  (sleep 10)
-  (ros-info "run-full-pipeline" "recognizing Cake...")
-  (service-run-pipeline "Cake")
-  (sleep 10)
-  (print "done recognizing things. You can start planning now!"))
-
 (defun check-object-location (object-info)
   (when object-info
     ;(get-in-base-pose)
@@ -25,46 +16,15 @@
     (when (seen-since object-info)
       T)))
 
-(defun seen-since (obj-info)
-  (let ((name (object-info-name obj-info))
-        (frame-id (object-info-frame obj-info))
-        (timestamp (object-info-timestamp obj-info)))
-    (if (prolog-seen-since name frame-id timestamp)
-        T
-        NIL)))
-
-(defun connect-objects (parent-info child-info)
-  (service-connect-frames
-   (format nil "/~a" (object-info-name parent-info))
-   (format nil "/~a" (object-info-name child-info))))
-
-(defun disconnect-objects (parent-info child-info)
-  (prolog-disconnect-frames
-   (format nil "/~a" (object-info-name parent-info))
-   (format nil "/~a" (object-info-name child-info))))
-
 (defun disconnect-obj-from-arm (obj-info arm)
   (prolog-disconnect-frames
    (format nil "/~a_wrist_roll_link" arm)
-   (format nil "/~a" ( object-info-name obj-info))))
+   (format nil "/~a" (object-info-name obj-info))))
 
 (defun connect-obj-with-gripper (obj-info arm)
   (service-connect-frames
    (format nil "/~a_wrist_roll_link" arm)
    (format nil "/~a" (object-info-name obj-info))))
-   
-(defun get-object-info (object-name)
-  "Get object infos using prolog interface."
-  (cut:with-vars-bound
-      (?frame ?timestamp ?width ?height ?depth)
-      (prolog-get-object-infos object-name)
-    (make-object-info
-       :name object-name
-       :frame (string-downcase ?frame)
-       :timestamp ?timestamp
-       :height ?height
-       :width ?width
-       :depth ?depth)))
 
 (defun move-arm-to-object (obj-info arm)
   "Call action to move arm to an object."

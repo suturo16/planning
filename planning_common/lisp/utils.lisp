@@ -1,19 +1,5 @@
 (in-package :planning-common-package)
 
-; constants
-
-; arms
-(alexandria:define-constant +no-arm+ "n" :test #'equal)
-(alexandria:define-constant +right-arm+ "r" :test #'equal)
-(alexandria:define-constant +left-arm+ "l" :test #'equal)
-(alexandria:define-constant +both-arms+ "b" :test #'equal)
-
-; param types
-(defconstant +double+ (symbol-code 'suturo_manipulation_msgs-msg:TypedParam :DOUBLE))
-(defconstant +transform+ (symbol-code 'suturo_manipulation_msgs-msg:TypedParam :TRANSFORM))
-
-(defparameter *transform-listener* nil)
-
 (defun ensure-node-is-running ()
   "Ensure a node is running. Start one otherwise."
   (unless (eq (node-status) :RUNNING)
@@ -25,49 +11,6 @@
                 :isConst is-const
                 :name name
                 :value value))
-
-(defun init-transform-listener ()
-  (setf *transform-listener* (make-instance 'cl-tf:transform-listener)))
-
-(defun get-transform-listener ()
-  (if *transform-listener*
-      *transform-listener*
-      (init-transform-listener)))
-
-(defun extract-pose-from-transform (parent-frame frame)
-  (cl-tf:wait-for-transform (get-transform-listener)
-                            :source-frame parent-frame
-                            :target-frame frame
-                            :timeout 1)
-  (let ((target-transform-stamped
-          (cl-tf:lookup-transform
-           (get-transform-listener)
-           parent-frame
-           frame)))
-     (cl-tf:transform->pose target-transform-stamped)))
-
-(defun tf-pose->string (pose)
-  (let ((origin (cl-tf:origin pose))
-        (orientation (cl-tf:orientation pose)))
-    (multiple-value-bind (axis angle) (cl-tf:quaternion->axis-angle orientation)
-      (let* ((normalized-axis
-               (if (eql angle 0.0d0)
-                   (cl-tf:make-3d-vector 1 0 0)
-                   (cl-tf:normalize-vector axis)))
-             (normalized-angle (cl-tf:normalize-angle angle)))
-        (format nil "~a ~a ~a ~a ~a ~a ~a"
-                (cl-tf:x origin)
-                (cl-tf:y origin)
-                (cl-tf:z origin)
-                (- 0 (cl-tf:x normalized-axis))
-                (- 0 (cl-tf:y normalized-axis))
-                (- 0 (cl-tf:z normalized-axis))
-                (- 0 normalized-angle))))))
-
-(defun tf-lookup->string (parent-frame frame)
-  (tf-pose->string
-   (extract-pose-from-transform parent-frame frame)))
-        
 
 (defun file->string (path-to-file)
   (let ((in (open path-to-file :if-does-not-exist nil))
@@ -98,53 +41,42 @@
        (when rest-strings
          (strings->KeyValues rest-strings))))))
 
-(defun get-joint-config (config-name)
-  (let ((in (open (get-config-yaml-path config-name) :if-does-not-exist nil))
-        (out nil))
-    (when in
-      (loop for line = (read-line in nil)
-            while line do (when (not (string= "#" (subseq line 0 1)))
-                              (setf out (cons (subseq line 2) out))))
-      (close in))
-    (reverse out)))
+(defun run-full-pipeline ()
+  (ros-info "run-full-pipeline" "recognizing Knife....")
+  (service-run-pipeline "Knife")
+  (sleep 10)
+  (ros-info "run-full-pipeline" "recognizing Cake...")
+  (service-run-pipeline "Cake")
+  (sleep 10)
+  (print "done recognizing things. You can start planning now!"))
 
-(defun get-controller-specs (controller-name)
-  (file->string (get-controller-path controller-name)))
+(defun seen-since (obj-info)
+  (let ((name (object-info-name obj-info))
+        (frame-id (object-info-frame obj-info))
+        (timestamp (object-info-timestamp obj-info)))
+    (if (prolog-seen-since name frame-id timestamp)
+        T
+        NIL)))
 
-(defun get-controller-yaml-path (controller-name)
-  (concatenate 'string
-               (get-yaml-path "controller_specs")
-               controller-name
-               ".yaml"))
+(defun connect-objects (parent-info child-info)
+  (service-connect-frames
+   (format nil "/~a" (object-info-name parent-info))
+   (format nil "/~a" (object-info-name child-info))))
 
-(defun get-config-yaml-path (config-name)
-  (concatenate 'string
-               (get-yaml-path "config")
-               config-name
-               ".yaml"))
+(defun disconnect-objects (parent-info child-info)
+  (prolog-disconnect-frames
+   (format nil "/~a" (object-info-name parent-info))
+   (format nil "/~a" (object-info-name child-info))))
 
-(defun get-controller-path (controller-name)
-  (let* ((file (concatenate 'string
-                            (get-yaml-path "controller_specs")
-                            controller-name))
-         (yaml (probe-file (concatenate 'string file ".yaml")))
-         (giskard (probe-file (concatenate 'string file ".giskard"))))
-    (if yaml
-        yaml
-        giskard)))
-
-(defun get-config-path (config-name)
-  (let* ((file (concatenate 'string
-                            (get-yaml-path "config")
-                            config-name))
-         (yaml (probe-file (concatenate 'string file ".yaml")))
-         (giskard (probe-file (concatenate 'string file ".giskard"))))
-    (if yaml
-        yaml
-        giskard)))
-    
-(defun get-yaml-path (type)
-  (concatenate 'string
-               (namestring (roslisp::ros-package-path "graspkard"))
-               type
-               "/"))
+(defun get-object-info (object-name)
+  "Get object infos using prolog interface."
+  (cut:with-vars-bound
+      (?frame ?timestamp ?width ?height ?depth)
+      (prolog-get-object-infos object-name)
+    (make-object-info
+       :name object-name
+       :frame (string-downcase ?frame)
+       :timestamp ?timestamp
+       :height ?height
+       :width ?width
+       :depth ?depth)))

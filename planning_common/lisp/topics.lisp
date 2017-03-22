@@ -1,4 +1,4 @@
-(in-package :pr2-command-pool-package)
+(in-package :planning-common-package)
 
 (defparameter *current-objects-in-world* NIL)
 

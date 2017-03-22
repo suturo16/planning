@@ -1,14 +1,4 @@
-(in-package :pepper-communication-package)
-
-;; Active clients saved in a hash map. Update map and use those credentials for remote calls to pepper and turtle.
-(defstruct client host port)
-(defparameter *clients*  (alexandria:alist-hash-table '((:pepper . nil) (:turtle . nil))))
-
-;; Client ids for mapping to keys in client hash map. See function |updateObserverClient|.
-(alexandria:define-constant +pepper-client-id+ 0)
-(alexandria:define-constant +pr2-client-id+ 1)
-(alexandria:define-constant +turtle-client-id+ 2)
-
+(in-package :planning-communication-package)
 
 (defun init-rpc-server (&optional (restart-rosnode nil))
   "Starts and initializes the RPC server and rosnode, if needed or wanted.
@@ -40,7 +30,7 @@ DUMMY: Unused parameter to prevent issues with calls without parameters."
   "Publishes to the command listeners topic and responds with the amount of due tasks.
 0 indicates immediate execution of given task.
 COMMAND: The message to publish onto pepper_command"
-  (let ((pub (advertise "/pepper_command" "std_msgs/String")))
+  (let ((pub (advertise "/command" "std_msgs/String")))
     (if  (not (eq (roslisp:node-status) :SHUTDOWN))
          (progn (publish-msg pub :data command)
                 (|stressLevel| "asdf"))
@@ -52,11 +42,11 @@ COMMAND: The message to publish onto pepper_command"
 or -1 if the subscriber is unavailable.
 DUMMY: Unused parameter to prevent issues with calls without parameters."
   (when (or
-         (not *pepper-subscriber*)
-         (not (roslisp::thread-alive-p (roslisp::topic-thread (roslisp::subscriber-subscription *pepper-subscriber*)))))
+         (not *command-subscriber*)
+         (not (roslisp::thread-alive-p (roslisp::topic-thread (roslisp::subscriber-subscription *command-subscriber*)))))
     (return-from |stressLevel| -1))
   
-  (roslisp-queue:queue-size (roslisp::buffer (roslisp::subscriber-subscription *pepper-subscriber*))))
+  (roslisp-queue:queue-size (roslisp::buffer (roslisp::subscriber-subscription *command-subscriber*))))
 
 
 (defun |nextTask| ()

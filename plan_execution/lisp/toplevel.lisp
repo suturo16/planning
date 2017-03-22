@@ -1,4 +1,4 @@
- (in-package :plan-execution-package)
+(in-package :plan-execution-package)
 
 (defun execute (task)
   "Start a node and execute the given task."
