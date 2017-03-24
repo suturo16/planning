@@ -14,15 +14,17 @@ RESTART-ROSNODE: Ste to T, if you want to force-start a new rosnode."
           :s-xml-rpc-exports))
 
 
-(defun |sleepSomeTime| (dummy)
+(defun |sleepSomeTime| (status)
   "Waits 3 seconds, before responding. For debugging pusposes.
-DUMMY: Unused parameter to prevent issues with calls without parameters."
+STATUS: Unused parameter to prevent issues with calls without parameters."
+  (format t "Function 'sleepSomeTime' called with status ~a." status)
   (sleep 3))
 
 
-(defun |cutCake| (dummy)
+(defun |cutCake| (status)
   "Calls the do-function with 'cut-cake'.
-DUMMY: Unused parameter to prevent issues with calls without parameters."
+STATUS: Unused parameter to prevent issues with calls without parameters."
+  (format t "Function 'cutCake' called with status ~a." status)
   (|do| "cut cake"))
 
 
@@ -37,10 +39,11 @@ COMMAND: The message to publish onto pepper_command"
          -1)))
 
 
-(defun |stressLevel| (dummy)
+(defun |stressLevel| (status)
   "Returns the current stress level, represented by the length of tasks in task-buffer,
 or -1 if the subscriber is unavailable.
-DUMMY: Unused parameter to prevent issues with calls without parameters."
+STATUS: Unused parameter to prevent issues with calls without parameters."
+  (format t "Function 'stressLevel' called with status ~a." status)
   (when (or
          (not *command-subscriber*)
          (not (roslisp::thread-alive-p (roslisp::topic-thread (roslisp::subscriber-subscription *command-subscriber*)))))
