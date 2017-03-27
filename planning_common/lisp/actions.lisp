@@ -31,19 +31,9 @@
       msg
     (format t "Error Value: ~a~%Alteration Rate: ~a~%~%" current_value alteration_rate)))
 
-;;grasping knife = 0.05
-;;base pose = 0.05
-;;detach = 0.00005
-(defun handle-feedback-signal (signal)
-  (let ((feedback-msg (actionlib:feedback signal)))
-    (with-fields
-        (current_value)
-        feedback-msg
-      (when (< current_value 0.0005 )
-        (invoke-restart 'actionlib:abort-goal)))))
-
-(defun action-move-robot (config-name controller-name &rest typed-params)
-  (handler-bind ((actionlib:feedback-signal #'handle-feedback-signal))
+(defun action-move-robot
+    (config-name controller-name &optional (cb (lambda (v) (< v 0.05))) &rest typed-params)
+  (handler-bind ((actionlib:feedback-signal (make-feedback-signal-handler cb)))
     (actionlib:send-goal-and-wait
      (get-move-robot-client)
      (get-move-robot-goal-conv config-name controller-name typed-params)
@@ -51,3 +41,11 @@
      :result-timeout 12
      :exec-timeout 12)))
 
+(defun make-feedback-signal-handler (cb)
+  (lambda (signal)
+    (let ((feedback-msg (actionlib:feedback signal)))
+      (with-fields
+          (current_value)
+          feedback-msg
+        (when (funcall cb current_value)
+          (invoke-restart 'actionlib:abort-goal))))))

@@ -31,6 +31,7 @@
   (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_grasp_control_~a" arm)
+                       (lambda (v) (< v 0.01))
                        (make-param +transform+ nil "object_frame"
                                    (format nil "~a ~a" (object-info-name obj-info) "base_link")) 
                        (make-param +double+ T "object_width" (write-to-string (object-info-width obj-info)))
@@ -41,6 +42,7 @@
   (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_place_control_~a" arm)
+                       (lambda (v) (< v 0.01))
                        (make-param +transform+ T "location_frame"
                                    (format nil "~a ~a" (object-info-name loc-info) "base_link"))
                        (make-param +transform+ T "object_frame"
@@ -51,7 +53,7 @@
 
 (defun get-in-base-pose ()
   "Bring PR2 into base (mantis) pose."
-  (action-move-robot "pr2_upper_body" "pr2_upper_body_joint_control"
+  (action-move-robot "pr2_upper_body" "pr2_upper_body_joint_control" (lambda (v) (< v 0.05))
                      (make-param +double+ T "torso_lift_joint" "0.25")
                      (make-param +double+ T "l_shoulder_pan_joint" "1.23679")
                      (make-param +double+ T "l_shoulder_lift_joint" "-0.247593")
