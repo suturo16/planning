@@ -32,7 +32,10 @@
     (format t "Error Value: ~a~%Alteration Rate: ~a~%~%" current_value alteration_rate)))
 
 (defun action-move-robot
-    (config-name controller-name &optional (cb (lambda (v) (< v 0.05))) &rest typed-params)
+    (config-name controller-name &optional cb &rest typed-params)
+  "Call action with joints CONFIG-NAME and controller specification CONTROLLER-NAME.
+Optionally takes function CB as a break condition for handling feedback signals and
+an arbitrary number TYPED-PARAMS to use as params in the action call."
   (handler-bind ((actionlib:feedback-signal (make-feedback-signal-handler cb)))
     (actionlib:send-goal-and-wait
      (get-move-robot-client)
@@ -41,7 +44,11 @@
      :result-timeout 12
      :exec-timeout 12)))
 
-(defun make-feedback-signal-handler (cb)
+(defun make-feedback-signal-handler (&optional (cb (lambda (v) (< v 0.05))))
+  "Return a function able to handle a action feedback signal from /movement_server/movement_server,
+using CB as a break condition.
+
+CB (function): Break condition. (eg. '(lambda (v) (< v 0.05)))"
   (lambda (signal)
     (let ((feedback-msg (actionlib:feedback signal)))
       (with-fields
