@@ -1,33 +1,36 @@
 (in-package :pr2-command-pool-package)
 
 (defun close-gripper (arm &optional  (strength 50))
-  "Call action to close gripper."
+  "Call action to close the gripper of ARM with STRENGTH."
   (action-move-gripper 0.0 arm strength))
 
 (defun open-gripper (arm)
-  "Call action to open gripper."
+  "Call action to open the gripper of ARM."
   (action-move-gripper 0.09 arm 70))
 
-(defun check-object-location (object-info)
-  (when object-info
+(defun check-object-location (obj-info)
+  "Return t if the object of OBJ-INFO is still at the same location."
+  (when obj-info
     ;(get-in-base-pose)
     ;turn head
     ;(service-run-pipeline)
-    (when (seen-since object-info)
+    (when (seen-since obj-info)
       T)))
 
 (defun disconnect-obj-from-arm (obj-info arm)
+  "Call Prolog to disconnect the object of OBJ-INFO from ARM."
   (prolog-disconnect-frames
    (format nil "/~a_wrist_roll_link" arm)
    (format nil "/~a" (object-info-name obj-info))))
 
 (defun connect-obj-with-gripper (obj-info arm)
+  "Call Prolog to connect the object of OBJ-Info to ARM."
   (service-connect-frames
    (format nil "/~a_wrist_roll_link" arm)
    (format nil "/~a" (object-info-name obj-info))))
 
 (defun move-arm-to-object (obj-info arm)
-  "Call action to move arm to an object."
+  "Call action to move ARM to the object of OBJ-INFO."
   (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_grasp_control_~a" arm)
@@ -37,7 +40,8 @@
                        (make-param +double+ T "object_height" (write-to-string (object-info-height obj-info))))))
 
 (defun move-object-with-arm (loc-info obj-info arm)
-  "Call action to place an object at a location."
+  "Call action to place the object of OBJ-INFO at the location of LOC-INFO.
+Assume that the object is attached to ARM."
   (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_place_control_~a" arm)
@@ -78,7 +82,7 @@
 
 
 (defun grasp-knife (knife-info arm)
-  "Grasp a knife with the right arm."
+  "Call action to grasp the knife of KNIFE-INFO with ARM."
   (let* ((arm-str (if (string= arm +left-arm+) "left" "right"))
          (grip-length (* (1- +blade-%+) (object-info-width knife-info)))
          (blade-height (object-info-height knife-info)))
@@ -89,7 +93,8 @@
                        (make-param +double+ T "handle_length" (write-to-string +handle-length+)))))
 
 (defun detach-knife-from-rack (knife-info arm)
-  "Move the knife away from the rack."
+  "Call action to move the knife of KNIFE-INFO away from the rack.
+Assume that the knife is connected to ARM."
   (let* ((arm-str (if (string= arm +left-arm+) "left" "right")))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_detach_knife_~a" arm)
@@ -98,7 +103,9 @@
                        (make-param +transform+ T "original_knife_tf" (tf-lookup->string "base_link" (object-info-name knife-info))))))
 
 (defun take-cutting-position (cake-info knife-info arm slice-width)
-  "Take a position above the cake, ready to cut it."
+  "Call action to take a position ready to cut the cake of CAKE-INFO.
+Assume that knife of KNIFE-INFO is used by ARM
+for cutting with SLICE-WIDTH."
   (let ((arm-str (if (string= arm +left-arm+) "left" "right"))
         (handle-length (* (1- +blade-%+) (object-info-width knife-info))))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
@@ -113,7 +120,9 @@
                        (make-param +double+ T "slice_width" (write-to-string slice-width)))))
 
 (defun cut-cake (cake-info knife-info arm slice-width)
-  "Cut the cake."
+  "Call action to cut the cake of CAKE-INFO.
+Use knife of KNIFE-INFO within the gripper of ARM
+to cut pieces with SLICE-WIDTH."
   (let ((arm-str (if (string= arm +left-arm+) "left" "right"))
         (handle-length (* (1- +blade-%+) (object-info-width knife-info))))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
