@@ -31,19 +31,17 @@
       msg
     (format t "Error Value: ~a~%Alteration Rate: ~a~%~%" current_value alteration_rate)))
 
-;;grasping knife = 0.05
-;;base pose = 0.05
-;;detach = 0.00005
-(defun handle-feedback-signal (signal)
-  (let ((feedback-msg (actionlib:feedback signal)))
-    (with-fields
-        (current_value)
-        feedback-msg
-      (when (< current_value 0.0005 )
-        (invoke-restart 'actionlib:abort-goal)))))
+(defun action-move-robot
+    (config-name controller-name &optional cb &rest typed-params)
+  "Call action with joints CONFIG-NAME and controller specification CONTROLLER-NAME.
+Optionally takes function CB as a break condition for handling feedback signals and
+an arbitrary number TYPED-PARAMS to use as params in the action call.
 
-(defun action-move-robot (config-name controller-name &rest typed-params)
-  (handler-bind ((actionlib:feedback-signal #'handle-feedback-signal))
+CONFIG-NAME (string): Name of the joint configuration to be used.
+CONTROLLER-NAME (string): Name of the controller to be used.
+CB (function): Break condition. See `make-feedback-signal-handler's documentation.
+TYPED-PARAMS (suturo_manipulation_msgs-msg:TypedParam): Params to be send with the goal."
+  (handler-bind ((actionlib:feedback-signal (make-feedback-signal-handler cb)))
     (actionlib:send-goal-and-wait
      (get-move-robot-client)
      (get-move-robot-goal-conv config-name controller-name typed-params)
@@ -51,3 +49,15 @@
      :result-timeout 12
      :exec-timeout 12)))
 
+(defun make-feedback-signal-handler (&optional (cb (lambda (v) (< v 0.05))))
+  "Return a function able to handle a action feedback signal from /movement_server/movement_server,
+using CB as a break condition.
+
+CB (function): Break condition. (eg. '(lambda (v) (< v 0.05)))"
+  (lambda (signal)
+    (let ((feedback-msg (actionlib:feedback signal)))
+      (with-fields
+          (current_value)
+          feedback-msg
+        (when (funcall cb current_value)
+          (invoke-restart 'actionlib:abort-goal))))))

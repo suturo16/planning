@@ -34,6 +34,7 @@
   (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_grasp_control_~a" arm)
+                       (lambda (v) (< v 0.01))
                        (make-param +transform+ nil "object_frame"
                                    (format nil "~a ~a" (object-info-name obj-info) "base_link")) 
                        (make-param +double+ T "object_width" (write-to-string (object-info-width obj-info)))
@@ -45,6 +46,7 @@ Assume that the object is attached to ARM."
   (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_place_control_~a" arm)
+                       (lambda (v) (< v 0.01))
                        (make-param +transform+ T "location_frame"
                                    (format nil "~a ~a" (object-info-name loc-info) "base_link"))
                        (make-param +transform+ T "object_frame"
@@ -55,7 +57,7 @@ Assume that the object is attached to ARM."
 
 (defun get-in-base-pose ()
   "Bring PR2 into base (mantis) pose."
-  (action-move-robot "pr2_upper_body" "pr2_upper_body_joint_control"
+  (action-move-robot "pr2_upper_body" "pr2_upper_body_joint_control" (lambda (v) (< v 0.05))
                      (make-param +double+ T "torso_lift_joint" "0.25")
                      (make-param +double+ T "l_shoulder_pan_joint" "1.23679")
                      (make-param +double+ T "l_shoulder_lift_joint" "-0.247593")
@@ -88,6 +90,7 @@ Assume that the object is attached to ARM."
          (blade-height (object-info-height knife-info)))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        "knife_grasp"
+                       (lambda (v) (< v 0.025))
                        (make-param +transform+ NIL "knife_frame" (format nil  "~a ~a" (object-info-name knife-info) "base_link"))
                        (make-param +double+ T "blade_height" (write-to-string +blade-height+))
                        (make-param +double+ T "handle_length" (write-to-string +handle-length+)))))
@@ -98,6 +101,7 @@ Assume that the knife is connected to ARM."
   (let* ((arm-str (if (string= arm +left-arm+) "left" "right")))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_detach_knife_~a" arm)
+                       (lambda (v) (< v 0.000001))
                        (make-param +transform+ NIL "knife_frame" (format nil  "~a ~a" (object-info-name knife-info)
                                                                  (format nil "~a_wrist_roll_link" arm)))
                        (make-param +transform+ T "original_knife_tf" (tf-lookup->string "base_link" (object-info-name knife-info))))))
@@ -110,6 +114,7 @@ for cutting with SLICE-WIDTH."
         (handle-length (* (1- +blade-%+) (object-info-width knife-info))))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_cut_position_~a" arm)
+                       (lambda (v) (< v 0.01))
                        (make-param +transform+ NIL "cake_tf" (format nil "~a ~a" (object-info-name cake-info) "base_link"))
                        (make-param +double+ T "cake_length_x" (write-to-string (object-info-depth cake-info)))
                        (make-param +double+ T "cake_width_y" (write-to-string (object-info-width cake-info)))
@@ -127,6 +132,7 @@ to cut pieces with SLICE-WIDTH."
         (handle-length (* (1- +blade-%+) (object-info-width knife-info))))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_cut_~a" arm)
+                       (lambda (v) (< v 0.01))
                        (make-param +transform+ NIL "cake_tf" (format nil "~a ~a" (object-info-name cake-info) "base_link"))
                        (make-param +double+ T "cake_length_x" (write-to-string (object-info-depth cake-info)))
                        (make-param +double+ T "cake_width_y" (write-to-string (object-info-width cake-info)))
