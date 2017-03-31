@@ -3,7 +3,8 @@
 (alexandria:define-constant +knowrob-iri-prefix+ "http://knowrob.org/kb/knowrob.owl#" :test #'string=)
 
 (defun prolog-get-values (prolog-function-name &rest arguments)
-  "This is the function we mainly use. Call it with (prolog-get-values \"getObjectInfos\" \"zylinder\") and get the values
+  "Create a prolog function call for PROLOG-FUNCTION-NAME.
+This is the function we mainly use. Call it with (prolog-get-values \"getObjectInfos\" \"zylinder\") and get the values
 frame, height, width and depth as value binding."
   (cut:force-ll (cut:lazy-mapcar
                             (lambda (bindings)
@@ -13,6 +14,8 @@ frame, height, width and depth as value binding."
 
 ; 'simple' because it uses the simple call
 (defun prolog-get-object-infos-simple (name)
+    "Create object-info for object NAME.
+Is deprecated now, use prolog-get-object-infos instead."
   (print (format nil
                  "prolog-get-object-infos-simple is now deprecated.~%
 Use prolog-get-object-infos instead."))
@@ -29,21 +32,26 @@ Use prolog-get-object-infos instead."))
      :depth |?Depth|)))
 
 (defun prolog-get-object-infos (name)
-  "Call prolog function get_object_infos."
+  "Get object-infos for object NAME.
+Object-info contains binding for FRAME, TIMESTAMP, WIDTH, HEIGHT and DEPTH.
+Therefore call prolog function get_object_infos."
   (cut:lazy-car (json-prolog:prolog
                  `("get_object_infos"
                    ,(format nil "~a~a" +knowrob-iri-prefix+ name)
                    ?frame ?timestamp ?width ?height ?depth) :lispify T :package :pr2-do)))
 
 (defun prolog-seen-since (name frame-id timestamp)
-  "Call prolog function seen_since. Returns an empty list if successful or nil otherwise."
+  "Return an empty list if object NAME was seen in FRAME-ID since TIMESTAMP.
+Return nil otherwise.
+Therefore call prolog function seen_since."
   (json-prolog:prolog
                  `("seen_since"
                   ,(format nil "~a~a" +knowrob-iri-prefix+ name)
                   ,frame-id ,timestamp) :lispify T :package :pr2-do))
 
 (defun prolog-disconnect-frames (parent-frame-id child-frame-id)
-  "Call prolog function disconnect_frames. Returns nothing."
+  "Disconnect the Frames PAREND-FRAME-ID and CHILD-FRAME-ID.
+Therefore call prolog function disconnect_frames."
   (json-prolog:prolog
                  `("disconnect_frames"
                    ,parent-frame-id ,child-frame-id) :lispify T :package :pr2-do))

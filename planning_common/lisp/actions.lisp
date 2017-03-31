@@ -3,9 +3,12 @@
 (defparameter *move-robot-action-client* nil)
 
 (defun setup-move-robot-client ()
+  "Setup client for robot movement."
   (setf *move-robot-action-client* (actionlib:make-action-client "/movement_server/movement_server" "suturo_manipulation_msgs/MoveRobotAction")))
 
 (defun get-move-robot-client ()
+  "Check if the client is already set and connected to server.
+If not, set it up."
   (if *move-robot-action-client*
       (unless (actionlib:connected-to-server *move-robot-action-client*)
         (setup-move-robot-client))
@@ -13,12 +16,14 @@
   *move-robot-action-client*)
 
 (defun get-move-robot-goal-conv(joint-config controller-config typed-params)
+  "Use joints from JOINT-CONFIG and controller of CONTROLLER-CONFIG for goal creation."
   (get-move-robot-goal
    (get-joint-config joint-config)
    (get-controller-specs controller-config)
    typed-params))
 
 (defun get-move-robot-goal(joints controller-specs typed-params)
+  "Create goal of movement using JOINTS and CONTROLLER-SPECS"
   (actionlib:make-action-goal (get-move-robot-client)
     :controlled_joints (make-array (length joints) :initial-contents joints)
     :controller_yaml controller-specs
@@ -26,6 +31,7 @@
     :params (make-array (length typed-params) :initial-contents typed-params)))
 
 (defun move-robot-feedback-cb(msg)
+  "Print the current value and alteration rate contained in MSG."
   (with-fields
       (current_value alteration_rate)
       msg
