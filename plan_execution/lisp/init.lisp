@@ -3,7 +3,7 @@
 (defun init-planning (my-ip)
   "Initialize everything planning needs to run.
 
-MY-IP (string): IP of the system running planning."
+MY-IP (string): Look at `pcomm::setup-pepper-communication's docstring for further information."
   (start-ros-node "planning")
 
   ;; Initialize communication with pepper
