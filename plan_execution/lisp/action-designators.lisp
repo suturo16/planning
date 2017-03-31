@@ -1,6 +1,8 @@
 (in-package :plan-execution-package)
 
 (def-fact-group move-robot-actions (action-desig)
+  "cram fact-group for referencing action designators.
+See cram documentation for further information."
   ; grasp
   (<- (action-desig ?desig (grasp ((arm ?arm) (obj-info ?obj-info))))
     (desig-prop ?desig (:type :grasp))

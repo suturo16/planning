@@ -1,4 +1,4 @@
- (in-package :plan-execution-package)
+(in-package :plan-execution-package)
 
 (defmacro with-logging-node (node-name &body body)
   `(let ((log-node (beliefstate:start-node ,node-name nil)))
@@ -7,6 +7,10 @@
        (beliefstate:stop-node log-node :success ,T))))
 
 (cram-language:def-cram-function grasp (obj-info arm)
+  "Grasp the object described by OBJECT-INFO with ARM.\
+
+OBJ-INFO (obj-info): Description of the target object.
+ARM (string): Which arm to use. Use one of the constants defined in planning-common."
   (ros-info "grasp" "Starting to grasp object ~a with arm ~a."
             (pr2-do::object-info-name obj-info)
             arm)
@@ -31,6 +35,7 @@
 
 
 (defun grasp-knife (knife-info arm)
+  "Grasp the knife described by KNIFE-INFO with ARM."
 ;; (pr2-do::grasp-knife knife-info arm)
 ;; (pr2-do::close-gripper arm 100)
   (ms2-grasp-knife knife-info arm))
@@ -52,6 +57,7 @@
   )
 
 (defun grasp-object (obj-info arm)
+  "Grasp the object described by OBJECT-INFO with ARM."
   (ros-info "grasp-object" "Open gripper")
   (pr2-do::open-gripper arm)
   (ros-info "grasp-object" "Move arm to object ~a." (pr2-do::object-info-name obj-info))
@@ -62,6 +68,12 @@
 
 
 (cram-language:def-cram-function place-object (obj-info loc-info arm)
+  "Place object described by OBJECT-INFO at location described by LOCATION-INFO with ARM.
+Assuming the object is placed on ARM's gripper.
+
+OBJ-INFO (common:obj-info): Description of the target object.
+LOC-INFO (common:obj-info): Description of target location.
+ARM (string): Which arm to use. Use one of the constants defined in planning-common."
   (with-logging-node "PLACE-OBJECT"
     (beliefstate::annotate-resource "objectInfo" (pr2-do::object-info-name obj-info) "knowrob")
     (beliefstate::annotate-resource "locationInfo" loc-info "knowrob")
@@ -73,8 +85,12 @@
     (ros-info "place-object" "Done.")))
 
 
-
 (cram-language:def-cram-function detach-object-from-rack (obj-info arm)
+  "Detach object described by OBJECT-INFO from the rack with ARM.
+Assume object is attached to the rack.
+
+OBJ-INFO (obj-info): Description of the target object.
+ARM (string): Which arm to use. Use one of the constants defined in planning-common."
   ;; this doesn't work, I think the axes are wrong since bot moves his torso down
   (pr2-do::detach-knife-from-rack obj-info arm)
   ;;(pr2-do::get-in-base-pose)
@@ -82,7 +98,12 @@
   
 
 (cram-language:def-cram-function cut-object (arm knife-info cake-info)
-  "Cut obj with knife in arm."
+  "Cut object described by CAKE-INFO with knife described by KNIFE-INFO using ARM.
+Assume the knife is in the gripper of ARM.
+
+CAKE-INFO (obj-info): Description of the target object.
+KNIFE-INFO (obj-info): Description of the cutting tool.
+ARM (string): Which arm to use. Use one of the constants defined in planning-common."
  ;;(if (pr2-do::check-object-location cake-info)
       ;; if object is found, cut it
       (with-logging-node "CUT-OBJECT"

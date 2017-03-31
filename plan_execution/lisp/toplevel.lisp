@@ -1,14 +1,17 @@
 (in-package :plan-execution-package)
 
 (defun execute (task)
-  "Start a node and execute the given task."
+  "Execute TASK. Start a node if necessary.
+
+TASK (string): Natural language description of the task.
+               As of now it has to be one of the strings defined in `task->designators'."
   (common:ensure-node-is-running)
   (format T "command: ~a" task)
   (execute-task task))
   
 
 (cram-language:def-top-level-cram-function execute-task (task)
-  "Execute the given task in semrec context."
+  "Execute TASK in semrec context."
   (roslisp::ensure-node-is-running)
   
   ;; settings for semrec
@@ -36,7 +39,9 @@
   )
 
 (defun execute-desigs (desigs)
-  "Execute the given designators with the manipulation pm."
+  "Execute DESIGS with the manipulation pm.
+
+DESIG (list of designators): List of designators to be executed."
   (when desigs
     (pm-execute :manipulation (car desigs))
     
@@ -44,7 +49,7 @@
     (execute-desigs (cdr desigs))))
 
 (defun task->designators (task)
-  "Use a simple switch to translate a task to a list of designators."
+  "Translate TASK to a list of designators."
   (alexandria:switch (task :test #'equal)
     ("grasp cylinder"
      (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Cylinder")))))
@@ -54,6 +59,5 @@
       (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box"))))
     ("cut cake"
      (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Knife")))
-           ;(make-designator :action `((:type :detach) (:arm ,pr2-do::+right-arm+) (:object "Knife")))
            (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box")))))))
 
