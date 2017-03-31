@@ -50,7 +50,8 @@ Therefore call prolog function seen_since."
                   ,frame-id ,timestamp) :lispify T :package :pr2-do))
 
 (defun prolog-disconnect-frames (parent-frame-id child-frame-id)
-  "Call prolog function disconnect_frames. Returns nothing."
+  "Disconnect the frames PARENT-FRAME-ID and CHILD-FRAME-ID.
+Therefore call prolog function disconnect_frames."
   (json-prolog:prolog
                  `("disconnect_frames"
                    ,parent-frame-id ,child-frame-id) :lispify T :package :pr2-do))
