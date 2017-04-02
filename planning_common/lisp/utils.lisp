@@ -6,7 +6,7 @@
     (start-ros-node "planning")))
 
 (defun make-param (type is-const name value)
-  "Create a message for typed param using the given arguments."
+  "Create a message of type 'suturo_manipulation_msgs/TypedParam'."
   (make-message "suturo_manipulation_msgs/TypedParam"
                 :type type
                 :isConst is-const
@@ -23,18 +23,24 @@
       (close in))
     out))
 
-(defun split (string &key (delimiterp #'delimiterp))
-  (loop
-    :for beg = (position-if-not delimiterp string)
-    :then (position-if-not delimiterp string :start (1+ end))
-    :for end = (and beg (position-if delimiterp string :start beg))
-    :when beg :collect (subseq string beg end)
-    :while end))
+(defun split (string characters)
+  "Return split STRING at every occurence of a character in CHARACTERS.
+The return value does not include empty strings.
 
-(defun delimiterp (c) (position c ":"))
+STRING (string): String to be split.
+CHARACTERS (string): Contains every character on which STRING shall be split."
+  (flet ((delimiterp (c) (position c characters)))
+    (loop
+      :for beg = (position-if-not #'delimiterp string)
+        :then (position-if-not #'delimiterp string :start (1+ end))
+      :for end = (and beg (position-if #'delimiterp string :start beg))
+      :when beg :collect (subseq string beg end)
+        :while end)))
 
 (defun strings->KeyValues (strings)
-  "Generate (KEY . VALUE) pairs out of STRINGS."
+  "Generate messages of type 'diagnostic_msgs/KeyValue' pairs out of STRINGS.
+
+STRINGS (list of strings): Alternating keys and values. Has to have an even length."
   (when (>= (length strings) 2)
     (cons
      (make-message "diagnostic_msgs/KeyValue"
@@ -55,7 +61,7 @@
   (print "done recognizing things. You can start planning now!"))
 
 (defun seen-since (obj-info)
-  "Check of object of OBJ-INFO is still at the last known location."
+  "Check if object described by OBJ-INFO is still at the last known location."
   (let ((name (object-info-name obj-info))
         (frame-id (object-info-frame obj-info))
         (timestamp (object-info-timestamp obj-info)))
@@ -64,14 +70,14 @@
         NIL)))
 
 (defun connect-objects (parent-info child-info)
-    "Connect objects of PARENT-INFO and CHILD-INFO
+  "Connect objects described by PARENT-INFO and CHILD-INFO
 using prolog interface."
   (service-connect-frames
    (format nil "/~a" (object-info-name parent-info))
    (format nil "/~a" (object-info-name child-info))))
 
 (defun disconnect-objects (parent-info child-info)
-  "Disconnect objects of PARENT-INFO and CHILD-INFO
+  "Disconnect objects described by PARENT-INFO and CHILD-INFO
 using prolog interface."
   (prolog-disconnect-frames
    (format nil "/~a" (object-info-name parent-info))
