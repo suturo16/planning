@@ -110,7 +110,6 @@ Assume that the knife is connected to ARM."
   "Call action to take a position ready to cut the cake of CAKE-INFO.
 Assume that knife of KNIFE-INFO is used by ARM
 for cutting with SLICE-WIDTH."
-  
   (let ((arm-str (if (string= arm +left-arm+) "left" "right"))
         (handle-length (* (1- +blade-%+) (object-info-width knife-info))))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
