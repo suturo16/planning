@@ -14,6 +14,7 @@
    :object-info
    :make-object-info
    :object-info-name
+   :object-info-type
    :object-info-frame
    :object-info-timestamp
    :object-info-height

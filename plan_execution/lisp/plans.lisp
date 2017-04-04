@@ -21,7 +21,7 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
         (beliefstate::annotate-resource "arm" arm "knowrob")
         ;; grasp it
         (seq
-          (alexandria:switch ((pr2-do::object-info-name obj-info) :test #'equal)
+          (alexandria:switch ((pr2-do::object-info-type obj-info) :test #'equal)
             ("Knife" (pr2-do::grasp-knife obj-info arm))
             ("Cylinder" (grasp-object obj-info arm)))
           (pr2-do::connect-obj-with-gripper obj-info arm)

@@ -1,3 +1,3 @@
 (in-package :planning-common-package)
 
-(defstruct object-info name frame timestamp height width depth)
+(defstruct object-info name type frame timestamp height width depth)

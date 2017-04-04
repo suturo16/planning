@@ -19,12 +19,13 @@ Is deprecated now, use prolog-get-object-infos instead."
   (print (format nil
                  "prolog-get-object-infos-simple is now deprecated.~%
 Use prolog-get-object-infos instead."))
-  (cut:with-vars-bound (|?Frame| |?Timestamp| |?Width| |?Height| |?Depth|)
+  (cut:with-vars-bound (|?Type| |?Frame| |?Timestamp| |?Width| |?Height| |?Depth|)
       (cut:lazy-car
        (json-prolog:prolog-simple 
-        (format nil "get_object_infos(knowrob:~a, Frame, Timestamp, Width, Height, Depth)" name) :lispify T))
+        (format nil "get_object_infos(knowrob:~a, Type, Frame, Timestamp, Width, Height, Depth)" name) :lispify T))
     (make-object-info
      :name name
+     :type |?Type|
      :frame (string-downcase |?Frame|)
      :timestamp |?Timestamp|
      :width |?Width|
@@ -38,7 +39,7 @@ Therefore call prolog function get_object_infos."
   (cut:lazy-car (json-prolog:prolog
                  `("get_object_infos"
                    ,(format nil "~a~a" +knowrob-iri-prefix+ name)
-                   ?frame ?timestamp ?width ?height ?depth) :lispify T :package :pr2-do)))
+                  ?type ?frame ?timestamp ?width ?height ?depth) :lispify T :package :pr2-do)))
 
 (defun prolog-seen-since (name frame-id timestamp)
   "Return an empty list if object NAME was seen in FRAME-ID since TIMESTAMP.
