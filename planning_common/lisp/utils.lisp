@@ -86,11 +86,10 @@ using prolog interface."
 (defun get-object-info (object-name)
   "Get object infos for OBJECT-NAME using prolog interface."
   (cut:with-vars-bound
-      (?type ?frame ?timestamp ?width ?height ?depth)
+      (?frame ?timestamp ?width ?height ?depth)
       (prolog-get-object-infos object-name)
     (make-object-info
        :name object-name
-       :type ?type
        :frame (string-downcase ?frame)
        :timestamp ?timestamp
        :height ?height
