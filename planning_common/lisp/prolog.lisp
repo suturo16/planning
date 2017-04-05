@@ -9,6 +9,7 @@
                    ,(format nil "~a~a" +knowrob-iri-prefix+ name)
                    ?frame ?timestamp ?width ?height ?depth) :lispify T :package :common)))
 
+
 (defun prolog-seen-since (name frame-id timestamp)
   "Query prolog with 'seen_since(NAME, FRAME_ID, TIMESTAMP)'.
 Return an empty list if object NAME with FRAME-ID was seen since TIMESTAMP.
