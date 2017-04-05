@@ -59,6 +59,7 @@ STRINGS (list of strings): Alternating keys and values. Has to have an even leng
   (service-run-pipeline "cake")
   (sleep 10)
   (service-run-pipeline "end")
+  (sleep 5)
   (print "done recognizing things. You can start planning now!"))
 
 (defun seen-since (obj-info)
