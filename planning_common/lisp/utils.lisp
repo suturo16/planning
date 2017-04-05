@@ -53,11 +53,12 @@ STRINGS (list of strings): Alternating keys and values. Has to have an even leng
 (defun run-full-pipeline ()
   "Run perception pipeline for recognizing knife and cake."
   (ros-info "run-full-pipeline" "recognizing Knife....")
-  (service-run-pipeline "Knife")
-  (sleep 10)
+  (service-run-pipeline "knife")
+  (sleep 20)
   (ros-info "run-full-pipeline" "recognizing Cake...")
-  (service-run-pipeline "Cake")
+  (service-run-pipeline "cake")
   (sleep 10)
+  (service-run-pipeline "end")
   (print "done recognizing things. You can start planning now!"))
 
 (defun seen-since (obj-info)
