@@ -34,7 +34,7 @@ Use prolog-get-object-infos instead."))
 
 (defun prolog-get-object-infos (name)
   "Get object-infos for object NAME.
-Object-info contains binding for FRAME, TIMESTAMP, WIDTH, HEIGHT and DEPTH.
+Object-info contains binding for TYPE, FRAME, TIMESTAMP, WIDTH, HEIGHT and DEPTH.
 Therefore call prolog function get_object_infos."
   (cut:lazy-car (json-prolog:prolog
                  `("get_object_infos"
