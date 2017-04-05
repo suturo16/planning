@@ -7,7 +7,7 @@
   (cut:lazy-car (json-prolog:prolog
                  `("get_object_infos"
                    ,(format nil "~a~a" +knowrob-iri-prefix+ name)
-                     ?type ?frame ?timestamp ?width ?height ?depth) :lispify T :package :pr2-do)))
+                      ?frame ?timestamp ?width ?height ?depth) :lispify T :package :pr2-do)))
 
 (defun prolog-seen-since (name frame-id timestamp)
   "Query prolog with 'seen_since(NAME, FRAME_ID, TIMESTAMP)'.

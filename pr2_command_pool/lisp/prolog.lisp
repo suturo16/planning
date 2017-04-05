@@ -32,15 +32,6 @@ Use prolog-get-object-infos instead."))
      :height |?Height|
      :depth |?Depth|)))
 
-(defun prolog-get-object-infos (name)
-  "Get object-infos for object NAME.
-Object-info contains binding for TYPE, FRAME, TIMESTAMP, WIDTH, HEIGHT and DEPTH.
-Therefore call prolog function get_object_infos."
-  (cut:lazy-car (json-prolog:prolog
-                 `("get_object_infos"
-                   ,(format nil "~a~a" +knowrob-iri-prefix+ name)
-                  ?type ?frame ?timestamp ?width ?height ?depth) :lispify T :package :pr2-do)))
-
 (defun prolog-seen-since (name frame-id timestamp)
   "Return an empty list if object NAME was seen in FRAME-ID since TIMESTAMP.
 Return nil otherwise.
