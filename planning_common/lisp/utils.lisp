@@ -54,7 +54,7 @@ STRINGS (list of strings): Alternating keys and values. Has to have an even leng
   "Run perception pipeline for recognizing knife and cake."
   (ros-info "run-full-pipeline" "recognizing Knife....")
   (service-run-pipeline "knife")
-  (sleep 20)
+  (sleep 15)
   (ros-info "run-full-pipeline" "recognizing Cake...")
   (service-run-pipeline "cake")
   (sleep 10)
