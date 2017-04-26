@@ -22,7 +22,7 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
         ;; grasp it
         (seq
           (alexandria:switch ((pr2-do::object-info-name obj-info) :test #'equal)
-            ("Knife" (pr2-do::grasp-knife obj-info arm))
+            ("Knife" (grasp-knife obj-info arm))
             ("Cylinder" (grasp-object obj-info arm)))
           (pr2-do::connect-obj-with-gripper obj-info arm)
           (ros-info "grasp" "Connected object ~a with arm ~a."
