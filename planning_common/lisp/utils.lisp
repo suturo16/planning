@@ -62,15 +62,6 @@ STRINGS (list of strings): Alternating keys and values. Has to have an even leng
   (sleep 5)
   (print "done recognizing things. You can start planning now!"))
 
-(defun seen-since (obj-info)
-  "Check if object described by OBJ-INFO is still at the last known location."
-  (let ((name (object-info-name obj-info))
-        (frame-id (object-info-frame obj-info))
-        (timestamp (object-info-timestamp obj-info)))
-    (if (prolog-seen-since name frame-id timestamp)
-        T
-        NIL)))
-
 (defun connect-objects (parent-info child-info)
   "Connect objects described by PARENT-INFO and CHILD-INFO
 using prolog interface."

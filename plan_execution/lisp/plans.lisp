@@ -7,13 +7,23 @@
        (beliefstate:stop-node log-node :success ,T))))
 
 
+(defun seen-since (obj-info)
+  "Check if object described by OBJ-INFO is still at the last known location."
+  (let ((name (common:object-info-name obj-info))
+        (frame-id (common:object-info-frame obj-info))
+        (timestamp (common:object-info-timestamp obj-info)))
+    (if (common:prolog-seen-since name frame-id timestamp)
+        T
+        NIL)))
+
+
 (defun check-object-location (obj-info)
-  "Return t if the object of OBJ-INFO is still at the same location."
+  "Return T if the object of OBJ-INFO is still at the same location."
   (when obj-info
     ;(get-in-base-pose)
     ;turn head
     ;(service-run-pipeline)
-    (when (seen-since obj-info)
+    (when (pr2-do::seen-since obj-info)
       T)))
 
 
@@ -32,15 +42,21 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
         (beliefstate::annotate-resource "arm" arm "knowrob")
         ;; grasp it
         (seq
-          (alexandria:switch ((common:object-info-name obj-info) :test #'equal)
-            ("Knife" (grasp-knife obj-info arm))
-            ("Cylinder" (grasp-object obj-info arm)))
+          (cpl:with-retry-counters ((timeouts 1))
+            (cpl:with-failure-handling
+                ((common:action-timeout (e)
+                   (cpl:do-retry timeouts
+                     (ros-warn (grasp) "Grasping went-wrong: ~a" e)
+                     (cpl:retry))))
+              (alexandria:switch ((common:object-info-name obj-info) :test #'equal)
+                ("Knife" (grasp-knife obj-info arm))
+                ("Cylinder" (grasp-object obj-info arm)))))
           (pr2-do:connect-obj-with-gripper obj-info arm)
           (ros-info (grasp) "Connected object ~a with arm ~a."
                     (common:object-info-name obj-info)
                     arm)))
       ;; else complain
-      (ros-error "grasp" "Object ~a not found" (common:object-info-name obj-info))))
+      (ros-error (grasp) "Object ~a not found" (common:object-info-name obj-info))))
   
 
 (defun grasp-knife (knife-info arm)
@@ -105,10 +121,25 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
         (beliefstate::annotate-resource "cakeInfo" (common:object-info-name cake-info) "knowrob")
         (beliefstate::annotate-resource "arm" arm "knowrob")
         (common:service-connect-frames "/odom_combined" "/Box")
+        
         (ros-info (cut-object) "Getting into cutting position.")
-        (pr2-do:take-cutting-position cake-info knife-info arm 0.01)
+        (cpl:with-retry-counters ((timeouts 1))
+          (cpl:with-failure-handling
+              ((common:action-timeout (e)
+                 (cpl:do-retry timeouts
+                   (ros-warn (cut take-cutting-position) "Taking cutting position went wrong: ~a" e)
+                   (cpl:retry))))
+            (pr2-do:take-cutting-position cake-info knife-info arm 0.01)))
+
         (ros-info (cut-object) "Cutting.")
-        (pr2-do:cut-cake cake-info knife-info arm 0.01)
+        (cpl:with-retry-counters ((timeouts 1))
+          (cpl:with-failure-handling
+              ((common:action-timeout (e)
+                 (cpl:do-retry timeouts
+                   (ros-warn (cut cutting) "Cutting went wrong: ~a" e)
+                   (cpl:retry))))
+            (pr2-do:cut-cake cake-info knife-info arm 0.01)))
+        
         ; TODO(cpo): get cake-piece-info
         ; (pr2-do::push-aside cake-info cake-piece-info)
         (ros-info (cut-object) "Done."))
