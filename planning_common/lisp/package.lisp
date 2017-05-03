@@ -11,6 +11,11 @@
    :+double+
    :+transform+
 
+   :low-level-failure
+   :high-level-failure
+   :action-timeout
+   :action-lost
+   
    :object-info
    :make-object-info
    :object-info-name
@@ -24,7 +29,8 @@
    :service-connect-frames
 
    :action-move-robot
-   
+
+   :prolog-seen-since
    :prolog-disconnect-frames
    
    :ensure-node-is-running
