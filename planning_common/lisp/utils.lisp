@@ -62,6 +62,13 @@ STRINGS (list of strings): Alternating keys and values. Has to have an even leng
   (sleep 5)
   (print "done recognizing things. You can start planning now!"))
 
+(defun run-pipeline (obj-type)
+  "Run perception pipeline for OBJ-TYPE."
+  (let ((unrecognized-objs (service-run-pipeline obj-type)))
+    (when unrecognized-objs
+      (error 'perception-pipeline-failure))
+    unrecognized-objs))
+
 (defun connect-objects (parent-info child-info)
   "Connect objects described by PARENT-INFO and CHILD-INFO
 using prolog interface."

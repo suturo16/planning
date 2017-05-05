@@ -15,6 +15,8 @@
    :high-level-failure
    :action-timeout
    :action-lost
+   :perception-pipeline-failure
+   :seen-since-failure
    
    :object-info
    :make-object-info
@@ -44,7 +46,11 @@
    :strings->KeyValues
    :get-joint-config
    :get-controller-specs
-   :seen-since
+
+   :run-full-pipeline
+   :run-pipeline
+   :connect-objects
+   :disconnect-objects
    :get-object-info))
 
 (in-package :planning-common-package)

@@ -24,3 +24,10 @@
   ((description :initform "Action goal was lost."))
   (:documentation "Action goal was lost."))
 
+(define-condition perception-pipeline-failure (low-level-failure)
+  ((description :initform "Pipeline could not be started."))
+  (:documentation "Pipeline could not be started."))
+
+(define-condition seen-since-failure (low-level-failure)
+  ((description :initform "Seen since acting up."))
+  (:documentation "Seen since acting up."))

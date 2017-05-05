@@ -14,17 +14,28 @@
         (timestamp (common:object-info-timestamp obj-info)))
     (if (common:prolog-seen-since name frame-id timestamp)
         T
-        NIL)))
+        (error 'common:seen-since-failure))))
+        ;; NIL)))
 
 
 (defun check-object-location (obj-info)
   "Return T if the object of OBJ-INFO is still at the same location."
   (when obj-info
-    ;(get-in-base-pose)
-    ;turn head
-    ;(service-run-pipeline)
-    (when (pr2-do::seen-since obj-info)
-      T)))
+    (cpl:with-retry-counters ((seen-since 3) (perception 1))
+      (cpl:with-failure-handling
+          ((common:seen-since-failure (e)
+             (declare (ignore e))
+             (cpl:do-retry seen-since
+               (cpl:retry)))
+           (common:perception-pipeline-failure (e)
+             (cpl:do-retry perception
+               (ros-warn (check-object-location) "~a" e)
+               (cpl:retry))))
+        (pr2-do:get-in-base-pose)
+        ;; turn head
+        (common:run-pipeline (common:object-info-name obj-info))
+        (when (seen-since obj-info)
+          T)))))
 
 
 (cpl:def-cram-function grasp (obj-info arm)
