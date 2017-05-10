@@ -62,6 +62,7 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
                      (cpl:retry))))
               (alexandria:switch ((common:object-info-name obj-info) :test #'equal)
                 ("Knife" (grasp-knife obj-info arm))
+                ("Plate" (grasp-plate obj-info arm))
                 ("Cylinder" (grasp-object obj-info arm)))))
           (pr2-do:connect-obj-with-gripper obj-info arm)
           (ros-info (grasp) "Connected object ~a with arm ~a."
@@ -76,6 +77,17 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
   (pr2-do:grasp-knife knife-info arm)
   (ros-info (grasp knife) "Close gripper.")
   (pr2-do:close-gripper arm 100))
+
+
+(defun grasp-plate (plate-info arm)
+  "Grasp the plate described by PLATE-INFO with ARM."
+  (ros-info (grasp plate) "Open gripper")
+  (pr2-do:open-gripper arm)
+  (ros-info (grasp plate) "Move arm to object ~a." (common:object-info-name plate-info))
+  (pr2-do:grasp-plate plate-info arm)
+  (ros-info (grasp plate) "Close gripper.")
+  (pr2-do:close-gripper arm 50)
+  (ros-info (grasp plate) "Done."))
 
 
 (defun grasp-object (obj-info arm)

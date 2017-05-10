@@ -13,6 +13,7 @@
    :move-object-with-arm
    :get-in-base-pose
    :grasp-knife
+   :grasp-plate
    :detach-knife-from-rack
    :take-cutting-position
    :cut-cake))

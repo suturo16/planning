@@ -86,6 +86,14 @@ Assume that the object is attached to ARM."
                        (make-param +double+ T "blade_height" (write-to-string +blade-height+))
                        (make-param +double+ T "handle_length" (write-to-string +handle-length+)))))
 
+(defun grasp-plate (plate-info arm)
+  "Call action to grasp the plate of PLATE-INFO with ARM."
+  (let* ((arm-str (if (string= arm +left-arm+) "left" "right")))
+    (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
+                       "plate_grasp"
+                       (lambda (v) (< v 0.025))
+                       (make-param +transform+ NIL "plate_frame" (format nil "~a ~a" (object-info-name plate-info) "base_link")))))
+
 (defun detach-knife-from-rack (knife-info arm)
   "Call action to move the knife of KNIFE-INFO away from the rack.
 Assume that the knife is connected to ARM."
