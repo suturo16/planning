@@ -59,5 +59,11 @@ DESIG (list of designators): List of designators to be executed."
       (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box"))))
     ("cut cake"
      (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Knife")))
-           (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box")))))))
+           (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box")))))
+    ("serve cake"
+     (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Knife")))
+           (make-designator :action `((:type :grasp) (:arm ,pr2-do::+left-arm+) (:object "Plate")))
+           (make-designator :action `((:type :place) (:arm ,pr2-do::+left-arm+) (:object "Plate") (:target "Left"))) ;; TODO: richtige Position
+           (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box")))
+           (make-designator :action `((:type :place) (:arm ,pr2-do::+left-arm+) (:object "Plate") (:target "HumanOp"))))))) ;; TODO: richtige Position
 
