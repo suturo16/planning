@@ -16,4 +16,5 @@
    :grasp-plate
    :detach-knife-from-rack
    :take-cutting-position
-   :cut-cake))
+   :cut-cake
+   :look-at))

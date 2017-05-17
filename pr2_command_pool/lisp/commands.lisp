@@ -141,6 +141,14 @@ to cut pieces with SLICE-WIDTH."
                        (make-param +double+ T "handle_length" (write-to-string +handle-length+))
                        (make-param +double+ T "slice_width" (write-to-string slice-width)))))
 
+(defun look-at (obj-info)
+  "Call action to look at the position of the object of OBJ-INFO."
+  (let
+    (action-move-robot (format nil "pr2_lookAt_joints")
+                       (format nil "pr2_look_at")
+                       (lambda (v) (< v 0.01))
+                       (make-param +transform+ NIL "obj_frame" (format nil "~a ~a" (object-info-name obj-info) "base_link")))))
+
 ; Won't be implemented for now.
 ;(defun push-aside (cake-info cake-piece-info arm)
 ;  (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
