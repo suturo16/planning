@@ -1,7 +1,9 @@
 (in-package :plan-execution-package)
 
 (def-process-module giskard-manipulation (action-designator)
-  "Perform an giskard manipulation action on base of the given designator."
+  "Perform an giskard manipulation action on base of ACTION-DESIGNATOR.
+
+ACTION-DESIGNATOR (designator): description of the desired action in the form as an action designator."
   (roslisp:ros-info (pr2-process-modules)
                     "Giskard manipulation invoked with action designator `~a'." action-designator)
   ; Destruct the referenced designator into the specific command and the alist of specifications.
