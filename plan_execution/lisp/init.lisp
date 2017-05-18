@@ -15,3 +15,7 @@ MY-IP (string): Look at `pcomm::setup-pepper-communication's docstring for furth
   ;; Let Perception see.
   ;;(pr2-do::run-full-pipeline)
   (pr2-do::service-run-pipeline "Knife"))
+
+(defun init-planning-without-pepper ()
+  (start-ros-node "planning")
+  (common::setup-move-robot-client))
