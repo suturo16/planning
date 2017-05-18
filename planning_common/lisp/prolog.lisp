@@ -2,10 +2,18 @@
 
 (alexandria:define-constant +knowrob-iri-prefix+ "http://knowrob.org/kb/knowrob.owl#" :test #'string=)
 
-(defun prolog-get-object-infos (type)
+(defun prolog-get-object-info-from-type (type)
   "Query prolog with 'get_object_infos' and TYPE as a bound variable."
   (cut:lazy-car (json-prolog:prolog
                  `("get_object_infos" ?name ?frame ,(format nil "~a" type) ?timestamp ?pose ?height ?width ?depth) :lispify T :package :common)))
+
+
+(defun prolog-get-object-info-from-name (name)
+  "Query prolog with 'get_object_infos' and NAME as a bound variable."
+  (cut:lazy-car (json-prolog:prolog
+                 `("get_object_infos"
+                   ,(format nil "~a~a" +knowrob-iri-prefix+ name)
+?frame ?timestamp ?width ?height ?depth) :lispify T :package :common)))
 
 (defun prolog-seen-since (name frame-id timestamp)
   "Query prolog with 'seen_since(NAME, FRAME_ID, TIMESTAMP)'.
