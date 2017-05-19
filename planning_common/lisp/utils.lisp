@@ -91,7 +91,7 @@ using prolog interface."
       (?name ?frame ?timestamp ?pose ?width ?height ?depth)
       (prolog-get-object-info-from-type object-type)
     (make-object-info
-       :name (subseq (string ?name) 34)
+       :name (string-downcase (subseq (string ?name) 34))
        :frame (string-downcase ?frame)
        :type object-type
        :timestamp ?timestamp
