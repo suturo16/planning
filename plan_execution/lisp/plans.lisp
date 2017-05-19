@@ -33,7 +33,7 @@
              (cpl:do-retry perception
                (ros-warn (check-object-location) "~a" e)
                (cpl:retry))))
-        ;; turn head
+        (pr2-do:look-at obj-info)
         (common:run-pipeline (common:object-info-name obj-info))
         (when (seen-since obj-info)
           T)))))

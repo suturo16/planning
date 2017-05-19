@@ -20,4 +20,5 @@
    :detach-knife-from-rack
    :take-cutting-position
    :cut-cake
-   :move-slice-aside))
+   :move-slice-aside
+   :look-at))
