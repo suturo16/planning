@@ -55,9 +55,20 @@ DESIG (list of designators): List of designators to be executed."
      (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Cylinder")))))
     ("grasp knife"
      (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Knife")))))
+    ("move spatula next to cake"
+     (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+right-arm+) (:object "Spatula") (:target "Next2Cake")))))
     ("just cut"
-      (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box"))))
+      (list (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box")))))
     ("cut cake"
      (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Knife")))
-           (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box")))))))
+           (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box")))))
+    ("demo"
+     (list (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "Knife")))
+           (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "Spatula")))
+           (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "Spatula_Shovel") (:target "Next2Cake")))
+           (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "Knife") (:cake "Box") (:target "Spatula_Shovel")))
+           (make-designator :action `((:type :move-n-flip) (:arm ,common:+left-arm+) (:tool "Spatula_Shovel") (:target "Plate")))
+           (make-designator :action `((:type :place) (:arm ,common:+left-arm+) (:object "Spatula") (:target "Next2Cake")))
+           (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "Plate")))
+           (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "Plate") (:target "Deliver")))))))
 

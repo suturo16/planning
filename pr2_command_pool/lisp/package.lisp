@@ -11,9 +11,13 @@
    :connect-obj-with-gripper
    :move-arm-to-object
    :move-object-with-arm
+   :move-n-flip-object-with-arm
    :get-in-base-pose
    :grasp-knife
    :grasp-plate
+   :grasp-spatula
+   :release
    :detach-knife-from-rack
    :take-cutting-position
-   :cut-cake))
+   :cut-cake
+   :move-slice-aside))

@@ -82,12 +82,22 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
 (defun grasp-plate (plate-info arm)
   "Grasp the plate described by PLATE-INFO with ARM."
   (ros-info (grasp plate) "Open gripper")
-  (pr2-do:open-gripper arm)
+  (pr2-do:open-gripper arm 0.01)
   (ros-info (grasp plate) "Move arm to object ~a." (common:object-info-name plate-info))
   (pr2-do:grasp-plate plate-info arm)
   (ros-info (grasp plate) "Close gripper.")
   (pr2-do:close-gripper arm 50)
   (ros-info (grasp plate) "Done."))
+
+
+(defun grasp-spatula (spatula-info arm)
+  "Grasp the spatula described by SPATULA-INFO with ARM."
+  (ros-info (grasp spatula) "Open gripper.")
+  (pr2-do:open-gripper arm)
+  (ros-info (grasp spatula) "Move arm to spatula.")
+  (pr2-do:grasp-spatula spatula-info arm)
+  (ros-info (grasp spatula) "Close gripper.")
+  (pr2-do:close-gripper arm))
 
 
 (defun grasp-object (obj-info arm)
@@ -101,7 +111,7 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
   (ros-info (grasp object) "Done."))
 
 
-(cpl:def-cram-function place-object (obj-info loc-info arm)
+(cpl:def-cram-function place-object (obj-info loc-info arm &optional (release NIL))
   "Place object described by OBJECT-INFO at location described by LOCATION-INFO with ARM.
 Assuming the object is placed on ARM's gripper.
 
@@ -114,8 +124,10 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
     (beliefstate::annotate-resource "arm" arm "knowrob")
     (ros-info (place-object) "Move object with arm.")
     (pr2-do:move-object-with-arm loc-info obj-info arm)
-    (ros-info (place-object) "Open gripper.")
-    (pr2-do:open-gripper arm)
+    (when release
+      (ros-info (place-object) "Open gripper.")
+      (pr2-do:open-gripper arm)
+      (pr2-do:release arm))
     (ros-info (place-object) "Done.")))
 
 
@@ -131,7 +143,7 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
   (ros-info (detach-object-from-rack) "Done."))
   
 
-(cpl:def-cram-function cut-object (arm knife-info cake-info)
+(cpl:def-cram-function cut-object (arm knife-info cake-info &optional (move-target-info NIL))
   "Cut object described by CAKE-INFO with knife described by KNIFE-INFO using ARM.
 Assume the knife is in the gripper of ARM.
 
@@ -163,13 +175,38 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
                    (ros-warn (cut cutting) "Cutting went wrong: ~a" e)
                    (cpl:retry))))
             (pr2-do:cut-cake cake-info knife-info arm 0.01)))
+
+        (when move-target-info
+          (ros-info (cut-object) "Moving slice aside.")
+          (pr2-do:move-slice-aside knife-info cake-info move-target-info arm))
         
-        ; TODO(cpo): get cake-piece-info
-        ; (pr2-do::push-aside cake-info cake-piece-info)
         (ros-info (cut-object) "Done."))
+
       ;; else complain
       (ros-error (cut-object) "Cannot find object '~a', which I am supposed to cut."
                  (common:object-info-name cake-info))))
+
+
+(def-cram-function move-n-flip (arm tool-info target-info)
+  (ros-info (move-n-flip) "Looking for target.")
+  (if (check-object-location target-info)
+      (with-logging-node "MOVE-N-FLIP"
+        (beliefstate::annotate-resource "toolInfo" (common:object-info-name tool-info) "knowrob")
+        (beliefstate::annotate-resource "targetInfo" (common:object-info-name target-info) "knowrob")
+        (beliefstate::annotate-resource "arm" arm "knowrob")
+        (ros-info (move-n-flip) "Moving tool over target and flipping.")
+        (cpl:with-retry-counters ((timeouts 1))
+          (cpl:with-failure-handling
+              ((common:action-timeout (e)
+                 (cpl:do-retry timeouts
+                   (ros-warn (cut cutting) "Move-n-flip went wrong: ~a" e)
+                   (cpl:retry))))
+            (pr2-do:move-n-flip-object-with-arm target-info tool-info arm)))
+        (ros-info (move-n-flip) "Done."))
+
+  ;; else conplain
+  (ros-error (move-n-flip) "Cannot find object '~a', on which I am supposed to deliver the object."
+             (common:object-info-name target-info))))
 
 
 (defun ms2-grasp-knife (knife-info arm)
