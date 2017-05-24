@@ -48,12 +48,18 @@ CONTROLLER-NAME (string): Name of the controller to be used.
 CB (function): Break condition. See `make-feedback-signal-handler's documentation.
 TYPED-PARAMS (suturo_manipulation_msgs-msg:TypedParam): Params to be send with the goal."
   (handler-bind ((actionlib:feedback-signal (make-feedback-signal-handler cb)))
-    (actionlib:send-goal-and-wait
-     (get-move-robot-client)
-     (get-move-robot-goal-conv config-name controller-name typed-params)
-     :feedback-cb 'move-robot-feedback-cb
-     :result-timeout 12
-     :exec-timeout 12)))
+    (multiple-value-bind (result status)
+        (actionlib:send-goal-and-wait
+         (get-move-robot-client)
+         (get-move-robot-goal-conv config-name controller-name typed-params)
+         :feedback-cb 'move-robot-feedback-cb
+         :result-timeout 10
+         :exec-timeout 10)
+      (declare (ignore result))
+      (alexandria:switch (status)
+        (:ABORTED :SUCCESS)
+        (:LOST (error 'common:action-lost))
+        (:TIMEOUT (error 'common:action-timeout))))))
 
 (defun make-feedback-signal-handler (&optional (cb (lambda (v) (< v 0.05))))
   "Return a function able to handle a action feedback signal from /movement_server/movement_server,

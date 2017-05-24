@@ -13,6 +13,7 @@
   ((:module "lisp"
     :components
     ((:file "package")
+     (:file "conditions" :depends-on ("package"))
      (:file "objects" :depends-on ("package"))
      (:file "topics" :depends-on ("package"))
      (:file "services" :depends-on ("package"))

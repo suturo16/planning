@@ -11,6 +11,13 @@
    :+double+
    :+transform+
 
+   :low-level-failure
+   :high-level-failure
+   :action-timeout
+   :action-lost
+   :perception-pipeline-failure
+   :seen-since-failure
+   
    :object-info
    :make-object-info
    :object-info-name
@@ -24,7 +31,8 @@
    :service-connect-frames
 
    :action-move-robot
-   
+
+   :prolog-seen-since
    :prolog-disconnect-frames
    
    :ensure-node-is-running
@@ -38,7 +46,11 @@
    :strings->KeyValues
    :get-joint-config
    :get-controller-specs
-   :seen-since
+
+   :run-full-pipeline
+   :run-pipeline
+   :connect-objects
+   :disconnect-objects
    :get-object-info))
 
 (in-package :planning-common-package)
