@@ -52,23 +52,23 @@ DESIG (list of designators): List of designators to be executed."
   "Translate TASK to a list of designators."
   (alexandria:switch (task :test #'equal)
     ("grasp cylinder"
-     (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Cylinder")))))
+     (list (make-designator :action `((:type :grasp) (:arm ,common::+right-arm+) (:object "cylinder")))))
     ("grasp knife"
-     (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Knife")))))
+     (list (make-designator :action `((:type :grasp) (:arm ,common::+right-arm+) (:object "knife")))))
     ("move spatula next to cake"
-     (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+right-arm+) (:object "Spatula") (:target "Next2Cake")))))
+     (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+right-arm+) (:object "spatula") (:target "next2cake")))))
     ("just cut"
-      (list (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box")))))
+      (list (make-designator :action `((:type :cut) (:arm ,common::+right-arm+) (:knife "knife") (:cake "box")))))
     ("cut cake"
-     (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Knife")))
-           (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box")))))
+     (list (make-designator :action `((:type :grasp) (:arm ,common::+right-arm+) (:object "knife")))
+           (make-designator :action `((:type :cut) (:arm ,common::+right-arm+) (:knife "knife") (:cake "box")))))
     ("demo"
-     (list (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "Knife")))
-           (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "Spatula")))
-           (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "Spatula_Shovel") (:target "Next2Cake")))
-           (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "Knife") (:cake "Box") (:target "Spatula_Shovel")))
-           (make-designator :action `((:type :move-n-flip) (:arm ,common:+left-arm+) (:tool "Spatula_Shovel") (:target "Plate")))
-           (make-designator :action `((:type :place) (:arm ,common:+left-arm+) (:object "Spatula") (:target "Next2Cake")))
-           (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "Plate")))
-           (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "Plate") (:target "Deliver")))))))
+     (list (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "knife")))
+           (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "spatula")))
+           (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula_shovel") (:target "next2cake")))
+           (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box") (:target "spatula_shovel")))
+           (make-designator :action `((:type :move-n-flip) (:arm ,common:+left-arm+) (:tool "spatula_shovel") (:target "plate")))
+           (make-designator :action `((:type :place) (:arm ,common:+left-arm+) (:object "spatula") (:target "next2cake")))
+           (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "plate")))
+           (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "plate") (:target "deliver")))))))
 

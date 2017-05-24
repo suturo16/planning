@@ -83,15 +83,17 @@ using prolog interface."
    (format nil "/~a" (object-info-name parent-info))
    (format nil "/~a" (object-info-name child-info))))
 
-(defun get-object-info (object-name)
-  "Get object infos for OBJECT-NAME using prolog interface."
+(defun get-object-info (object-type)
+  "Get object infos for OBJECT-TYPE using prolog interface."
   (cut:with-vars-bound
-      (?frame ?timestamp ?width ?height ?depth)
-      (prolog-get-object-infos object-name)
+      (?name ?frame ?timestamp ?pose ?width ?height ?depth)
+      (prolog-get-object-info object-type)
     (make-object-info
-       :name object-name
+       :name (string-downcase (subseq (string ?name) 34))
        :frame (string-downcase ?frame)
+       :type object-type
        :timestamp ?timestamp
+       :pose ?pose
        :height ?height
        :width ?width
        :depth ?depth)))

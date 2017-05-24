@@ -34,7 +34,7 @@
                (ros-warn (check-object-location) "~a" e)
                (cpl:retry))))
         (pr2-do:look-at obj-info)
-        (common:run-pipeline (common:object-info-name obj-info))
+        (common:run-pipeline (common:object-info-type obj-info))
         (when (seen-since obj-info)
           T)))))
 
@@ -60,10 +60,10 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
                    (cpl:do-retry timeouts
                      (ros-warn (grasp) "Grasping went-wrong: ~a" e)
                      (cpl:retry))))
-              (alexandria:switch ((common:object-info-name obj-info) :test #'equal)
-                ("Knife" (grasp-knife obj-info arm))
-                ("Plate" (grasp-plate obj-info arm))
-                ("Cylinder" (grasp-object obj-info arm)))))
+              (alexandria:switch ((common:object-info-type obj-info) :test #'equal)
+                ("knife" (grasp-knife obj-info arm))
+                ("plate" (grasp-plate obj-info arm))
+                ("cylinder" (grasp-object obj-info arm)))))
           (pr2-do:connect-obj-with-gripper obj-info arm)
           (ros-info (grasp) "Connected object ~a with arm ~a."
                     (common:object-info-name obj-info)
