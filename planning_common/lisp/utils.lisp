@@ -89,7 +89,7 @@ using prolog interface."
   "Get object infos for OBJECT-TYPE using prolog interface."
   (cut:with-vars-bound
       (?name ?frame ?timestamp ?pose ?width ?height ?depth)
-      (prolog-get-object-info-from-type object-type)
+      (prolog-get-object-info object-type)
     (make-object-info
        :name (string-downcase (subseq (string ?name) 34))
        :frame (string-downcase ?frame)
