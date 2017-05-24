@@ -26,6 +26,8 @@
    :object-info-height
    :object-info-width
    :object-info-depth
+   :object-info-type
+   :object-info-pose
 
    :service-run-pipeline
    :service-connect-frames

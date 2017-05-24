@@ -17,9 +17,9 @@ See cram documentation for further information."
     (desig-prop ?desig (:target ?target))
     (desig-prop ?desig (:object ?object))
     ; get target-info
-    (lisp-fun common:make-object-info :name ?target ?target-info)
+    (lisp-fun common:make-object-info :type ?target :name (format nil "~a1" ?target) ?target-info)
     ; get object-info
-    (lisp-fun common:make-object-info :name ?object ?object-info))
+    (lisp-fun common:make-object-info :type ?object :name (format nil "~a1" ?object) ?object-info))
 
   ; place
   (<- (action-desig ?desig (place ((arm ?arm) (obj-info ?obj-info) (target ?target))))
@@ -48,7 +48,7 @@ See cram documentation for further information."
     (desig-prop ?desig (:target ?target))
     (lisp-fun common:get-object-info ?knife ?knife-info)
     (lisp-fun common:get-object-info ?cake ?cake-info)
-    (lisp-fun common:make-object-info :name ?target ?target-info))
+    (lisp-fun common:make-object-info :type ?target :name (format nil "~a1" ?target) ?target-info))
     
 
   ;; without pushing
@@ -67,7 +67,7 @@ See cram documentation for further information."
     (desig-prop ?desig (:arm ?arm))
     (desig-prop ?desig (:tool ?tool))
     (desig-prop ?desig (:target ?target))
-    (lisp-fun common:make-object-info :name ?tool ?tool-info)
+    (lisp-fun common:make-object-info :type ?tool :name (format nil "~a1" ?tool) ?tool-info)
     (lisp-fun common:get-object-info ?target ?target-info))
 
   ; test
