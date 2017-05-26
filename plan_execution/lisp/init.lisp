@@ -16,4 +16,4 @@ MY-IP (string): Look at `pcomm::setup-pepper-communication's docstring for furth
   ;; Let Perception see.
   ;;(pr2-do::run-full-pipeline)
   (when perception
-    (pr2-do::service-run-pipeline "Knife")))
+    (common:run-full-pipeline)))
