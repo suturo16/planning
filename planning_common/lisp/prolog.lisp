@@ -32,3 +32,8 @@ Disconnects the frames PARENT-FRAME-ID and CHILD-FRAME-ID."
   (json-prolog:prolog
                  `("disconnect_frames"
                    ,parent-frame-id ,child-frame-id) :lispify T :package :common))
+(defun prolog-connect-frames (parent-frame-id child-frame-id)
+  "connect frames through prolog."
+  (json-prolog:prolog
+                 `("connect_frames"
+                   ,parent-frame-id ,child-frame-id) :lispify T :package :common))
