@@ -51,7 +51,7 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
   (ros-info (grasp) "Starting to grasp object ~a with arm ~a."
             (common:object-info-name obj-info)
             arm)
-  (if (check-object-location obj-info)
+  (if T  ;; (check-object-location obj-info)
       ;; if object found, grasp it
       (with-logging-node "GRASP-OBJECT"
         (beliefstate::annotate-resource "objectInfo" (common:object-info-name obj-info) "knowrob")
@@ -156,7 +156,7 @@ Assume the knife is in the gripper of ARM.
 CAKE-INFO (obj-info): Description of the target object.
 KNIFE-INFO (obj-info): Description of the cutting tool.
 ARM (string): Which arm to use. Use one of the constants defined in planning-common."
- (if (check-object-location cake-info)
+ (if T  ;; (check-object-location cake-info)
       ;; if object is found, cut it
       (with-logging-node "CUT-OBJECT"
         (beliefstate::annotate-resource "knifeInfo" (common:object-info-name knife-info) "knowrob")
@@ -194,7 +194,7 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
 
 (def-cram-function move-n-flip (arm tool-info target-info)
   (ros-info (move-n-flip) "Looking for target.")
-  (if (check-object-location target-info)
+  (if T  ;; (check-object-location target-info)
       (with-logging-node "MOVE-N-FLIP"
         (beliefstate::annotate-resource "toolInfo" (common:object-info-name tool-info) "knowrob")
         (beliefstate::annotate-resource "targetInfo" (common:object-info-name target-info) "knowrob")
