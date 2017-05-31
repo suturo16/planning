@@ -20,12 +20,16 @@
 (defun check-object-location (obj-info)
   "Return T if the object of OBJ-INFO is still at the same location."
   (when obj-info
+    (ros-info (check-object-location) "Looking for object ~a." (common:object-info-name obj-info))
+    (ros-info (check-object-location) "Get into base pose to move arms out of vision.")
     (pr2-do:get-in-base-pose)
+    (ros-info (check-object-location) "Moving head to look at object.")
     (cpl:with-retry-counters ((seen-since 3) (perception 1))
       (cpl:with-failure-handling
           ((common:seen-since-failure (e)
              (declare (ignore e))
              (cpl:do-retry seen-since
+               (ros-warn (check-object-location) "Seen-since did not succeed, just trying again.")
                (cpl:retry))
              (ros-warn (check-object-location) "Returning T although seen-since didn't work.")
              (return T))
@@ -75,6 +79,7 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
 
 (defun grasp-knife (knife-info arm)
   "Grasp the knife described by KNIFE-INFO with ARM."
+  (ros-info (grasp plate) "Reaching for object ~a." (common:object-info-name knife-info))
   (pr2-do:grasp-knife knife-info arm)
   (ros-info (grasp knife) "Close gripper.")
   (pr2-do:close-gripper arm 100))
@@ -157,7 +162,6 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
         (beliefstate::annotate-resource "knifeInfo" (common:object-info-name knife-info) "knowrob")
         (beliefstate::annotate-resource "cakeInfo" (common:object-info-name cake-info) "knowrob")
         (beliefstate::annotate-resource "arm" arm "knowrob")
-        (common:service-connect-frames "/odom_combined" "/Box")
         
         (ros-info (cut-object) "Getting into cutting position.")
         (cpl:with-retry-counters ((timeouts 1))
@@ -212,7 +216,7 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
 
 (defun ms2-grasp-knife (knife-info arm)
   (ros-info (ms2-grasp-knife) "connect Knife frame to ododm.")
-  (common:service-connect-frames "/odom_combined"  "/Knife")
+  (common:prolog-connect-frames "/odom_combined"  "/Knife")
   (ros-info (ms2-grasp-knife) "grasp the knife.")
   (pr2-do:grasp-knife knife-info arm)
   (ros-info (ms2-grasp-knife) "close-gripper")
@@ -220,14 +224,14 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
   ;; (pr2-do::detach-knife-from-rack (pr2-do::get-object-info "Knife") pr2-do::+right-arm+)
   (ros-info (ms2-grasp-knife) "reconnect frames from odom to arm")
   (common:prolog-disconnect-frames "/odom_combined" "/Knife")
-  (common:service-connect-frames "/r_wrist_roll_link" "/Knife")
+  (common:prolog-connect-frames "/r_wrist_roll_link" "/Knife")
   (pr2-do:get-in-base-pose)
   ;;TODO: test detach, add it in here.
   )
 
 
 (defun ms2-cut-cake (cake-info knife-info arm)
-  (common:service-connect-frames "/odom_combined" "/Box")
+  (common:prolog-connect-frames "/odom_combined" "/Box")
   (ros-info "ms2-cut-object" "Getting into cutting position.")
   (pr2-do:take-cutting-position cake-info knife-info arm 0.01)
   (ros-info "ms2-cut-object" "Cutting.")

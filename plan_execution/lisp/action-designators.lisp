@@ -11,7 +11,7 @@ See cram documentation for further information."
     (lisp-fun common:get-object-info ?object ?obj-info))
 
   ;; move-with-arm
-  (<- (action-desig ?desig (move-with-arm ((arm ?arm) (obj-info ?obj-info) (target-info ?target-info))))
+  (<- (action-desig ?desig (move-with-arm ((arm ?arm) (object-info ?obj-info) (target-info ?target-info))))
     (desig-prop ?desig (:type :move-with-arm))
     (desig-prop ?desig (:arm ?arm))
     (desig-prop ?desig (:target ?target))
@@ -19,7 +19,7 @@ See cram documentation for further information."
     ; get target-info
     (lisp-fun common:make-object-info :type ?target :name (format nil "~a1" ?target) ?target-info)
     ; get object-info
-    (lisp-fun common:make-object-info :type ?object :name (format nil "~a1" ?object) ?object-info))
+    (lisp-fun common:make-object-info :type ?object :name (format nil "~a1" ?object) ?obj-info))
 
   ; place
   (<- (action-desig ?desig (place ((arm ?arm) (obj-info ?obj-info) (target ?target))))
@@ -62,7 +62,7 @@ See cram documentation for further information."
 
   
   ;; move-n-flip
-  (<- (action-desig ?desig (move-n-flip ((arm ?arm) (tool ?tool-info) (target ?tool-info))))
+  (<- (action-desig ?desig (move-n-flip ((arm ?arm) (tool ?tool-info) (target ?target-info))))
     (desig-prop ?desig (:type :move-n-flip))
     (desig-prop ?desig (:arm ?arm))
     (desig-prop ?desig (:tool ?tool))

@@ -10,13 +10,13 @@
 
 (defun disconnect-obj-from-arm (obj-info arm)
   "Call Prolog to disconnect the object of OBJ-INFO from ARM."
-  (prolog-disconnect-frames
+  (common:prolog-disconnect-frames
    (format nil "/~a_wrist_roll_link" arm)
    (format nil "/~a" (object-info-name obj-info))))
 
 (defun connect-obj-with-gripper (obj-info arm)
   "Call Prolog to connect the object of OBJ-Info to ARM."
-  (service-connect-frames
+  (common:prolog-connect-frames
    (format nil "/~a_wrist_roll_link" arm)
    (format nil "/~a" (object-info-name obj-info))))
 
@@ -61,8 +61,8 @@ Assume that the object is attached to ARM."
                                    (format nil "~a ~a" (object-info-name tool-info) (format nil  "~a_wrist_roll_link" arm)))
                        (make-param +transform+ NIL "location_frame"
                                    (format nil "~a ~a" (object-info-name loc-info) "base_link"))
-                       (make-param +double+ T "tool_width" +tool-width+)
-                       (make-param +double+ T "loc-radius" +loc-radius+))))
+                       (make-param +double+ T "tool_width" (write-to-string +tool-width+))
+                       (make-param +double+ T "loc-radius" (write-to-string +loc-radius+)))))
 
 (defun get-in-base-pose ()
   "Bring PR2 into base (mantis) pose."
@@ -205,8 +205,9 @@ to cut pieces with SLICE-WIDTH."
 
 (defun move-slice-aside (knife-info cake-info target-info arm)
   (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
-    (action-move-robot (format nil "pr2_move_slice_~a" arm)
-                       (format nil "pr2_upper_body_~a_arm" arm-str)
+    (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
+                       (format nil "pr2_move_slice_~a" arm)
+                       (lambda (v) (< v 0.01))
                        (make-param +transform+ NIL "knife_tf" (format nil "~a ~a_wrist_roll_link" (object-info-name knife-info) arm))
                        (make-param +transform+ NIL "cake_tf" (format nil "~a base_link" (object-info-name cake-info)))
                        (make-param +transform+ NIL "target_tf" (format nil "~a base_link" (object-info-name target-info))))))

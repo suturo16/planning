@@ -59,8 +59,7 @@ STRINGS (list of strings): Alternating keys and values. Has to have an even leng
   (service-run-pipeline "cake")
   (sleep 10)
   (service-run-pipeline "end")
-  (sleep 5)
-  (print "done recognizing things. You can start planning now!"))
+  (sleep 5))
 
 (defun run-pipeline (obj-type)
   "Run perception pipeline for OBJ-TYPE."
@@ -70,7 +69,7 @@ STRINGS (list of strings): Alternating keys and values. Has to have an even leng
 (defun connect-objects (parent-info child-info)
   "Connect objects described by PARENT-INFO and CHILD-INFO
 using prolog interface."
-  (service-connect-frames
+  (prolog-connect-frames
    (format nil "/~a" (object-info-name parent-info))
    (format nil "/~a" (object-info-name child-info))))
 

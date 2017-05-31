@@ -42,11 +42,14 @@ TASK (string): Natural language description of the task.
   "Execute DESIGS with the manipulation pm.
 
 DESIG (list of designators): List of designators to be executed."
-  (when desigs
-    (pm-execute :manipulation (car desigs))
-    
-    ; Call the function recursively with the rest of the list.
-    (execute-desigs (cdr desigs))))
+  (if desigs
+      (seq
+        (pm-execute :manipulation (car desigs))
+        
+        ;; Call the function recursively with the rest of the list.
+        (execute-desigs (cdr desigs)))
+      ;; else show victory message
+      (print "Done executing!")))
 
 (defun task->designators (task)
   "Translate TASK to a list of designators."
@@ -68,7 +71,7 @@ DESIG (list of designators): List of designators to be executed."
            (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula_shovel") (:target "next2cake")))
            (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box") (:target "spatula_shovel")))
            (make-designator :action `((:type :move-n-flip) (:arm ,common:+left-arm+) (:tool "spatula_shovel") (:target "plate")))
-           (make-designator :action `((:type :place) (:arm ,common:+left-arm+) (:object "spatula") (:target "next2cake")))
+           (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula") (:target "next2cake")))
            (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "plate")))
            (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "plate") (:target "deliver")))))))
 

@@ -30,12 +30,12 @@
    :object-info-pose
 
    :service-run-pipeline
-   :service-connect-frames
-
+   
    :action-move-robot
 
    :prolog-seen-since
    :prolog-disconnect-frames
+   :prolog-connect-frames
    
    :ensure-node-is-running
    :make-param

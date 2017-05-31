@@ -16,4 +16,5 @@ MY-IP (string): Look at `pcomm::setup-pepper-communication's docstring for furth
   ;; Let Perception see.
   ;;(pr2-do::run-full-pipeline)
   (when perception
-    (common:run-full-pipeline)))
+    (common:run-full-pipeline))
+  (print "Done initializing. You can start planning now!"))
