@@ -14,7 +14,7 @@ class MovementServer(TemplateActionServer):
     def execute(self, goal):
         r = rospy.Rate(1)
         feedback = MoveRobotFeedback()
-        feedback.current_value = 5
+        feedback.current_value = 3.5
         # feedback.alteration_rate = 0.5
         while True:
             if self.server.is_preempt_requested():
