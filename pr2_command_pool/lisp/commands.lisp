@@ -123,10 +123,10 @@ Assume that the object is attached to ARM."
                        (format nil "pr2_grasp_plate_~a" arm)
                        (lambda (v) (< v 0.025))
                        (make-param +transform+ NIL "edge_center_frame" (format nil "~a ~a" (object-info-name plate-info) "base_link"))
-                       (make-param +double+ T "edge_radius" +edge-radius+)
-                       (make-param +double+ T "edge_height" +edge-height+)
-                       (make-param +double+ T "edge_width" +edge-width+)
-                       (make-param +double+ T "edge_angle" +edge-angle+))))
+                       (make-param +double+ T "edge_radius" (write-to-string +edge-radius+))
+                       (make-param +double+ T "edge_height" (write-to-string +edge-height+))
+                       (make-param +double+ T "edge_width" (write-to-string +edge-width+))
+                       (make-param +double+ T "edge_angle" (write-to-string +edge-angle+)))))
 
 ;; spatula constants
 ; adrian hat vermessen:
@@ -143,8 +143,8 @@ Assume that the object is attached to ARM."
                        (format nil "pr2_grasp_fingerHandle_~a" arm)
                        (lambda (v) (< v 0.025))
                        (make-param +transform+ NIL "spatula_handle_tf" (format nil "~a ~a" "spatula_handle" "base_link"))
-                       (make-param +double+ T "handle_depth" +spatula-handle-depth+)
-                       (make-param +double+ T "handle_width" +spatula-handle-width+))))
+                       (make-param +double+ T "handle_depth" (write-to-string +spatula-handle-depth+))
+                       (make-param +double+ T "handle_width" (write-to-string +spatula-handle-width+)))))
 
 (defun release (arm &optional (gripper-width 0.1))
   "Call action to release the object in ARM."

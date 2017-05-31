@@ -63,6 +63,7 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
               (alexandria:switch ((common:object-info-type obj-info) :test #'equal)
                 ("knife" (grasp-knife obj-info arm))
                 ("plate" (grasp-plate obj-info arm))
+                ("spatula" (grasp-spatula obj-info arm))
                 ("cylinder" (grasp-object obj-info arm)))))
           (pr2-do:connect-obj-with-gripper obj-info arm)
           (ros-info (grasp) "Connected object ~a with arm ~a."
@@ -204,7 +205,7 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
             (pr2-do:move-n-flip-object-with-arm target-info tool-info arm)))
         (ros-info (move-n-flip) "Done."))
 
-  ;; else conplain
+  ;; else complain
   (ros-error (move-n-flip) "Cannot find object '~a', on which I am supposed to deliver the object."
              (common:object-info-name target-info))))
 
