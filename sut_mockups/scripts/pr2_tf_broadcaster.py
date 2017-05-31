@@ -25,13 +25,18 @@ transforms = [
     },
     
     {
-        'name':'r_wrist_roll',
+        'name':'r_wrist_roll_link',
         'parent':'base_link'
     },
     {
-        'name':'l_wrist_roll',
+        'name':'l_wrist_roll_link',
         'parent':'base_link'
     },
+    {
+        'name':'base_link',
+        'parent':'odom_combined'
+    },
+
 
     {
         'name':'next2cake',
@@ -42,6 +47,11 @@ transforms = [
         'name':'deliver',
         'parent':'map',
         'pos':(1,1,2)
+    },
+    {
+        'name':'map',
+        'parent':'odom_combined',
+        'pos':(0,1,0)
     }
 ]
 
