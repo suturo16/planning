@@ -46,11 +46,11 @@ or -1 if the subscriber is unavailable.
 STATUS: Unused parameter to prevent issues with calls without parameters."
   (format t "Function 'stressLevel' called with status ~a." status)
   (when (or
-         (not pcomm::*command-subscriber*)
-         (not (roslisp::thread-alive-p (roslisp::topic-thread (roslisp::subscriber-subscription pcomm::*command-subscriber*)))))
+         (not *command-subscriber*)
+         (not (roslisp::thread-alive-p (roslisp::topic-thread (roslisp::subscriber-subscription *command-subscriber*)))))
     (return-from |stressLevel| -1))
   
-  (roslisp-queue:queue-size (roslisp::buffer (roslisp::subscriber-subscription pcomm::*command-subscriber*))))
+  (roslisp-queue:queue-size (roslisp::buffer (roslisp::subscriber-subscription *command-subscriber*))))
 
 
 (defun |nextTask| ()
