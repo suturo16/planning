@@ -206,11 +206,11 @@ to cut pieces with SLICE-WIDTH."
 (defun move-slice-aside (knife-info cake-info target-info arm)
   (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
-                       (format nil "pr2_push_cake_~a" arm)
+                       (format nil "pr2_move_cake_~a" arm)
                        (lambda (v) (< v 0.01))
-                       (make-param +transform+ NIL "knife_in_wrist" (format nil "~a ~a_wrist_roll_link" (object-info-name knife-info) arm))
-                       (make-param +transform+ NIL "cake_frame" (format nil "~a base_link" (object-info-name cake-info))))))
-                       ;;(make-param +transform+ NIL "target_tf" (format nil "~a base_link" (object-info-name target-info))))))
+                       (make-param +transform+ NIL "knife_in_gripper" (format nil "~a ~a_wrist_roll_link" (object-info-name knife-info) arm))
+                       (make-param +transform+ NIL "cake" (format nil "~a base_link" (object-info-name cake-info)))
+                       (make-param +transform+ NIL "plate" (format nil "~a base_link" (object-info-name target-info))))))
 
 
 (defun look-at (obj-info)

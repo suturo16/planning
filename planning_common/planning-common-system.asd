@@ -9,8 +9,8 @@
                cl-tf
                cram-utilities
                cram-json-prolog
-               sound_play-msg
-               )
+               cram-language
+               sound_play-msg)
   :components
   ((:module "lisp"
     :components
