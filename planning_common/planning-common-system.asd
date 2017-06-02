@@ -8,7 +8,9 @@
                suturo_manipulation_msgs-msg
                cl-tf
                cram-utilities
-               cram-json-prolog)
+               cram-json-prolog
+               sound_play-msg
+               )
   :components
   ((:module "lisp"
     :components
