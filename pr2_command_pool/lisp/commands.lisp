@@ -31,6 +31,7 @@
                        (make-param +double+ T "cylinder_width" (write-to-string (object-info-width obj-info)))
                        (make-param +double+ T "cylinder_height" (write-to-string (object-info-height obj-info))))))
 
+
 (defun move-object-with-arm (loc-info obj-info arm)
   "Call action to place the object of OBJ-INFO at the location of LOC-INFO.
 Assume that the object is attached to ARM."
