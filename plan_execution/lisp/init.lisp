@@ -1,6 +1,6 @@
 (in-package :plan-execution-package)
 
-(defun init-planning (&optional (my-ip NIL) (perception T))
+(defun init-planning (&optional (my-ip NIL) (perception NIL))
   "Initialize everything planning needs to run.
 
 MY-IP (string): Look at `pcomm::setup-pepper-communication's docstring for further information."
