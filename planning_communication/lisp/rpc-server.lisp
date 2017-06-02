@@ -24,8 +24,9 @@ STATUS: Unused parameter to prevent issues with calls without parameters."
 (defun |cutCake| (status)
   "Calls the do-function with 'cut-cake'.
 STATUS: Unused parameter to prevent issues with calls without parameters."
-  (format t "Function 'cutCake' called with status ~a." status)
-  (|do| "cut cake"))
+  (format t "Function 'cutCake' called with status ~a. " status)
+  (format t "Calling ms4 demo now.")
+  (|do| "demo"))
 
 
 (defun |do| (command)
@@ -35,7 +36,7 @@ COMMAND: The message to publish onto pepper_command"
   (let ((pub (advertise "/command" "std_msgs/String")))
     (if  (not (eq (roslisp:node-status) :SHUTDOWN))
          (progn (publish-msg pub :data command)
-                (|stressLevel| "asdf"))
+                (|stressLevel| command))
          -1)))
 
 
@@ -45,11 +46,11 @@ or -1 if the subscriber is unavailable.
 STATUS: Unused parameter to prevent issues with calls without parameters."
   (format t "Function 'stressLevel' called with status ~a." status)
   (when (or
-         (not *command-subscriber*)
-         (not (roslisp::thread-alive-p (roslisp::topic-thread (roslisp::subscriber-subscription *command-subscriber*)))))
+         (not pcomm::*command-subscriber*)
+         (not (roslisp::thread-alive-p (roslisp::topic-thread (roslisp::subscriber-subscription pcomm::*command-subscriber*)))))
     (return-from |stressLevel| -1))
   
-  (roslisp-queue:queue-size (roslisp::buffer (roslisp::subscriber-subscription *command-subscriber*))))
+  (roslisp-queue:queue-size (roslisp::buffer (roslisp::subscriber-subscription pcomm::*command-subscriber*))))
 
 
 (defun |nextTask| ()
