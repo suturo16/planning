@@ -48,6 +48,7 @@
    :strings->KeyValues
    :get-joint-config
    :get-controller-specs
+   :say
 
    :run-full-pipeline
    :run-pipeline
