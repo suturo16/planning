@@ -8,7 +8,8 @@
                suturo_manipulation_msgs-msg
                cl-tf
                cram-utilities
-               cram-json-prolog)
+               cram-json-prolog
+               cram-language)
   :components
   ((:module "lisp"
     :components
