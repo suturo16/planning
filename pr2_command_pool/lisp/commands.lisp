@@ -28,8 +28,8 @@
                        (lambda (v) (< v 0.01))
                        (make-param +transform+ nil "cylinder_frame"
                                    (format nil "~a ~a" (object-info-name obj-info) "base_link"))
-                       (make-param +double+ T "cylinder_height" (write-to-string (object-info-width obj-info)))
-                       (make-param +double+ T "cylinder_width" (write-to-string (object-info-height obj-info))))))
+                       (make-param +double+ T "cylinder_width" (write-to-string (object-info-width obj-info)))
+                       (make-param +double+ T "cylinder_height" (write-to-string (object-info-height obj-info))))))
 
 (defun move-object-with-arm (loc-info obj-info arm)
   "Call action to place the object of OBJ-INFO at the location of LOC-INFO.
@@ -55,7 +55,7 @@ Assume that the object is attached to ARM."
   "Call action to move the object on the tool of TOOL-INFO above the lcoation of LOC-INFO and flip the tool to place the obejct at the location."
   (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
-                       (format nil "pr2_move_and_flip_r")
+                       (format nil "pr2_move_and_flip_~a" arm)
                        (lambda (v) (< v 0.01))
                        (make-param +transform+ NIL "spatula_in_gripper"
                                    (format nil "~a ~a" (object-info-name tool-info) (format nil  "~a_wrist_roll_link" arm)))
@@ -197,7 +197,7 @@ to cut pieces with SLICE-WIDTH."
                        (make-param +double+ T "cake_length" (write-to-string (object-info-depth cake-info)))
                        (make-param +double+ T "cake_width" (write-to-string (object-info-width cake-info)))
                        (make-param +double+ T "cake_height" (write-to-string (object-info-height cake-info)))
-                       (make-param +transform+ NIL "knife_frame" (format nil "~a ~a" (object-info-name knife-info) (format nil "~a_wrist_roll_link" arm)))
+                       (make-param +transform+ NIL "knife_in_gripper" (format nil "~a ~a" (object-info-name knife-info) (format nil "~a_wrist_roll_link" arm)))
                        (make-param +double+ T "knife_height" (write-to-string +blade-height+)) ; (write-to-string (object-info-height knife-info)))
                        ;;(make-param +double+ T "handle_length" (write-to-string +handle-length+))
                        (make-param +double+ T "slice_width" (write-to-string slice-width)))))
