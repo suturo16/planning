@@ -6,11 +6,12 @@
                suturo_perception_msgs-srv
                suturo_knowledge_msgs-srv
                suturo_manipulation_msgs-msg
+               suturo_planning_msgs-msg
                cl-tf
                cram-utilities
                cram-json-prolog
                cram-language
-               sound_play-msg)
+               )
   :components
   ((:module "lisp"
     :components
