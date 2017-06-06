@@ -225,7 +225,7 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
   (ros-info (ms2-grasp-knife) "reconnect frames from odom to arm")
   (common:prolog-disconnect-frames "/odom_combined" "/Knife")
   (common:prolog-connect-frames "/r_wrist_roll_link" "/Knife")
-  (pr2-do:get-in-base-pose)
+  ;;(pr2-do:get-in-base-pose)
   ;;TODO: test detach, add it in here.
   )
 

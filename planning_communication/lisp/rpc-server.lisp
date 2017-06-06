@@ -25,7 +25,7 @@ STATUS: Unused parameter to prevent issues with calls without parameters."
   "Calls the do-function with 'cut-cake'.
 STATUS: Unused parameter to prevent issues with calls without parameters."
   (format t "Function 'cutCake' called with status ~a. " status)
-  (format t "Calling ms4 demo now.")
+  (common:say "Welcome to the bakery.")
   (|do| "demo"))
 
 

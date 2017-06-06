@@ -67,7 +67,7 @@ Assume that the object is attached to ARM."
 
 (defun get-in-base-pose ()
   "Bring PR2 into base (mantis) pose."
-  (action-move-robot "pr2_upper_body" "pr2_upper_body_joint_control" (lambda (v) (< v 0.05))
+  (action-move-robot "pr2_upper_body" "pr2_upper_body_joint_control" (lambda (v) (< v 0.09))
                      (make-param +double+ T "torso_lift_joint_goal" "0.25")
                      (make-param +double+ T "l_shoulder_pan_joint_goal" "1.23679")
                      (make-param +double+ T "l_shoulder_lift_joint_goal" "-0.247593")

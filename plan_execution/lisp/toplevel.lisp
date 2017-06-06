@@ -71,7 +71,7 @@ DESIG (list of designators): List of designators to be executed."
            (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula_shovel") (:target "next2cake")))
            (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box") (:target "spatula_shovel")))
            (make-designator :action `((:type :move-n-flip) (:arm ,common:+left-arm+) (:tool "spatula_shovel") (:target "plate")))
-           (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula") (:target "next2cake")))
+           (make-designator :action `((:type :place) (:arm ,common:+left-arm+) (:object "spatula") (:target "next2cake")))
            (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "plate")))
            (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "plate") (:target "deliver")))))))
 
