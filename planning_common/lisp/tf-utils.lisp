@@ -25,8 +25,7 @@ FRAME (string): The target frame published in relation to PARENT_FRAME."
           (cl-tf:lookup-transform
            (get-transform-listener)
            parent-frame
-           frame
-           :time (ros-time))))
+           frame)))
      (cl-tf:transform->pose target-transform-stamped)))
 
 (defun tf-pose->string (pose)
