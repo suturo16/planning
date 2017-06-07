@@ -13,6 +13,14 @@ ACTION-DESIGNATOR (designator): description of the desired action in the form as
        ;; Just get in the base pose.
        (pr2-do::get-in-base-pose))
 
+      (move-gripper
+       ;; Open or close the gripper.
+       (let ((arm (car (cdr (assoc 'arm specs))))
+             (target (car (cdr (assoc 'target specs)))))
+         (if (string-equal "open" target)
+             (pr2-do:open-gripper arm)
+             (pr2-do:close-gripper arm))))
+
       (grasp
        ;; Grasp the specified object with the specified arm.
        (let ((arm (car (cdr (assoc 'arm specs))))

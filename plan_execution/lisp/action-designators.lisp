@@ -3,6 +3,12 @@
 (def-fact-group move-robot-actions (action-desig)
   "cram fact-group for referencing action designators.
 See cram documentation for further information."
+  ;; move gripper
+  (<- (action-desig ?desig (move-gripper ((arm ?arm) (target ?target))))
+    (desig-prop ?desig (:type :move-gripper))
+    (desig-prop ?desig (:arm ?arm))
+    (desig-prop ?desig (:target ?target)))
+  
   ; grasp
   (<- (action-desig ?desig (grasp ((arm ?arm) (obj-info ?obj-info))))
     (desig-prop ?desig (:type :grasp))
