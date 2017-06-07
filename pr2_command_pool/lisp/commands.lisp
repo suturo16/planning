@@ -88,8 +88,8 @@ Assume that the object is attached to ARM."
 
 (alexandria:define-constant +blade-%+ 0.63)
 ;; temp constants for knife dimensions
-(alexandria:define-constant +handle-length+ 0.105)
-(alexandria:define-constant +handle-height+ 0.04)
+(alexandria:define-constant +handle-length+ 0.10)
+(alexandria:define-constant +handle-height+ -0.05)
 (alexandria:define-constant +blade-length+ 0.172)
 (alexandria:define-constant +blade-height+ 0.057)
 
@@ -100,10 +100,10 @@ Assume that the object is attached to ARM."
          (grip-length (* (1- +blade-%+) (object-info-width knife-info)))
          (blade-height (object-info-height knife-info)))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
-                       "knife_grasp"
+                       (format nil "knife_grasp_~a" arm)
                        (lambda (v) (< v 0.025))
-                       (make-param +transform+ NIL "knife_frame" (format nil  "~a ~a" (object-info-name knife-info) "base_link"))
-                       (make-param +double+ T "blade_height" (write-to-string +blade-height+))
+                       (make-param +transform+ NIL "target_frame" (format nil  "~a ~a" (object-info-name knife-info) "base_link"))
+                       (make-param +double+ T "handle_height" (write-to-string +handle-height+))
                        (make-param +double+ T "handle_length" (write-to-string +handle-length+)))))
 
 ;; adrian hat den Teller vermessen:
@@ -165,7 +165,9 @@ Assume that the knife is connected to ARM."
                        (lambda (v) (< v 0.000001))
                        (make-param +transform+ NIL "knife_frame_wrist" (format nil  "~a ~a" (object-info-name knife-info)
                                                                  (format nil "~a_wrist_roll_link" arm)))
-                       (make-param +transform+ T "rack_frame" (tf-lookup->string "base_link" (object-info-name knife-info))))))
+                       (make-param +transform+ T "rack_frame"  (common:tf-lookup->string (object-info-name knife-info) "base_link"))
+                       (make-param 5 T "debug" "rack_frame")
+                       (make-param 5 T "debug2" "rack_dist"))))
 
 (defun take-cutting-position (cake-info knife-info arm slice-width)
   "Call action to take a position ready to cut the cake of CAKE-INFO.

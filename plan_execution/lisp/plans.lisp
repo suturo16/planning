@@ -79,7 +79,7 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
 
 (defun grasp-knife (knife-info arm)
   "Grasp the knife described by KNIFE-INFO with ARM."
-  (ros-info (grasp plate) "Reaching for object ~a." (common:object-info-name knife-info))
+  (ros-info (grasp knife) "Reaching for object ~a." (common:object-info-name knife-info))
   (pr2-do:grasp-knife knife-info arm)
   (ros-info (grasp knife) "Close gripper.")
   (pr2-do:close-gripper arm 100))
