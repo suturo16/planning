@@ -33,8 +33,9 @@
   (:documentation "Seen since acting up."))
 
 (define-condition giskard-config-error (low-level-failure)
-  ((description :initform "Giskard controller ~a not found.")
-   (controller-name :initarg :controller
+  ((description :initform "Giskard controller '~a' not found.")
+   (controller-name :initform "<NO CONTROLLER NAME>"
+                    :initarg :controller
                     :reader giskard-config-error-controller))
   (:documentation "Giskard controller not found.")
   (:report (lambda (condition stream)

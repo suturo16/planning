@@ -25,7 +25,8 @@ FRAME (string): The target frame published in relation to PARENT_FRAME."
           (cl-tf:lookup-transform
            (get-transform-listener)
            parent-frame
-           frame)))
+           frame
+           :time (ros-time))))
      (cl-tf:transform->pose target-transform-stamped)))
 
 (defun tf-pose->string (pose)
@@ -40,7 +41,7 @@ POSE (cl-tf:pose): a pose."
                    (cl-tf:make-3d-vector 1 0 0)
                    (cl-tf:normalize-vector axis)))
              (normalized-angle (cl-tf:normalize-angle angle)))
-        (format nil "~a ~a ~a ~a ~a ~a ~a"
+        (format nil "~6$ ~6$ ~6$ ~6$ ~6$ ~6$ ~6$"
                 (cl-tf:x origin)
                 (cl-tf:y origin)
                 (cl-tf:z origin)
