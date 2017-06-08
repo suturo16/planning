@@ -11,6 +11,7 @@
                cram-utilities
                cram-json-prolog
                cram-language
+               sound_play-msg
                )
   :components
   ((:module "lisp"
