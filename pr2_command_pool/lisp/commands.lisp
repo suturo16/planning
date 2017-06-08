@@ -12,7 +12,14 @@
   "Call Prolog to disconnect the object of OBJ-INFO from ARM."
   (common:prolog-disconnect-frames
    (format nil "/~a_wrist_roll_link" arm)
-   (format nil "/~a" (object-info-name obj-info))))
+   (format nil "/~a" (object-info-name obj-info)))
+
+  ;; FIXME: This is a dirty hotfix, because we don't perceive regualary.
+  ;; Otherwise objects disconnected from a gripper would continue to be published in the gripper frame.
+  (common:prolog-connect-frames "/odom_combined"
+                                (format nil "/~a" (object-info-name obj-info)))
+  (common:prolog-disconnect-frames "/odom_combined"
+                                (format nil "/~a" (object-info-name obj-info))))
 
 (defun connect-obj-with-gripper (obj-info arm)
   "Call Prolog to connect the object of OBJ-Info to ARM."
