@@ -20,14 +20,12 @@ FRAME (string): The target frame published in relation to PARENT_FRAME."
   (cl-tf:wait-for-transform (get-transform-listener)
                             :source-frame frame
                             :target-frame parent-frame
-                            :timeout 1
-                           )
+                            :timeout 1)
   (let ((target-transform-stamped
           (cl-tf:lookup-transform
            (get-transform-listener)
            parent-frame
-           frame
-           )))
+           frame)))
      (cl-tf:transform->pose target-transform-stamped)))
 
 (defun tf-pose->string (pose)
