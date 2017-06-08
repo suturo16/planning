@@ -57,7 +57,7 @@ Assume that the object is attached to ARM."
 
 ;; move-n-flip constants
 (alexandria:define-constant +tool-width+ 0.075)
-(alexandria:define-constant +loc-radius+ 0.2)
+(alexandria:define-constant +loc-radius+ 0.05)
 
 (defun move-n-flip-object-with-arm (loc-info tool-info arm)
   "Call action to move the object on the tool of TOOL-INFO above the lcoation of LOC-INFO and flip the tool to place the obejct at the location."
@@ -184,7 +184,7 @@ for cutting with SLICE-WIDTH."
         (handle-length (* (1- +blade-%+) (object-info-width knife-info))))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_cut_position_~a" arm)
-                       (lambda (v) (< v 0.01))
+                       (lambda (v) (< v 0.04))
                        (make-param +transform+ NIL "cake_frame" (format nil "~a ~a" (object-info-name cake-info) "base_link"))
                        (make-param +double+ T "cake_length" (write-to-string (object-info-depth cake-info)))
                        (make-param +double+ T "cake_width" (write-to-string (object-info-width cake-info)))

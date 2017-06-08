@@ -60,7 +60,7 @@ DESIG (list of designators): List of designators to be executed."
      (list (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "cylinder")))))
     ('("grasp knife" "step1")
      (list (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "knife")))))
-    ('("grasp knife and detach" "step2")
+    ('("detach" "step2")
      (list (make-designator :action `((:type :detach) (:arm ,common:+right-arm+) (:object "knife")))))
     ('("move spatula next to cake" "step3")
      (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula") (:target "next2cake")))))
