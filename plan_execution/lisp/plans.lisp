@@ -170,7 +170,7 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
                  (cpl:do-retry timeouts
                    (ros-warn (cut take-cutting-position) "Taking cutting position went wrong: ~a" e)
                    (cpl:retry))))
-            (pr2-do:take-cutting-position cake-info knife-info arm 0.01)))
+            (pr2-do:take-cutting-position cake-info knife-info arm 0.04)))
 
         (ros-info (cut-object) "Cutting.")
         (cpl:with-retry-counters ((timeouts 1))
@@ -179,7 +179,7 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
                  (cpl:do-retry timeouts
                    (ros-warn (cut cutting) "Cutting went wrong: ~a" e)
                    (cpl:retry))))
-            (pr2-do:cut-cake cake-info knife-info arm 0.01)))
+            (pr2-do:cut-cake cake-info knife-info arm 0.04)))
 
         (when move-target-info
           (ros-info (cut-object) "Moving slice aside.")

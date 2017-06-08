@@ -91,7 +91,7 @@ Assume that the object is attached to ARM."
 (alexandria:define-constant +handle-length+ 0.10)
 (alexandria:define-constant +handle-height+ -0.05)
 (alexandria:define-constant +blade-length+ 0.172)
-(alexandria:define-constant +blade-height+ 0.057)
+(alexandria:define-constant +blade-height+ 0.03)
 
 
 (defun grasp-knife (knife-info arm)
@@ -165,7 +165,7 @@ Assume that the knife is connected to ARM."
                        (lambda (v) (< v 0.000001))
                        (make-param +transform+ NIL "knife_frame_wrist" (format nil  "~a ~a" (object-info-name knife-info)
                                                                  (format nil "~a_wrist_roll_link" arm)))
-                       (make-param +transform+ T "rack_frame"  (common:tf-lookup->string (object-info-name knife-info) "base_link"))
+                       (make-param +transform+ T "rack_frame"  (common:tf-lookup->string "base_link" (object-info-name knife-info)))
                        (make-param 5 T "debug" "rack_frame")
                        (make-param 5 T "debug2" "rack_dist"))))
 
@@ -195,7 +195,7 @@ to cut pieces with SLICE-WIDTH."
         (handle-length (* (1- +blade-%+) (object-info-width knife-info))))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_cut_~a" arm)
-                       (lambda (v) (< v 0.01))
+                       (lambda (v) (< v 0.025))
                        (make-param +transform+ NIL "cake_frame" (format nil "~a ~a" (object-info-name cake-info) "base_link"))
                        (make-param +double+ T "cake_length" (write-to-string (object-info-depth cake-info)))
                        (make-param +double+ T "cake_width" (write-to-string (object-info-width cake-info)))
