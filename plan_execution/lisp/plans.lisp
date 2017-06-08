@@ -72,7 +72,8 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
           (pr2-do:connect-obj-with-gripper obj-info arm)
           (ros-info (grasp) "Connected object ~a with arm ~a."
                     (common:object-info-name obj-info)
-                    arm)))
+                    arm)
+          (pr2-do:detach-knife-from-rack obj-info  arm)))
       ;; else complain
       (ros-error (grasp) "Object ~a not found" (common:object-info-name obj-info))))
   
