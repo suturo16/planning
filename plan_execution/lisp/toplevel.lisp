@@ -65,19 +65,29 @@ DESIG (list of designators): List of designators to be executed."
            (make-designator :action `((:type :detach) (:arm ,common:+right-arm+) (:object "knife")))))
     ("move spatula next to cake"
      (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula") (:target "next2cake")))))
+    ("just cut"
+     (list (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box")))))
+    ("just cut and move"
+     (list (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box") (:target "spatula")))))
     ("move n flip"
      (list (make-designator :action `((:type :move-n-flip) (:arm ,common:+left-arm+) (:tool "spatula") (:target "plate")))))
-    ("just cut"
-      (list (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box")))))
+    ("drop spatula"
+     (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula") (:target "spatulaDropZone")))
+           (make-designator :action `((:type :release) (:arm ,common:+left-arm+)))))
+    ("grasp plate"
+     (list (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "plate")))))
+    ("deliver plate"
+     (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "plate") (:target "deliver")))))
     ("cut cake"
      (list (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "knife")))
            (make-designator :action `((:type :detach) (:arm ,common:+right-arm+) (:object "knife")))
            (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box")))))
     ("demo"
-     (list (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "knife")))
+     (list (make-designator :action `((:type :base-pose)))
+           (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "knife")))
            ;;(make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "spatula")))
            (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula") (:target "next2cake")))
-           (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box") (:target "spatula_shovel")))
+           (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box") (:target "spatula")))
            (make-designator :action `((:type :move-n-flip) (:arm ,common:+left-arm+) (:tool "spatula") (:target "plate")))
            (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula") (:target "spatulaDropZone")))
            (make-designator :action `((:type :release) (:arm ,common:+left-arm+)))
