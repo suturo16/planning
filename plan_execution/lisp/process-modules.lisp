@@ -21,6 +21,11 @@ ACTION-DESIGNATOR (designator): description of the desired action in the form as
              (pr2-do:open-gripper arm)
              (pr2-do:close-gripper arm))))
 
+      (release
+       ;; Open the gripper and move the arm away.
+       (let ((arm (car (cdr (assoc 'arm specs)))))
+         (pr2-do:release arm 0.09)))
+
       (grasp
        ;; Grasp the specified object with the specified arm.
        (let ((arm (car (cdr (assoc 'arm specs))))

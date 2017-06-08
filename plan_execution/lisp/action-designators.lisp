@@ -3,13 +3,17 @@
 (def-fact-group move-robot-actions (action-desig)
   "cram fact-group for referencing action designators.
 See cram documentation for further information."
+  ;; base pose
+  (<- (action-desig ?desig (base-pose ()))
+    (desig-prop ?desig (:type :base-pose)))
+
   ;; move gripper
   (<- (action-desig ?desig (move-gripper ((arm ?arm) (target ?target))))
     (desig-prop ?desig (:type :move-gripper))
     (desig-prop ?desig (:arm ?arm))
     (desig-prop ?desig (:target ?target)))
   
-  ; grasp
+  ;; grasp
   (<- (action-desig ?desig (grasp ((arm ?arm) (obj-info ?obj-info))))
     (desig-prop ?desig (:type :grasp))
     (desig-prop ?desig (:arm ?arm))
@@ -23,9 +27,9 @@ See cram documentation for further information."
     (desig-prop ?desig (:target ?target))
     (desig-prop ?desig (:object ?object))
     ; get target-info
-    (lisp-fun common:make-object-info :type ?target :name (format nil "~a1" ?target) ?target-info)
+    (lisp-fun common:make-object-info :type ?target :name ?target ?target-info)
     ; get object-info
-    (lisp-fun common:make-object-info :type ?object :name (format nil "~a1" ?object) ?obj-info))
+    (lisp-fun common:make-object-info :type ?object :name ?object ?obj-info))
 
   ; place
   (<- (action-desig ?desig (place ((arm ?arm) (obj-info ?obj-info) (target ?target))))
@@ -36,13 +40,12 @@ See cram documentation for further information."
     (lisp-fun common:get-object-info ?target ?obj-info)
     (lisp-fun common:get-object-info ?object ?obj-info))
 
-  ; detach
-  (<- (action-desig ?desig (cut ((arm ?arm) (obj-info ?obj-info))))
+  ;; detach
+  (<- (action-desig ?desig (detach ((arm ?arm) (obj-info ?obj-info))))
       (desig-prop ?desig (:type :detach))
       (desig-prop ?desig (:arm ?arm))
       (desig-prop ?desig (:object ?object))
       (lisp-fun common:get-object-info ?object ?obj-info))
-
   
   ;; cut
   ;; with pushing
