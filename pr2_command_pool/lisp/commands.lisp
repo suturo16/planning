@@ -1,8 +1,8 @@
 (in-package :pr2-command-pool-package)
 
-(defun close-gripper (arm &optional  (strength 50))
+(defun close-gripper (arm &optional  (strength 50) (width 0.0))
   "Call action to close the gripper of ARM with STRENGTH."
-  (action-move-gripper 0.0 arm strength))
+  (action-move-gripper width arm strength))
 
 (defun open-gripper (arm &optional (width 0.09))
   "Call action to open the gripper of ARM."
@@ -45,7 +45,7 @@ Assume that the object is attached to ARM."
   (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_place_control_~a" arm)
-                       (lambda (v) (< v 0.01))
+                       (lambda (v) (< v 0.025))
                        (make-param +transform+ NIL "target_frame"
                                    (format nil "~a ~a" (object-info-name loc-info) "base_link"))
                        (make-param +transform+ NIL "cylinder_in_gripper"
@@ -129,7 +129,7 @@ Assume that the object is attached to ARM."
   (let* ((arm-str (if (string= arm +left-arm+) "left" "right")))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_grasp_plate_~a" arm)
-                       (lambda (v) (< v 0.025))
+                       (lambda (v) (< v 0.125))
                        (make-param +transform+ NIL "plate_frame" (format nil "~a ~a" (object-info-name plate-info) "base_link"))
                        (make-param +double+ T "edge_radius" (write-to-string +edge-radius+))
                        (make-param +double+ T "edge_z" (write-to-string +edge-height+))
@@ -159,9 +159,9 @@ Assume that the object is attached to ARM."
   (let* ((arm-str (if (string= arm +left-arm+) "left" "right")))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_release_~a" arm)
-                       (lambda (v) (< v 0.03))
+                       (lambda (v) (< v 0.0000001))
                        (make-param +transform+ T "start_pose" (tf-lookup->string "base_link" (format nil "~a_wrist_roll_link" arm)))
-                       (make-param +double+ NIL "gripper_opening" gripper-width))))
+                       (make-param +double+ NIL "gripper_opening" (write-to-string gripper-width)))))
 
 (defun detach-knife-from-rack (knife-info arm)
   "Call action to move the knife of KNIFE-INFO away from the rack.
@@ -227,5 +227,5 @@ to cut pieces with SLICE-WIDTH."
   "Call action to look at the position of the object of OBJ-INFO."
     (action-move-robot (format nil "pr2_lookAt_joints")
                        (format nil "pr2_look_at")
-                       (lambda (v) (< v 0.01))
+                       (lambda (v) (< v 0.015))
                        (make-param +transform+ NIL "focal_point" (format nil "~a ~a" (object-info-name obj-info) "base_link"))))

@@ -53,36 +53,36 @@ DESIG (list of designators): List of designators to be executed."
 
 (defun task->designators (task)
   "Translate TASK to a list of designators."
-  (alexandria:switch (task :test #'equal)
-    ("basepose"
+  (alexandria:switch (task :test (lambda (x xs) (member x xs :test #'equal)))
+    ('("basepose" "step0")
      (list (make-designator :action `((:type :base-pose)))))
-    ("grasp cylinder"
+    ('("grasp cylinder")
      (list (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "cylinder")))))
-    ("grasp knife"
+    ('("grasp knife" "step1")
      (list (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "knife")))))
-    ("grasp knife and detach"
-     (list (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "knife")))
-           (make-designator :action `((:type :detach) (:arm ,common:+right-arm+) (:object "knife")))))
-    ("move spatula next to cake"
+    ('("grasp knife and detach" "step2")
+     (list (make-designator :action `((:type :detach) (:arm ,common:+right-arm+) (:object "knife")))))
+    ('("move spatula next to cake" "step3")
      (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula") (:target "next2cake")))))
-    ("just cut"
+    ('("just cut" "step4b")
      (list (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box")))))
-    ("just cut and move"
+    ('("just cut and move" "step4")
      (list (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box") (:target "spatula")))))
-    ("move n flip"
+    ('("move n flip" "step5")
      (list (make-designator :action `((:type :move-n-flip) (:arm ,common:+left-arm+) (:tool "spatula") (:target "plate")))))
-    ("drop spatula"
+    ('("drop spatula" "step6")
      (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula") (:target "spatulaDropZone")))
+           (make-designator :action `((:type :move-gripper) (:arm ,common:+left-arm+) (:object "spatula") (:target "open")))
            (make-designator :action `((:type :release) (:arm ,common:+left-arm+)))))
-    ("grasp plate"
+    ('("grasp plate" "step7")
      (list (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "plate")))))
-    ("deliver plate"
-     (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "plate") (:target "deliver")))))
-    ("cut cake"
+    ('("deliver plate" "step8")
+     (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "plate1") (:target "deliver")))))
+    ('("cut cake")
      (list (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "knife")))
            (make-designator :action `((:type :detach) (:arm ,common:+right-arm+) (:object "knife")))
            (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box")))))
-    ("demo"
+    ('("demo")
      (list (make-designator :action `((:type :base-pose)))
            (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "knife")))
            ;;(make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "spatula")))
@@ -90,7 +90,8 @@ DESIG (list of designators): List of designators to be executed."
            (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box") (:target "spatula")))
            (make-designator :action `((:type :move-n-flip) (:arm ,common:+left-arm+) (:tool "spatula") (:target "plate")))
            (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula") (:target "spatulaDropZone")))
+           (make-designator :action `((:type :move-gripper) (:arm ,common:+left-arm+) (:object "spatula") (:target "open")))
            (make-designator :action `((:type :release) (:arm ,common:+left-arm+)))
            (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "plate")))
-           (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "plate") (:target "deliver")))))))
+           (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "plate1") (:target "deliver")))))))
 

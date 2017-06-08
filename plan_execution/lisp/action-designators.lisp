@@ -12,6 +12,11 @@ See cram documentation for further information."
     (desig-prop ?desig (:type :move-gripper))
     (desig-prop ?desig (:arm ?arm))
     (desig-prop ?desig (:target ?target)))
+
+  ;; release
+  (<- (action-desig ?desig (release ((arm ?arm))))
+    (desig-prop ?desig (:type :release))
+    (desig-prop ?desig (:arm ?arm)))
   
   ;; grasp
   (<- (action-desig ?desig (grasp ((arm ?arm) (obj-info ?obj-info))))
@@ -76,7 +81,7 @@ See cram documentation for further information."
     (desig-prop ?desig (:arm ?arm))
     (desig-prop ?desig (:tool ?tool))
     (desig-prop ?desig (:target ?target))
-    (lisp-fun common:make-object-info :type ?tool :name (format nil "~a1" ?tool) ?tool-info)
+    (lisp-fun common:make-object-info :type ?tool :name ?tool ?tool-info)
     (lisp-fun common:get-object-info ?target ?target-info))
 
   ; test
