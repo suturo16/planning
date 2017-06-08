@@ -99,12 +99,13 @@ using prolog interface."
        :width ?width
        :depth ?depth)))
 
-
+; if it doesn't work from the start, comment in the uncommented line. 
+; Make sure the node is running though
 (defun say (a-string)
   (unless (eq roslisp::*node-status* :running)
     (roslisp:start-ros-node "sound-play-node"))
   (let ((publisher (roslisp:advertise "robotsound" 'sound_play-msg:<soundrequest>)))
-    (loop while (< (roslisp:num-subscribers publisher) 1) do (sleep 0.01))
+    ;(loop while (< (roslisp:num-subscribers publisher) 1) do (sleep 0.01))
     (ros-info (sound-play) "saying ~a" a-string)
     (roslisp:publish-msg
      publisher
