@@ -5,9 +5,12 @@
 
 CB (function): Function capable of using message data to execute plans."
   (lambda (command)
-    ;; Execute COMMAND with function CB.
-    (with-fields (data)
-        command
+    (with-fields (data) command
+      ;; Let them know we got a command.
+      (ros-info (command-executer) "Got new command: ~a" command)
+      (common:say (format nil "I received a command: ~a." data))
+      
+      ;; Execute COMMAND with function CB.
       (funcall cb data))
 
     (when (gethash :pepper *clients*)

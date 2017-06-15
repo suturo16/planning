@@ -26,14 +26,16 @@
    :object-info-height
    :object-info-width
    :object-info-depth
+   :object-info-type
+   :object-info-pose
 
    :service-run-pipeline
-   :service-connect-frames
-
+   
    :action-move-robot
 
    :prolog-seen-since
    :prolog-disconnect-frames
+   :prolog-connect-frames
    
    :ensure-node-is-running
    :make-param
@@ -46,6 +48,7 @@
    :strings->KeyValues
    :get-joint-config
    :get-controller-specs
+   :say
 
    :run-full-pipeline
    :run-pipeline

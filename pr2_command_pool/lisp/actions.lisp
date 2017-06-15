@@ -8,7 +8,7 @@
         (effort-param-name (format nil "~a_gripper_effort" arm)))
     (common::action-move-robot
      (format nil "pr2_~a_gripper" arm-str)
-     "gripper_control"
-     (lambda (v) (< v 0.01))
-     (make-param +double+ T "target_width" (write-to-string target-width))
+     (format nil "gripper_control_~a" arm)
+     (lambda (v) (< v 0.017))
+     (make-param +double+ T "gripper_goal" (write-to-string target-width))
      (make-param +double+ T effort-param-name (write-to-string strength)))))

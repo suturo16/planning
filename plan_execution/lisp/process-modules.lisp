@@ -10,34 +10,62 @@ ACTION-DESIGNATOR (designator): description of the desired action in the form as
   (destructuring-bind (command specs) (reference action-designator)
     (ecase command
       (base-pose
-       ; Just get in the base pose.
+       ;; Just get in the base pose.
        (pr2-do::get-in-base-pose))
 
+      (move-gripper
+       ;; Open or close the gripper.
+       (let ((arm (car (cdr (assoc 'arm specs))))
+             (target (car (cdr (assoc 'target specs)))))
+         (if (string-equal "open" target)
+             (pr2-do:open-gripper arm)
+             (pr2-do:close-gripper arm))))
+
+      (release
+       ;; Open the gripper and move the arm away.
+       (let ((arm (car (cdr (assoc 'arm specs)))))
+         (pr2-do:release arm 0.09)))
+
       (grasp
-       ; Grasp the specified object with the specified arm.
+       ;; Grasp the specified object with the specified arm.
        (let ((arm (car (cdr (assoc 'arm specs))))
              (obj-info (car (cdr (assoc 'obj-info specs)))))
          (grasp obj-info arm)))
 
+      (move-with-arm
+       ;; Move object in gripper of arm to a location.
+       (let ((arm (car (cdr (assoc 'arm specs))))
+             (obj-info (car (cdr (assoc 'object-info specs))))
+             (target-info (car (cdr (assoc 'target-info specs)))))
+         (place-object obj-info target-info arm)))
+
       (place
-       ; Place the specified object, which is in the gripper of the specified arm, on the specified target.
+       ;; Place the specified object, which is in the gripper of the specified arm, on the specified target.
        (let ((arm (car (cdr (assoc 'arm specs))))
              (obj-info (car (cdr (assoc 'obj-info specs))))
              (target-info (car (cdr (assoc 'target specs)))))
-         (place-object obj-info target-info arm)))
+         (place-object obj-info target-info arm T)))
 
       (detach
-       ; Detach object from rack.
+       ;; Detach object from rack.
        (let ((arm (car (cdr (assoc 'arm specs))))
              (obj-info (car (cdr (assoc 'obj-info specs)))))
          (detach-object-from-rack obj-info arm)))
       
       (cut
-       ; CUT! CUT! CUT! CAKE CRUMBS EVERYWHERE!!!!
+       ;; CUT! CUT! CUT! CAKE CRUMBS EVERYWHERE!!!!
        (let ((arm (car (cdr (assoc 'arm specs))))
              (knife-info (car (cdr (assoc 'knife specs))))
-             (cake-info (car (cdr (assoc 'cake specs)))))                        
-         (cut-object arm knife-info cake-info)))
+             (cake-info (car (cdr (assoc 'cake specs))))
+             (target-info (car (cdr (assoc 'target specs)))))
+         (cut-object arm knife-info cake-info target-info)))
+
+      (move-n-flip
+       ;; Move the tool above the target and flip it.
+       (let ((arm (car (cdr (assoc 'arm specs))))
+             (tool-info (car (cdr (assoc 'tool specs))))
+             (target-info (car (cdr (assoc 'target specs)))))
+         (move-n-flip arm tool-info target-info)))
 
       (test
        ; Just a test stub to appease one's sanity.
