@@ -85,6 +85,7 @@ DESIG (list of designators): List of designators to be executed."
     ('("demo")
      (list (make-designator :action `((:type :base-pose)))
            (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "knife")))
+           (make-designator :action `((:type :detach) (:arm ,common:+right-arm+) (:object "knife")))
            ;;(make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "spatula")))
            (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula") (:target "next2cake")))
            (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box") (:target "spatula")))
