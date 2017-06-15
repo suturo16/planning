@@ -96,3 +96,4 @@ DESIG (list of designators): List of designators to be executed."
            (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "plate")))
            (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "plate1") (:target "deliver")))))))
 
+
