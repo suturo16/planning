@@ -184,7 +184,7 @@ for cutting with SLICE-WIDTH."
         (handle-length (* (1- +blade-%+) (object-info-width knife-info))))
     (action-move-robot (format nil "pr2_upper_body_~a_arm" arm-str)
                        (format nil "pr2_cut_position_~a" arm)
-                       (lambda (v) (< v 0.04))
+                       (lambda (v) (< v 0.07))
                        (make-param +transform+ NIL "cake_frame" (format nil "~a ~a" (object-info-name cake-info) "base_link"))
                        (make-param +double+ T "cake_length" (write-to-string (object-info-depth cake-info)))
                        (make-param +double+ T "cake_width" (write-to-string (object-info-width cake-info)))
