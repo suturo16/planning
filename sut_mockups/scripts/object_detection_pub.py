@@ -32,7 +32,7 @@ class DetectedObject():
                 header = Header(
                     seq = seq,
                     stamp = rospy.Time.now(),
-                    frame_id = 'odom_combined'
+                    frame_id = 'map'
                 ),
                 pose = self.pose
             )
@@ -41,7 +41,7 @@ class DetectedObject():
 def detection_gen():
     param_name = get_param_name(percepteros, object_detection)
     
-    default_types = ['BOX', 'CONE', 'CYLINDER', 'DROPZONE', 'MISC', 'SPHERE', 'KNIFE']
+    default_types = ['BOX', 'CONE', 'CYLINDER', 'DROPZONE', 'MISC', 'SPHERE', 'KNIFE', 'PLATE', 'SPATULA']
     data = {}
     global seq
     seq = 0
@@ -106,8 +106,5 @@ def detection_gen():
 
 if __name__ == '__main__':
     rospy.init_node(percepteros)
-    # gen = detection_gen()
-    # print "\n"*3
-    # print gen()
     pub = TemplatePublisher("~" + object_detection, ObjectDetection, detection_gen(), rate=0.5)
     rospy.spin()
