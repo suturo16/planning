@@ -8,15 +8,6 @@
   "Call action to open the gripper of ARM."
   (action-move-gripper 0.09 arm 70))
 
-(defun check-object-location (obj-info)
-  "Return t if the object of OBJ-INFO is still at the same location."
-  (when obj-info
-    ;(get-in-base-pose)
-    ;turn head
-    ;(service-run-pipeline)
-    (when (seen-since obj-info)
-      T)))
-
 (defun disconnect-obj-from-arm (obj-info arm)
   "Call Prolog to disconnect the object of OBJ-INFO from ARM."
   (prolog-disconnect-frames
