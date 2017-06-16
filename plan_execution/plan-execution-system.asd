@@ -2,6 +2,7 @@
   :depends-on (cram-language
                roslisp
                std_msgs-msg
+               planning-communication-system
                pr2-command-pool-system
                turtle-command-pool-system
                planning-common-system
@@ -18,4 +19,5 @@
      (:file "plans" :depends-on ("package"))
      (:file "action-designators" :depends-on ("package"))
      (:file "process-modules" :depends-on ("package" "plans"))
-     (:file "toplevel" :depends-on ("package" "process-modules"))))))
+     (:file "toplevel" :depends-on ("package" "process-modules" "action-designators"))
+     (:file "init" :depends-on ("package" "toplevel"))))))

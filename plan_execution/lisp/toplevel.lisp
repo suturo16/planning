@@ -1,14 +1,17 @@
- (in-package :plan-execution-package)
+(in-package :plan-execution-package)
 
 (defun execute (task)
-  "Start a node and execute the given task."
+  "Execute TASK. Start a node if necessary.
+
+TASK (string): Natural language description of the task.
+               As of now it has to be one of the strings defined in `task->designators'."
   (common:ensure-node-is-running)
   (format T "command: ~a" task)
   (execute-task task))
   
 
 (cram-language:def-top-level-cram-function execute-task (task)
-  "Execute the given task in semrec context."
+  "Execute TASK in semrec context."
   (roslisp::ensure-node-is-running)
   
   ;; settings for semrec
@@ -36,24 +39,61 @@
   )
 
 (defun execute-desigs (desigs)
-  "Execute the given designators with the manipulation pm."
-  (when desigs
-    (pm-execute :manipulation (car desigs))
-    
-    ; Call the function recursively with the rest of the list.
-    (execute-desigs (cdr desigs))))
+  "Execute DESIGS with the manipulation pm.
+
+DESIG (list of designators): List of designators to be executed."
+  (if desigs
+      (seq
+        (pm-execute :manipulation (car desigs))
+        
+        ;; Call the function recursively with the rest of the list.
+        (execute-desigs (cdr desigs)))
+      ;; else show victory message
+      (print "Done executing!")))
 
 (defun task->designators (task)
-  "Use a simple switch to translate a task to a list of designators."
-  (alexandria:switch (task :test #'equal)
-    ("grasp cylinder"
-     (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Cylinder")))))
-    ("grasp knife"
-     (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Knife")))))
-    ("just cut"
-      (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box"))))
-    ("cut cake"
-     (list (make-designator :action `((:type :grasp) (:arm ,pr2-do::+right-arm+) (:object "Knife")))
-           ;(make-designator :action `((:type :detach) (:arm ,pr2-do::+right-arm+) (:object "Knife")))
-           (make-designator :action `((:type :cut) (:arm ,pr2-do::+right-arm+) (:knife "Knife") (:cake "Box")))))))
+  "Translate TASK to a list of designators."
+  (alexandria:switch (task :test (lambda (x xs) (member x xs :test #'equal)))
+    ('("basepose" "step0")
+     (list (make-designator :action `((:type :base-pose)))))
+    ('("grasp cylinder")
+     (list (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "cylinder")))))
+    ('("grasp knife" "step1")
+     (list (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "knife")))))
+    ('("detach" "step2")
+     (list (make-designator :action `((:type :detach) (:arm ,common:+right-arm+) (:object "knife")))))
+    ('("move spatula next to cake" "step3")
+     (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula") (:target "next2cake")))))
+    ('("just cut" "step4b")
+     (list (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box")))))
+    ('("just cut and move" "step4")
+     (list (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box") (:target "spatula")))))
+    ('("move n flip" "step5")
+     (list (make-designator :action `((:type :move-n-flip) (:arm ,common:+left-arm+) (:tool "spatula") (:target "plate")))))
+    ('("drop spatula" "step6")
+     (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula") (:target "spatulaDropZone")))
+           (make-designator :action `((:type :move-gripper) (:arm ,common:+left-arm+) (:object "spatula") (:target "open")))
+           (make-designator :action `((:type :release) (:arm ,common:+left-arm+)))))
+    ('("grasp plate" "step7")
+     (list (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "plate")))))
+    ('("deliver plate" "step8")
+     (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "plate1") (:target "deliver")))))
+    ('("cut cake")
+     (list (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "knife")))
+           (make-designator :action `((:type :detach) (:arm ,common:+right-arm+) (:object "knife")))
+           (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box")))))
+    ('("demo")
+     (list (make-designator :action `((:type :base-pose)))
+           (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "knife")))
+           (make-designator :action `((:type :detach) (:arm ,common:+right-arm+) (:object "knife")))
+           ;;(make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "spatula")))
+           (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula") (:target "next2cake")))
+           (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box") (:target "spatula")))
+           (make-designator :action `((:type :move-n-flip) (:arm ,common:+left-arm+) (:tool "spatula") (:target "plate")))
+           (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula") (:target "spatulaDropZone")))
+           (make-designator :action `((:type :move-gripper) (:arm ,common:+left-arm+) (:object "spatula") (:target "open")))
+           (make-designator :action `((:type :release) (:arm ,common:+left-arm+)))
+           (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "plate")))
+           (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "plate1") (:target "deliver")))))))
+
 

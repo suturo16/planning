@@ -1,6 +1,6 @@
-(in-package :pepper-communication-package)
+(in-package :planning-communication-package)
 
-(defun update-connection-credentials (local-host &optional &key (client-id 1) remote-host remote-port client)
+(defun update-connection-credentials (local-host &key (client-id 1) remote-host remote-port client)
   "LOCAL-HOST: The local computers IP address.
 CLIENT-ID: Id of the calling system. 0 = pepper, 1 = PR2, 2 = turtle
 REMOTE-HOST: Address of the server to call.
@@ -43,4 +43,5 @@ If host or port is nil, default is used."
   (nth-value 1
              (sb-bsd-sockets:socket-name
               (second (first s-xml-rpc::*server-processes*)))))
+
 
