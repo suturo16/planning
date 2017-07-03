@@ -30,7 +30,7 @@
 (defun move-arm-to-object (obj-info arm)
   "Call action to move ARM to the object of OBJ-INFO."
   (action-move-robot (format nil "pr2_grasp_control_~a" arm)
-                     (lambda (v) (< v 0.01))
+                     (alexandria:curry #'error-break-function +move-arm-to-object-error-limit+)
                      (make-param +transform+ nil "cylinder_frame"
                                  (format nil "~a ~a" (object-info-name obj-info) "base_link"))
                      (make-param +double+ T "cylinder_width" (write-to-string (object-info-width obj-info)))
@@ -41,7 +41,7 @@
   "Call action to place the object of OBJ-INFO at the location of LOC-INFO.
 Assume that the object is attached to ARM."
     (action-move-robot (format nil "pr2_place_control_~a" arm)
-                       (alexandria:assoc-value +break-functions+ "move-object-with-arm" :test #'equal)  ;; (lambda (v) (< v 0.025))
+                       (alexandria:curry #'error-break-function +move-object-with-arm-error-limit+)
                        (make-param +transform+ NIL "target_frame"
                                    (format nil "~a ~a" (object-info-name loc-info) "base_link"))
                        (make-param +transform+ NIL "cylinder_in_gripper"
@@ -58,7 +58,7 @@ Assume that the object is attached to ARM."
 (defun move-n-flip-object-with-arm (loc-info tool-info arm)
   "Call action to move the object on the tool of TOOL-INFO above the lcoation of LOC-INFO and flip the tool to place the obejct at the location."
     (action-move-robot (format nil "pr2_move_and_flip_~a" arm)
-                       (alexandria:assoc-value +break-functions+ "move-n-flip-object-with-arm" :test #'equal)  ;; (lambda (v) (< v 0.01))
+                       (alexandria:curry #'error-break-function +move-n-flip-object-with-arm-error-limit+)
                        (make-param +transform+ NIL "spatula_in_gripper"
                                    (format nil "~a ~a" (object-info-name tool-info) (format nil  "~a_wrist_roll_link" arm)))
                        (make-param +transform+ NIL "goal_frame"
@@ -69,7 +69,7 @@ Assume that the object is attached to ARM."
 (defun get-in-base-pose ()
   "Bring PR2 into base (mantis) pose."
   (action-move-robot "pr2_upper_body_joint_control"
-                     (alexandria:assoc-value +break-functions+ "get-in-base-pose" :test #'equal)  ;; (lambda (v) (< v 0.09))
+                     (alexandria:curry #'error-break-function +get-in-base-pose-error-limit+)
                      (make-param +double+ T "torso_lift_joint_goal" "0.25")
                      (make-param +double+ T "l_shoulder_pan_joint_goal" "1.23679")
                      (make-param +double+ T "l_shoulder_lift_joint_goal" "-0.247593")
@@ -101,7 +101,7 @@ Assume that the object is attached to ARM."
   (let ((grip-length (* (1- +blade-%+) (object-info-width knife-info)))
         (blade-height (object-info-height knife-info)))
     (action-move-robot (format nil "knife_grasp_~a" arm)
-                       (alexandria:assoc-value +break-functions+ "grasp-knife" :test #'equal)  ;; (lambda (v) (< v 0.025))
+                       (alexandria:curry #'error-break-function +grasp-knife-error-limit+)
                        (make-param +transform+ NIL "target_frame" (format nil  "~a ~a" (object-info-name knife-info) "base_link"))
                        (make-param +double+ T "handle_height" (write-to-string +handle-height+))
                        (make-param +double+ T "handle_length" (write-to-string +handle-length+)))))
@@ -120,7 +120,7 @@ Assume that the object is attached to ARM."
 (defun grasp-plate (plate-info arm)
   "Call action to grasp the plate of PLATE-INFO with ARM."
   (action-move-robot (format nil "pr2_grasp_plate_~a" arm)
-                     (alexandria:assoc-value +break-functions+ "grasp-plate" :test #'equal)  ;; (lambda (v) (< v 0.125))
+                     (alexandria:curry #'error-break-function +grasp-plate-error-limit+)
                      (make-param +transform+ NIL "plate_frame" (format nil "~a ~a" (object-info-name plate-info) "base_link"))
                      (make-param +double+ T "edge_radius" (write-to-string +edge-radius+))
                      (make-param +double+ T "edge_z" (write-to-string +edge-height+))
@@ -138,7 +138,7 @@ Assume that the object is attached to ARM."
 (defun grasp-spatula (spatula-info arm)
   "Call action to grasp the spatula of SPATULA-INFO with ARM."
     (action-move-robot (format nil "pr2_grasp_fingerHandle_~a" arm)
-                       (alexandria:assoc-value +break-functions+ "grasp-spatula" :test #'equal)  ;; (lambda (v) (< v 0.025))
+                       (alexandria:curry #'error-break-function +grasp-spatula-error-limit+)
                        (make-param +transform+ NIL "handle_frame" (format nil "~a ~a" "spatula_handle" "base_link"))
                        (make-param +double+ T "handle_depth" (write-to-string +spatula-handle-depth+))
                        (make-param +double+ T "handle_width" (write-to-string +spatula-handle-width+))))
@@ -146,7 +146,7 @@ Assume that the object is attached to ARM."
 (defun release (arm &optional (gripper-width 0.1))
   "Call action to release the object in ARM."
     (action-move-robot (format nil "pr2_release_~a" arm)
-                       (alexandria:assoc-value +break-functions+ "release" :test #'equal)  ;; (lambda (v) (< v 0.0000001))
+                       (alexandria:curry #'error-break-function +release-error-limit+)
                        (make-param +transform+ T "start_pose" (tf-lookup->string "base_link" (format nil "~a_wrist_roll_link" arm)))
                        (make-param +double+ NIL "gripper_opening" (write-to-string gripper-width))))
 
@@ -154,7 +154,7 @@ Assume that the object is attached to ARM."
   "Call action to move the knife of KNIFE-INFO away from the rack.
 Assume that the knife is connected to ARM."
     (action-move-robot (format nil "pr2_detach_knife_~a" arm)
-                       (alexandria:assoc-value +break-functions+ "detach-knife-from-rack" :test #'equal)  ;; (lambda (v) (< v 0.000001))
+                       (alexandria:curry #'error-break-function +detach-knife-from-rack-error-limit+)  ;; (lambda (v) (< v 0.000001))
                        (make-param +transform+ NIL "knife_frame_wrist" (format nil  "~a ~a" (object-info-name knife-info)
                                                                  (format nil "~a_wrist_roll_link" arm)))
                        (make-param +transform+ T "rack_frame"  (common:tf-lookup->string "base_link" (object-info-name knife-info)))
@@ -167,7 +167,7 @@ Assume that knife of KNIFE-INFO is used by ARM
 for cutting with SLICE-WIDTH."
   (let ((handle-length (* (1- +blade-%+) (object-info-width knife-info))))
     (action-move-robot (format nil "pr2_cut_position_~a" arm)
-                       (alexandria:assoc-value +break-functions+ "take-cutting-position" :test #'equal)  ;; (lambda (v) (< v 0.07))
+                       (alexandria:curry #'error-break-function +take-cutting-position-error-limit+)
                        (make-param +transform+ NIL "cake_frame" (format nil "~a ~a" (object-info-name cake-info) "base_link"))
                        (make-param +double+ T "cake_length" (write-to-string (object-info-depth cake-info)))
                        (make-param +double+ T "cake_width" (write-to-string (object-info-width cake-info)))
@@ -183,7 +183,7 @@ Use knife of KNIFE-INFO within the gripper of ARM
 to cut pieces with SLICE-WIDTH."
   (let ((handle-length (* (1- +blade-%+) (object-info-width knife-info))))
     (action-move-robot (format nil "pr2_cut_~a" arm)
-                       (alexandria:assoc-value +break-functions+ "cut-cake" :test #'equal)  ;; (lambda (v) (< v 0.025))
+                       (alexandria:curry #'error-break-function +cut-cake-error-limit+)
                        (make-param +transform+ NIL "cake_frame" (format nil "~a ~a" (object-info-name cake-info) "base_link"))
                        (make-param +double+ T "cake_length" (write-to-string (object-info-depth cake-info)))
                        (make-param +double+ T "cake_width" (write-to-string (object-info-width cake-info)))
@@ -196,7 +196,7 @@ to cut pieces with SLICE-WIDTH."
 
 (defun move-slice-aside (knife-info cake-info target-info arm)
     (action-move-robot (format nil "pr2_move_cake_~a" arm)
-                       (alexandria:assoc-value +break-functions+ "move-slice-aside" :test #'equal)  ;; (lambda (v) (< v 0.015))
+                       (alexandria:curry #'error-break-function +move-slice-aside-error-limit+)
                        (make-param +transform+ NIL "knife_in_gripper" (format nil "~a ~a_wrist_roll_link" (object-info-name knife-info) arm))
                        (make-param +transform+ NIL "cake" (format nil "~a base_link" (object-info-name cake-info)))
                        (make-param +transform+ NIL "plate" (format nil "~a base_link" (object-info-name target-info)))))
@@ -205,5 +205,5 @@ to cut pieces with SLICE-WIDTH."
 (defun look-at (obj-info)
   "Call action to look at the position of the object of OBJ-INFO."
     (action-move-robot (format nil "pr2_look_at")
-                       (alexandria:assoc-value +break-functions+ "look-at" :test #'equal)  ;; (lambda (v) (< v 0.015))
+                       (alexandria:curry #'error-break-function +look-at-error-limit+)
                        (make-param +transform+ NIL "focal_point" (format nil "~a ~a" (object-info-name obj-info) "base_link"))))
