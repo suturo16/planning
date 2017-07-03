@@ -7,7 +7,7 @@
   (let ((arm-str (if (string= +left-arm+ arm) "left" "right"))
         (effort-param-name (format nil "~a_gripper_effort" arm)))
     (common::action-move-robot
-     (format nil "pr2_~a_gripper" arm-str)
+     ;; (format nil "pr2_~a_gripper" arm-str)
      (format nil "gripper_control_~a" arm)
      (lambda (v) (< v 0.017))
      (make-param +double+ T "gripper_goal" (write-to-string target-width))

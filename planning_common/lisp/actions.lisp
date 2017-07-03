@@ -15,17 +15,15 @@ If not, set it up."
       (setup-move-robot-client))
   *move-robot-action-client*)
 
-(defun get-move-robot-goal-conv(joint-config controller-config typed-params)
+(defun get-move-robot-goal-conv(controller-config typed-params)
   "Use joints from JOINT-CONFIG and controller of CONTROLLER-CONFIG for goal creation."
   (get-move-robot-goal
-   (get-joint-config joint-config)
    (get-controller-specs controller-config)
    typed-params))
 
-(defun get-move-robot-goal(joints controller-specs typed-params)
+(defun get-move-robot-goal(controller-specs typed-params)
   "Create goal of movement using JOINTS and CONTROLLER-SPECS"
   (actionlib:make-action-goal (get-move-robot-client)
-    :controlled_joints (make-array (length joints) :initial-contents joints)
     :controller_yaml controller-specs
     :feedbackValue "feedback"
     :params (make-array (length typed-params) :initial-contents typed-params)))
@@ -38,7 +36,7 @@ If not, set it up."
     (format t "Error Value: ~a~%Alteration Rate: ~a~%~%" current_value alteration_rate)))
 
 (defun action-move-robot
-    (config-name controller-name &optional cb &rest typed-params)
+    (controller-name &optional cb &rest typed-params)
   "Call action with joints CONFIG-NAME and controller specification CONTROLLER-NAME.
 Optionally takes function CB as a break condition for handling feedback signals and
 an arbitrary number TYPED-PARAMS to use as params in the action call.
@@ -51,7 +49,7 @@ TYPED-PARAMS (suturo_manipulation_msgs-msg:TypedParam): Params to be send with t
     (multiple-value-bind (result status)
         (actionlib:send-goal-and-wait
          (get-move-robot-client)
-         (get-move-robot-goal-conv config-name controller-name typed-params)
+         (get-move-robot-goal-conv controller-name typed-params)
          :feedback-cb 'move-robot-feedback-cb
          :result-timeout 14
          :exec-timeout 14)
