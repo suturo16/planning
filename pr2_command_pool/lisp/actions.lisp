@@ -4,8 +4,7 @@
   "Move ARM with STRENGTH, taking TARGET-WIDTH into account."
   (when (not (member arm (list +left-arm+ +right-arm+)))
     (ros-error "action-move-gripper" "Unsupported arm specification: ~a." arm))
-  (let ((arm-str (if (string= +left-arm+ arm) "left" "right"))
-        (effort-param-name (format nil "~a_gripper_effort" arm)))
+  (let ((effort-param-name (format nil "~a_gripper_effort" arm)))
     (common::action-move-robot
      (format nil "gripper_control_~a" arm)
      (lambda (v) (< v 0.017))

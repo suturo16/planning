@@ -29,28 +29,26 @@
 
 (defun move-arm-to-object (obj-info arm)
   "Call action to move ARM to the object of OBJ-INFO."
-  (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
-    (action-move-robot (format nil "pr2_grasp_control_~a" arm)
-                       (lambda (v) (< v 0.01))
-                       (make-param +transform+ nil "cylinder_frame"
-                                   (format nil "~a ~a" (object-info-name obj-info) "base_link"))
-                       (make-param +double+ T "cylinder_width" (write-to-string (object-info-width obj-info)))
-                       (make-param +double+ T "cylinder_height" (write-to-string (object-info-height obj-info))))))
+  (action-move-robot (format nil "pr2_grasp_control_~a" arm)
+                     (lambda (v) (< v 0.01))
+                     (make-param +transform+ nil "cylinder_frame"
+                                 (format nil "~a ~a" (object-info-name obj-info) "base_link"))
+                     (make-param +double+ T "cylinder_width" (write-to-string (object-info-width obj-info)))
+                     (make-param +double+ T "cylinder_height" (write-to-string (object-info-height obj-info)))))
 
 
 (defun move-object-with-arm (loc-info obj-info arm)
   "Call action to place the object of OBJ-INFO at the location of LOC-INFO.
 Assume that the object is attached to ARM."
-  (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
-    (action-move-robot (format nil "pr2_place_control_~a" arm)
-                       (lambda (v) (< v 0.025))
-                       (make-param +transform+ NIL "target_frame"
-                                   (format nil "~a ~a" (object-info-name loc-info) "base_link"))
-                       (make-param +transform+ NIL "cylinder_in_gripper"
-                                   (format nil "~a ~a" (object-info-name obj-info) (format nil "~a_wrist_roll_link" arm)))
-                       (make-param +double+ T "cylinder_width" (write-to-string (object-info-width obj-info)))
-                       (make-param +double+ T "cylinder_height" (write-to-string (object-info-height obj-info)))
-                       (make-param +double+ T (format nil "~a_gripper_effort" arm) (write-to-string 50)))))
+  (action-move-robot (format nil "pr2_place_control_~a" arm)
+                     (lambda (v) (< v 0.025))
+                     (make-param +transform+ NIL "target_frame"
+                                 (format nil "~a ~a" (object-info-name loc-info) "base_link"))
+                     (make-param +transform+ NIL "cylinder_in_gripper"
+                                 (format nil "~a ~a" (object-info-name obj-info) (format nil "~a_wrist_roll_link" arm)))
+                     (make-param +double+ T "cylinder_width" (write-to-string (object-info-width obj-info)))
+                     (make-param +double+ T "cylinder_height" (write-to-string (object-info-height obj-info)))
+                     (make-param +double+ T (format nil "~a_gripper_effort" arm) (write-to-string 50))))
 
 
 ;; move-n-flip constants
@@ -59,15 +57,14 @@ Assume that the object is attached to ARM."
 
 (defun move-n-flip-object-with-arm (loc-info tool-info arm)
   "Call action to move the object on the tool of TOOL-INFO above the lcoation of LOC-INFO and flip the tool to place the obejct at the location."
-  (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
-    (action-move-robot (format nil "pr2_move_and_flip_~a" arm)
-                       (lambda (v) (< v 0.01))
-                       (make-param +transform+ NIL "spatula_in_gripper"
-                                   (format nil "~a ~a" (object-info-name tool-info) (format nil  "~a_wrist_roll_link" arm)))
-                       (make-param +transform+ NIL "goal_frame"
-                                   (format nil "~a ~a" (object-info-name loc-info) "base_link"))
-                       (make-param +double+ T "spatula_radius" (write-to-string +tool-width+))
-                       (make-param +double+ T "goal_radius" (write-to-string +loc-radius+)))))
+  (action-move-robot (format nil "pr2_move_and_flip_~a" arm)
+                     (lambda (v) (< v 0.01))
+                     (make-param +transform+ NIL "spatula_in_gripper"
+                                 (format nil "~a ~a" (object-info-name tool-info) (format nil  "~a_wrist_roll_link" arm)))
+                     (make-param +transform+ NIL "goal_frame"
+                                 (format nil "~a ~a" (object-info-name loc-info) "base_link"))
+                     (make-param +double+ T "spatula_radius" (write-to-string +tool-width+))
+                     (make-param +double+ T "goal_radius" (write-to-string +loc-radius+))))
 
 (defun get-in-base-pose ()
   "Bring PR2 into base (mantis) pose."
@@ -100,9 +97,8 @@ Assume that the object is attached to ARM."
 
 (defun grasp-knife (knife-info arm)
   "Call action to grasp the knife of KNIFE-INFO with ARM."
-  (let* ((arm-str (if (string= arm +left-arm+) "left" "right"))
-         (grip-length (* (1- +blade-%+) (object-info-width knife-info)))
-         (blade-height (object-info-height knife-info)))
+  (let ((grip-length (* (1- +blade-%+) (object-info-width knife-info)))
+        (blade-height (object-info-height knife-info)))
     (action-move-robot (format nil "knife_grasp_~a" arm)
                        (lambda (v) (< v 0.025))
                        (make-param +transform+ NIL "target_frame" (format nil  "~a ~a" (object-info-name knife-info) "base_link"))
@@ -122,14 +118,13 @@ Assume that the object is attached to ARM."
 
 (defun grasp-plate (plate-info arm)
   "Call action to grasp the plate of PLATE-INFO with ARM."
-  (let* ((arm-str (if (string= arm +left-arm+) "left" "right")))
-    (action-move-robot (format nil "pr2_grasp_plate_~a" arm)
-                       (lambda (v) (< v 0.125))
-                       (make-param +transform+ NIL "plate_frame" (format nil "~a ~a" (object-info-name plate-info) "base_link"))
-                       (make-param +double+ T "edge_radius" (write-to-string +edge-radius+))
-                       (make-param +double+ T "edge_z" (write-to-string +edge-height+))
-                       (make-param +double+ T "edge_depth" (write-to-string +edge-width+))
-                       (make-param +double+ T "edge_angle" (write-to-string +edge-angle+)))))
+  (action-move-robot (format nil "pr2_grasp_plate_~a" arm)
+                     (lambda (v) (< v 0.125))
+                     (make-param +transform+ NIL "plate_frame" (format nil "~a ~a" (object-info-name plate-info) "base_link"))
+                     (make-param +double+ T "edge_radius" (write-to-string +edge-radius+))
+                     (make-param +double+ T "edge_z" (write-to-string +edge-height+))
+                     (make-param +double+ T "edge_depth" (write-to-string +edge-width+))
+                     (make-param +double+ T "edge_angle" (write-to-string +edge-angle+))))
 
 ;; spatula constants
 ; adrian hat vermessen:
@@ -141,40 +136,35 @@ Assume that the object is attached to ARM."
 
 (defun grasp-spatula (spatula-info arm)
   "Call action to grasp the spatula of SPATULA-INFO with ARM."
-  (let* ((arm-str (if (string= arm +left-arm+) "left" "right")))
-    (action-move-robot (format nil "pr2_grasp_fingerHandle_~a" arm)
-                       (lambda (v) (< v 0.025))
-                       (make-param +transform+ NIL "handle_frame" (format nil "~a ~a" "spatula_handle" "base_link"))
-                       (make-param +double+ T "handle_depth" (write-to-string +spatula-handle-depth+))
-                       (make-param +double+ T "handle_width" (write-to-string +spatula-handle-width+)))))
+  (action-move-robot (format nil "pr2_grasp_fingerHandle_~a" arm)
+                     (lambda (v) (< v 0.025))
+                     (make-param +transform+ NIL "handle_frame" (format nil "~a ~a" "spatula_handle" "base_link"))
+                     (make-param +double+ T "handle_depth" (write-to-string +spatula-handle-depth+))
+                     (make-param +double+ T "handle_width" (write-to-string +spatula-handle-width+))))
 
 (defun release (arm &optional (gripper-width 0.1))
   "Call action to release the object in ARM."
-  (let* ((arm-str (if (string= arm +left-arm+) "left" "right")))
-    (action-move-robot ;; (format nil "pr2_upper_body_~a_arm" arm-str)
-                       (format nil "pr2_release_~a" arm)
+    (action-move-robot (format nil "pr2_release_~a" arm)
                        (lambda (v) (< v 0.0000001))
                        (make-param +transform+ T "start_pose" (tf-lookup->string "base_link" (format nil "~a_wrist_roll_link" arm)))
-                       (make-param +double+ NIL "gripper_opening" (write-to-string gripper-width)))))
+                       (make-param +double+ NIL "gripper_opening" (write-to-string gripper-width))))
 
 (defun detach-knife-from-rack (knife-info arm)
   "Call action to move the knife of KNIFE-INFO away from the rack.
 Assume that the knife is connected to ARM."
-  (let* ((arm-str (if (string= arm +left-arm+) "left" "right")))
-    (action-move-robot (format nil "pr2_detach_knife_~a" arm)
-                       (lambda (v) (< v 0.000001))
-                       (make-param +transform+ NIL "knife_frame_wrist" (format nil  "~a ~a" (object-info-name knife-info)
-                                                                 (format nil "~a_wrist_roll_link" arm)))
-                       (make-param +transform+ T "rack_frame"  (common:tf-lookup->string "base_link" (object-info-name knife-info)))
-                       (make-param 5 T "debug" "rack_frame")
-                       (make-param 5 T "debug2" "rack_dist"))))
+  (action-move-robot (format nil "pr2_detach_knife_~a" arm)
+                     (lambda (v) (< v 0.000001))
+                     (make-param +transform+ NIL "knife_frame_wrist" (format nil  "~a ~a" (object-info-name knife-info)
+                                                                             (format nil "~a_wrist_roll_link" arm)))
+                     (make-param +transform+ T "rack_frame"  (common:tf-lookup->string "base_link" (object-info-name knife-info)))
+                     (make-param 5 T "debug" "rack_frame")
+                     (make-param 5 T "debug2" "rack_dist")))
 
 (defun take-cutting-position (cake-info knife-info arm slice-width)
   "Call action to take a position ready to cut the cake of CAKE-INFO.
 Assume that knife of KNIFE-INFO is used by ARM
 for cutting with SLICE-WIDTH."
-  (let ((arm-str (if (string= arm +left-arm+) "left" "right"))
-        (handle-length (* (1- +blade-%+) (object-info-width knife-info))))
+  (let ((handle-length (* (1- +blade-%+) (object-info-width knife-info))))
     (action-move-robot (format nil "pr2_cut_position_~a" arm)
                        (lambda (v) (< v 0.07))
                        (make-param +transform+ NIL "cake_frame" (format nil "~a ~a" (object-info-name cake-info) "base_link"))
@@ -182,7 +172,7 @@ for cutting with SLICE-WIDTH."
                        (make-param +double+ T "cake_width" (write-to-string (object-info-width cake-info)))
                        (make-param +double+ T "cake_height" (write-to-string (object-info-height cake-info)))
                        (make-param +transform+ NIL "knife_ee_frame" (format nil "~a ~a" (object-info-name knife-info) (format nil "~a_wrist_roll_link" arm)))
-                       (make-param +double+ T "knife_height" (write-to-string +blade-height+))  ; (write-to-string (object-info-height knife-info)))
+                       (make-param +double+ T "knife_height" (write-to-string +blade-height+))  ;; (write-to-string (object-info-height knife-info)))
                        (make-param +double+ T "handle_length" (write-to-string +handle-length+))
                        (make-param +double+ T "slice_width" (write-to-string slice-width)))))
 
@@ -190,8 +180,7 @@ for cutting with SLICE-WIDTH."
   "Call action to cut the cake of CAKE-INFO.
 Use knife of KNIFE-INFO within the gripper of ARM
 to cut pieces with SLICE-WIDTH."
-  (let ((arm-str (if (string= arm +left-arm+) "left" "right"))
-        (handle-length (* (1- +blade-%+) (object-info-width knife-info))))
+  (let ((handle-length (* (1- +blade-%+) (object-info-width knife-info))))
     (action-move-robot (format nil "pr2_cut_~a" arm)
                        (lambda (v) (< v 0.025))
                        (make-param +transform+ NIL "cake_frame" (format nil "~a ~a" (object-info-name cake-info) "base_link"))
@@ -205,12 +194,11 @@ to cut pieces with SLICE-WIDTH."
 
 
 (defun move-slice-aside (knife-info cake-info target-info arm)
-  (let ((arm-str (if (string= arm +left-arm+) "left" "right")))
-    (action-move-robot (format nil "pr2_move_cake_~a" arm)
-                       (lambda (v) (< v 0.015))
-                       (make-param +transform+ NIL "knife_in_gripper" (format nil "~a ~a_wrist_roll_link" (object-info-name knife-info) arm))
-                       (make-param +transform+ NIL "cake" (format nil "~a base_link" (object-info-name cake-info)))
-                       (make-param +transform+ NIL "plate" (format nil "~a base_link" (object-info-name target-info))))))
+  (action-move-robot (format nil "pr2_move_cake_~a" arm)
+                     (lambda (v) (< v 0.015))
+                     (make-param +transform+ NIL "knife_in_gripper" (format nil "~a ~a_wrist_roll_link" (object-info-name knife-info) arm))
+                     (make-param +transform+ NIL "cake" (format nil "~a base_link" (object-info-name cake-info)))
+                     (make-param +transform+ NIL "plate" (format nil "~a base_link" (object-info-name target-info)))))
 
 
 (defun look-at (obj-info)
