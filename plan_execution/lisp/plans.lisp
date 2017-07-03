@@ -212,34 +212,3 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
   ;; else complain
   (ros-error (move-n-flip) "Cannot find object '~a', on which I am supposed to deliver the object."
              (common:object-info-name target-info))))
-
-
-(defun ms2-grasp-knife (knife-info arm)
-  (ros-info (ms2-grasp-knife) "connect Knife frame to ododm.")
-  (common:prolog-connect-frames "/odom_combined"  "/Knife")
-  (ros-info (ms2-grasp-knife) "grasp the knife.")
-  (pr2-do:grasp-knife knife-info arm)
-  (ros-info (ms2-grasp-knife) "close-gripper")
-  (pr2-do:close-gripper arm 100)
-  ;; (pr2-do::detach-knife-from-rack (pr2-do::get-object-info "Knife") pr2-do::+right-arm+)
-  (ros-info (ms2-grasp-knife) "reconnect frames from odom to arm")
-  (common:prolog-disconnect-frames "/odom_combined" "/Knife")
-  (common:prolog-connect-frames "/r_wrist_roll_link" "/Knife")
-  ;;(pr2-do:get-in-base-pose)
-  ;;TODO: test detach, add it in here.
-  )
-
-
-(defun ms2-cut-cake (cake-info knife-info arm)
-  (common:prolog-connect-frames "/odom_combined" "/Box")
-  (ros-info "ms2-cut-object" "Getting into cutting position.")
-  (pr2-do:take-cutting-position cake-info knife-info arm 0.01)
-  (ros-info "ms2-cut-object" "Cutting.")
-  (pr2-do:cut-cake cake-info knife-info arm 0.01)
-  (ros-info "ms2-cut-cake" "Done."))
-
-
-(defun ms2-full-demo ()
-  (ms2-grasp-knife (common:get-object-info "Knife") common:+right-arm+ )
-  (pr2-do:get-in-base-pose)
-  (ms2-cut-cake (common:get-object-info "Box") (common:get-object-info "Knife") common:+right-arm+))

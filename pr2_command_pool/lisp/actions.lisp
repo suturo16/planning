@@ -5,7 +5,7 @@
   (when (not (member arm (list +left-arm+ +right-arm+)))
     (ros-error "action-move-gripper" "Unsupported arm specification: ~a." arm))
   (let ((effort-param-name (format nil "~a_gripper_effort" arm)))
-    (common::action-move-robot
+    (common:action-move-robot
      (format nil "gripper_control_~a" arm)
      (alexandria:curry #'error-break-function +action-move-gripper-error-limit+)
      (make-param +double+ T "gripper_goal" (write-to-string target-width))

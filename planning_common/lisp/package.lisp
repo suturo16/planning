@@ -30,7 +30,8 @@
    :object-info-pose
 
    :service-run-pipeline
-   
+
+   :setup-move-robot-client
    :action-move-robot
 
    :prolog-seen-since
