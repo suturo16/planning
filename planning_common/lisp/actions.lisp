@@ -36,7 +36,7 @@ If not, set it up."
     (format t "Error Value: ~a~%Alteration Rate: ~a~%~%" current_value alteration_rate)))
 
 (defun action-move-robot
-    (controller-name &optional cb &rest typed-params)
+    (controller-name cb use-alt-rates &rest typed-params)
   "Call action with joints CONFIG-NAME and controller specification CONTROLLER-NAME.
 Optionally takes function CB as a break condition for handling feedback signals and
 an arbitrary number TYPED-PARAMS to use as params in the action call.
@@ -45,7 +45,7 @@ CONFIG-NAME (string): Name of the joint configuration to be used.
 CONTROLLER-NAME (string): Name of the controller to be used.
 CB (function): Break condition. See `make-feedback-signal-handler's documentation.
 TYPED-PARAMS (suturo_manipulation_msgs-msg:TypedParam): Params to be send with the goal."
-  (handler-bind ((actionlib:feedback-signal (make-feedback-signal-handler cb T)))
+  (handler-bind ((actionlib:feedback-signal (make-feedback-signal-handler cb use-alt-rates)))
     (multiple-value-bind (result status)
         (actionlib:send-goal-and-wait
          (get-move-robot-client)
