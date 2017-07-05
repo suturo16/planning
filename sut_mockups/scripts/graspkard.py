@@ -15,7 +15,7 @@ class MovementServer(TemplateActionServer):
         rospy.loginfo("Got goal.")
         r = rospy.Rate(1)
         feedback = MoveRobotFeedback()
-        feedback.current_value = 3.5
+        feedback.current_value = 0.35
         # feedback.alteration_rate = 0.5
         param_name = constants.get_param_name(constants.graspkard, "instant")
         if rospy.get_param(param_name, True):
@@ -33,7 +33,7 @@ class MovementServer(TemplateActionServer):
                     self.server.set_preempted()
                     break
                 if feedback.current_value > 0:
-                    feedback.alteration_rate = round(random.uniform(0.4, 0.8), 1)
+                    feedback.alteration_rate = round(random.uniform(0.05, 0.08), 2)
                     feedback.current_value -= feedback.alteration_rate
                 self.server.publish_feedback(feedback)
                 r.sleep()
