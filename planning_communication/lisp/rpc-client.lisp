@@ -1,8 +1,7 @@
 (in-package :planning-communication-package)
 
-(defun update-connection-credentials (local-host &key (client-id 1) remote-host remote-port client)
-  "LOCAL-HOST: The local computers IP address.
-CLIENT-ID: Id of the calling system. 0 = pepper, 1 = PR2, 2 = turtle
+(defun update-connection-credentials (&key (client-id 1) remote-host remote-port client)
+  "CLIENT-ID: Id of the calling system. 0 = pepper, 1 = PR2, 2 = turtle
 REMOTE-HOST: Address of the server to call.
 REMOTE-PORT: Port of the server to call.
 CLIENT: Set to :pepper or :turtle instead of setting host and port manually, to retrieve information from the clients list.
@@ -14,7 +13,7 @@ TODO: Retrieve IP address automatically. Import package ip-interfaces from exter
     (setf remote-host (client-host (gethash client *clients*)))
     (setf remote-port (client-port (gethash client *clients*))))
   
-  (fire-rpc "updateObserverClient" remote-host remote-port client-id local-host (get-local-port)))
+  (fire-rpc "updateObserverClient" remote-host remote-port client-id (get-local-ip) (get-local-port)))
 
 (defun fire-rpc-to-client (client remote-function &rest args)
   "CLIENT: The id of the client as saved in *clients*.
@@ -39,7 +38,7 @@ If host or port is nil, default is used."
    :port port))
 
 (defun get-local-ip ()
-  "Returns the IP of the LAN-connection, NIL if there is none."
+  "Returns the IP of the current connection, NIL if there is none."
   (let* ((eth-interfaces
            (ip-interfaces:get-ip-interfaces-by-flags '(:iff-up :iff-running :iff-broadcast)))
          (eth-adress

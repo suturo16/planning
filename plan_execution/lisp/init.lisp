@@ -1,15 +1,15 @@
 
 (in-package :plan-execution-package)
 
-(defun init-planning (&key (my-ip NIL) (perception NIL))
+(defun init-planning (&key (use-pepper NIL) (perception NIL))
   "Initialize everything planning needs to run.
 
 MY-IP (string): Look at `pcomm:setup-pepper-communication's docstring for further information."
   (start-ros-node "planning")
 
   ;; Initialize communication with pepper
-  (when my-ip
-    (pcomm:setup-pepper-communication #'pexecution:execute my-ip))
+  (when use-pepper
+    (pcomm:setup-pepper-communication #'pexecution:execute))
   
   ;; Initialize action client
   (common:setup-move-robot-client)
