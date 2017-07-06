@@ -3,7 +3,8 @@
                std_msgs-msg
                planning-common-system
                s-xml-rpc
-               ip-interfaces)
+               ip-interfaces
+               cl-json)
   :components
   ((:module "lisp"
     :components
