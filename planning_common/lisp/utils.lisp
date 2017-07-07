@@ -55,12 +55,15 @@ STRINGS (list of strings): Alternating keys and values. Has to have an even leng
   (ros-info "run-full-pipeline" "recognizing Knife....")
   (service-run-pipeline "knife")
   (sleep 15)
+  (service-run-pipeline "spatula")
+  (sleep 10)
   (ros-info "run-full-pipeline" "recognizing Cake...")
   (service-run-pipeline "cake")
   (sleep 10)
+  (service-run-pipeline "plate")
+  (sleep 10)
   (service-run-pipeline "end")
-  (sleep 5)
-  (print "done recognizing things. You can start planning now!"))
+  (sleep 5))
 
 (defun run-pipeline (obj-type)
   "Run perception pipeline for OBJ-TYPE."
@@ -70,7 +73,7 @@ STRINGS (list of strings): Alternating keys and values. Has to have an even leng
 (defun connect-objects (parent-info child-info)
   "Connect objects described by PARENT-INFO and CHILD-INFO
 using prolog interface."
-  (service-connect-frames
+  (prolog-connect-frames
    (format nil "/~a" (object-info-name parent-info))
    (format nil "/~a" (object-info-name child-info))))
 
@@ -95,3 +98,17 @@ using prolog interface."
        :height ?height
        :width ?width
        :depth ?depth)))
+
+; if it doesn't work from the start, comment in the uncommented line. 
+; Make sure the node is running though
+(defun say (a-string)
+  (unless (eq roslisp::*node-status* :running)
+    (roslisp:start-ros-node "sound-play-node"))
+  (let ((publisher (roslisp:advertise "robotsound" 'sound_play-msg:<soundrequest>)))
+    ;(loop while (< (roslisp:num-subscribers publisher) 1) do (sleep 0.01))
+    (ros-info (sound-play) "saying ~a" a-string)
+    (roslisp:publish-msg
+     publisher
+     :sound (symbol-code 'sound_play-msg:<soundrequest> :say)
+     :command (symbol-code 'sound_play-msg:<soundrequest> :play_once)
+     :arg a-string :arg2 "voice_kal_diphone")))

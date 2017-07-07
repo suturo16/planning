@@ -2,7 +2,9 @@
   :depends-on (roslisp
                std_msgs-msg
                planning-common-system
-               s-xml-rpc)
+               s-xml-rpc
+               ip-interfaces
+               cl-json)
   :components
   ((:module "lisp"
     :components

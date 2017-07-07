@@ -31,3 +31,12 @@
 (define-condition seen-since-failure (low-level-failure)
   ((description :initform "Seen since acting up."))
   (:documentation "Seen since acting up."))
+
+(define-condition giskard-config-error (low-level-failure)
+  ((description :initform "Giskard controller '~a' not found.")
+   (controller-name :initform "<NO CONTROLLER NAME>"
+                    :initarg :controller
+                    :reader giskard-config-error-controller))
+  (:documentation "Giskard controller not found.")
+  (:report (lambda (condition stream)
+             (format stream (error-description condition) (giskard-config-error-controller condition)))))

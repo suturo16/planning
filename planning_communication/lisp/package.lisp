@@ -1,6 +1,9 @@
 (defpackage :planning-communication-package
   (:nicknames :pcomm )
-  (:use :cl :roslisp))
+  (:use :cl :roslisp)
+  (:export
+
+   :setup-pepper-communication))
 
 (in-package :planning-communication-package)
 

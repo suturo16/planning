@@ -26,14 +26,15 @@ Return nil otherwise."
                   ,(format nil "~a~a" +knowrob-iri-prefix+ name)
                   ,frame-id ,timestamp) :lispify T :package :common))
 
+(defun prolog-connect-frames (parent-frame-id child-frame-id)
+  "connect frames through prolog."
+  (json-prolog:prolog
+                 `("connect_frames"
+                   ,parent-frame-id ,child-frame-id) :lispify T :package :common))
+
 (defun prolog-disconnect-frames (parent-frame-id child-frame-id)
   "Query prolog with 'disconnect_frames(PARENT-FRAME-ID, CHILD-FRAME-ID)'.
 Disconnects the frames PARENT-FRAME-ID and CHILD-FRAME-ID."
   (json-prolog:prolog
                  `("disconnect_frames"
-                   ,parent-frame-id ,child-frame-id) :lispify T :package :common))
-(defun prolog-connect-frames (parent-frame-id child-frame-id)
-  "connect frames through prolog."
-  (json-prolog:prolog
-                 `("connect_frames"
                    ,parent-frame-id ,child-frame-id) :lispify T :package :common))

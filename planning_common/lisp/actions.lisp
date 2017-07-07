@@ -15,17 +15,15 @@ If not, set it up."
       (setup-move-robot-client))
   *move-robot-action-client*)
 
-(defun get-move-robot-goal-conv(joint-config controller-config typed-params)
+(defun get-move-robot-goal-conv(controller-config typed-params)
   "Use joints from JOINT-CONFIG and controller of CONTROLLER-CONFIG for goal creation."
   (get-move-robot-goal
-   (get-joint-config joint-config)
    (get-controller-specs controller-config)
    typed-params))
 
-(defun get-move-robot-goal(joints controller-specs typed-params)
+(defun get-move-robot-goal(controller-specs typed-params)
   "Create goal of movement using JOINTS and CONTROLLER-SPECS"
   (actionlib:make-action-goal (get-move-robot-client)
-    :controlled_joints (make-array (length joints) :initial-contents joints)
     :controller_yaml controller-specs
     :feedbackValue "feedback"
     :params (make-array (length typed-params) :initial-contents typed-params)))
@@ -38,7 +36,7 @@ If not, set it up."
     (format t "Error Value: ~a~%Alteration Rate: ~a~%~%" current_value alteration_rate)))
 
 (defun action-move-robot
-    (config-name controller-name &optional cb &rest typed-params)
+    (controller-name cb use-alt-rates &rest typed-params)
   "Call action with joints CONFIG-NAME and controller specification CONTROLLER-NAME.
 Optionally takes function CB as a break condition for handling feedback signals and
 an arbitrary number TYPED-PARAMS to use as params in the action call.
@@ -47,29 +45,42 @@ CONFIG-NAME (string): Name of the joint configuration to be used.
 CONTROLLER-NAME (string): Name of the controller to be used.
 CB (function): Break condition. See `make-feedback-signal-handler's documentation.
 TYPED-PARAMS (suturo_manipulation_msgs-msg:TypedParam): Params to be send with the goal."
-  (handler-bind ((actionlib:feedback-signal (make-feedback-signal-handler cb)))
+  (handler-bind ((actionlib:feedback-signal (make-feedback-signal-handler cb use-alt-rates)))
     (multiple-value-bind (result status)
         (actionlib:send-goal-and-wait
          (get-move-robot-client)
-         (get-move-robot-goal-conv config-name controller-name typed-params)
+         (get-move-robot-goal-conv controller-name typed-params)
          :feedback-cb 'move-robot-feedback-cb
-         :result-timeout 10
-         :exec-timeout 10)
+         :result-timeout 14
+         :exec-timeout 14)
       (declare (ignore result))
       (alexandria:switch (status)
         (:ABORTED :SUCCESS)
         (:LOST (error 'common:action-lost))
-        (:TIMEOUT (error 'common:action-timeout))))))
+        (:TIMEOUT (signal 'common:action-timeout))))))
 
-(defun make-feedback-signal-handler (&optional (cb (lambda (v) (< v 0.05))))
+(defparameter +alt-rate-limit+ 0.05)
+(defparameter +min-alt-rate-count+ 5)
+
+(defun make-feedback-signal-handler (&optional
+                                       (error-cb (lambda (v) (< v 0.05)))
+                                       (use-alt-rates NIL))
   "Return a function able to handle a action feedback signal from /movement_server/movement_server,
 using CB as a break condition.
 
-CB (function): Break condition. (eg. '(lambda (v) (< v 0.05)))"
-  (lambda (signal)
-    (let ((feedback-msg (actionlib:feedback signal)))
-      (with-fields
-          (current_value)
-          feedback-msg
-        (when (funcall cb current_value)
-          (invoke-restart 'actionlib:abort-goal))))))
+ERROR-CB (function): Break condition. (eg. '(lambda (v) (< v 0.05)))"
+  (let (alt-rates)
+    (lambda (signal)
+      (let ((feedback-msg (actionlib:feedback signal)))
+        (with-fields
+            (current_value alteration_rate)
+            feedback-msg
+          (progn
+            (setf alt-rates (cons alteration_rate alt-rates))
+            (when (or
+                   ;; when either the error value is low enough or the alteration rate stagnates abort the action
+                   (funcall error-cb current_value)
+                   (when (and use-alt-rates (>= (length alt-rates) +min-alt-rate-count+))
+                     ;; if we should use the alteration rate and have enough samples, check it
+                     (< (/ (reduce #'+ (subseq alt-rates 0 5)) +min-alt-rate-count+) +alt-rate-limit+)))
+              (invoke-restart 'actionlib:abort-goal))))))))

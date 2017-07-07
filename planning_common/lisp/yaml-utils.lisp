@@ -19,7 +19,11 @@ CONTROLLER-NAME (string): Should be one of the existent controller specification
 
 CONFIG-NAME (string): Should be one of the existent joint configurations. These can be found at URL
 `suturo-docs.rtfd.io/en/latest/implementierung/schnittstellen.html#manipulation')."
-  (file->string (get-controller-path controller-name)))
+  (let ((path (get-controller-path controller-name)))
+    (if path
+        (file->string (get-controller-path controller-name))
+        ;; else error
+        (error 'giskard-config-error :controller controller-name))))
 
 (defun get-controller-yaml-path (controller-name)
   "Return path to controller specification CONTROLLER-NAME as a string."

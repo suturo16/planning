@@ -24,8 +24,9 @@ STATUS: Unused parameter to prevent issues with calls without parameters."
 (defun |cutCake| (status)
   "Calls the do-function with 'cut-cake'.
 STATUS: Unused parameter to prevent issues with calls without parameters."
-  (format t "Function 'cutCake' called with status ~a." status)
-  (|do| "cut cake"))
+  (format t "Function 'cutCake' called with status ~a. " status)
+  (common:say "Welcome to the bakery.")
+  (|do| "demo"))
 
 
 (defun |do| (command)
@@ -35,7 +36,7 @@ COMMAND: The message to publish onto pepper_command"
   (let ((pub (advertise "/command" "std_msgs/String")))
     (if  (not (eq (roslisp:node-status) :SHUTDOWN))
          (progn (publish-msg pub :data command)
-                (|stressLevel| "asdf"))
+                (|stressLevel| command))
          -1)))
 
 

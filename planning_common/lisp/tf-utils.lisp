@@ -18,14 +18,14 @@
 PARENT-FRAME (string): The source frame in which FRAME is published.
 FRAME (string): The target frame published in relation to PARENT_FRAME."
   (cl-tf:wait-for-transform (get-transform-listener)
-                            :source-frame parent-frame
-                            :target-frame frame
-                            :timeout 1)
+                            :source-frame frame
+                            :target-frame parent-frame
+                            :timeout 5)
   (let ((target-transform-stamped
           (cl-tf:lookup-transform
            (get-transform-listener)
-           frame
-           parent-frame)))
+           parent-frame
+           frame)))
      (cl-tf:transform->pose target-transform-stamped)))
 
 (defun tf-pose->string (pose)
@@ -40,14 +40,14 @@ POSE (cl-tf:pose): a pose."
                    (cl-tf:make-3d-vector 1 0 0)
                    (cl-tf:normalize-vector axis)))
              (normalized-angle (cl-tf:normalize-angle angle)))
-        (format nil "~a ~a ~a ~a ~a ~a ~a"
+        (format nil "~6$ ~6$ ~6$ ~6$ ~6$ ~6$ ~6$"
                 (cl-tf:x origin)
                 (cl-tf:y origin)
                 (cl-tf:z origin)
-                (- 0 (cl-tf:x normalized-axis))
-                (- 0 (cl-tf:y normalized-axis))
-                (- 0 (cl-tf:z normalized-axis))
-                (- 0 normalized-angle))))))
+                (cl-tf:x normalized-axis)
+                (cl-tf:y normalized-axis)
+                (cl-tf:z normalized-axis)
+                normalized-angle)))))
 
 (defun tf-lookup->string (parent-frame frame)
   "Use `tf-pose->string' and `extract-pose-from-transform' to create a string from a lookup.

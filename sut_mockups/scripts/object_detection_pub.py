@@ -41,7 +41,7 @@ class DetectedObject():
 def detection_gen():
     param_name = get_param_name(percepteros, object_detection)
     
-    default_types = ['BOX', 'CONE', 'CYLINDER', 'DROPZONE', 'MISC', 'SPHERE', 'KNIFE', 'SPATULA']
+    default_types = ['BOX', 'CONE', 'CYLINDER', 'DROPZONE', 'MISC', 'SPHERE', 'KNIFE', 'PLATE', 'SPATULA']
     data = {}
     global seq
     seq = 0
