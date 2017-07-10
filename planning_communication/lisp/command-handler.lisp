@@ -23,13 +23,13 @@ CB (function): Look at `make-command-executer's docstring for further informatio
   (setf *command-subscriber* (subscribe "/command" "std_msgs/String" (make-command-executer cb))))
 
 (defun handle-knowledge-update (guest-id &rest request-arguments)
-  "Checks the last thread and kills him, if he is stuck. Then starts a new thread that updates the knowledgebase with given arguments in a new thread.
+  "Starts a new thread that updates the knowledgebase with given arguments.
 GUEST-ID as string, name of the guest
 REQUEST-ARGUMENTS as strings or integer, like ('setCake' 4) or ('getGuestInfo'). The first argument must be set to a request type
 as defined here: https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
   (sb-thread:make-thread (lambda ()
                            (sb-thread:with-mutex (*prolog-mutex*)
-                             (common:prolog-update-guest-info guest-id request-arguments))
+                             (common:prolog-guest-info guest-id request-arguments))
                            (common:say "Thank you for the information.")
                            (when (gethash :pepper *clients*)
                              (fire-rpc-to-client :pepper "notify")))))

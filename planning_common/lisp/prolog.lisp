@@ -39,7 +39,7 @@ Disconnects the frames PARENT-FRAME-ID and CHILD-FRAME-ID."
                  `("disconnect_frames"
                    ,parent-frame-id ,child-frame-id) :lispify T :package :common))
 
-(defun prolog-update-guest-info (guest-id &rest request-arguments) 
+(defun prolog-guest-info (guest-id &rest request-arguments) 
   "Query prolog with <need functionname here> to update and retrieve user info."
   (json-prolog:prolog `("need_real_function_name_here"
                         ,guest-id ,request-arguments) :lispify T :package :common))

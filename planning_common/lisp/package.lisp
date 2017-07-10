@@ -37,7 +37,7 @@
    :prolog-seen-since
    :prolog-disconnect-frames
    :prolog-connect-frames
-   :prolog-update-guest-info
+   :prolog-guest-info
    
    :ensure-node-is-running
    :make-param
