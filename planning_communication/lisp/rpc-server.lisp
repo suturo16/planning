@@ -8,6 +8,8 @@ RESTART-ROSNODE: Ste to T, if you want to force-start a new rosnode."
   (import '(|sleepSomeTime|
             |do|
             |cutCake|
+            |setCake|
+            |setDeposit|
             |stressLevel|
             |nextTask|
             |updateObserverClient|)
@@ -88,5 +90,16 @@ PORT: Port of the calling machine."
     
     0))
 
-     
-     
+(defun |setCake| (guest-id amount)
+  "Calls `handle-knowledge-update' to update the requested amount of cake for the guest with given guest-id.
+GUEST-ID as String value
+AMOUNT as integer"
+  (handle-knowledge-update guest-id "setCake" amount))
+
+(defun |setDeposit| (guest-id location)
+  "Calls `handle-knowledge-update' to update the deposit location of the cake for the guest-id.
+GUEST-ID as string, the name of the guest
+LOCATION as string, like 'counter' or 'isle'"
+  (handle-knowledge-update guest-id "setDeposit" location))
+
+

@@ -2,8 +2,10 @@
   (:nicknames :pcomm )
   (:use :cl :roslisp)
   (:export
-
-   :setup-pepper-communication))
+   :setup-pepper-communication
+   :fire-rpc
+   :fire-rpc-to-client
+   :*knowledge-thread*))
 
 (in-package :planning-communication-package)
 
@@ -18,3 +20,4 @@
 
 ;; subscriber for the command topic
 (defparameter *command-subscriber* nil)
+(defparameter *knowledge-thread* nil)

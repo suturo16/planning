@@ -5,14 +5,10 @@
 REMOTE-HOST: Address of the server to call.
 REMOTE-PORT: Port of the server to call.
 CLIENT: Set to :pepper or :turtle instead of setting host and port manually, to retrieve information from the clients list.
-
-Sends local host and port information of the calling machine to the addressee, to keep them up-to-date.
-TODO: Retrieve IP address automatically. Import package ip-interfaces from external resources."
-  
+Sends local host and port information of the calling machine to the addressee, to keep them up-to-date."
   (unless (and remote-host remote-port)
     (setf remote-host (client-host (gethash client *clients*)))
     (setf remote-port (client-port (gethash client *clients*))))
-  
   (fire-rpc "updateObserverClient" remote-host remote-port client-id (get-local-ip) (get-local-port)))
 
 (defun fire-rpc-to-client (client remote-function &rest args)
@@ -55,15 +51,14 @@ If host or port is nil, default is used."
           do (when (equal (ip-interfaces:ip-interface-name interface) if-name)
                (setf found-interface interface)))
     (when found-interface
-      (format
-       nil
-       "~{~a~^.~}"
-       (map 'list #'identity (ip-interfaces:ip-interface-address found-interface))))))
+      (format nil "~{~a~^.~}"
+              (map 'list #'identity (ip-interfaces:ip-interface-address found-interface))))))
 
 (defun get-local-port ()
   "Returns the local port of the server."
-  (nth-value 1
-             (sb-bsd-sockets:socket-name
-              (second (first s-xml-rpc::*server-processes*)))))
+  (when s-xml-rpc::*server-processes*
+    (nth-value 1
+               (sb-bsd-sockets:socket-name
+                (second (first s-xml-rpc::*server-processes*))))))
 
 

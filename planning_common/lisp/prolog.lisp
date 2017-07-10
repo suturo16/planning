@@ -38,3 +38,8 @@ Disconnects the frames PARENT-FRAME-ID and CHILD-FRAME-ID."
   (json-prolog:prolog
                  `("disconnect_frames"
                    ,parent-frame-id ,child-frame-id) :lispify T :package :common))
+
+(defun prolog-update-guest-info (guest-id request-type argument) 
+  "Query prolog with <need functionname here> to update cake amount and delivery place."
+  (json-prolog:prolog `("need_real_function_name_here"
+                         ,guest-id (,request-type ,argument)) :lispify T :package :common))
