@@ -10,10 +10,12 @@ RESTART-ROSNODE: Ste to T, if you want to force-start a new rosnode."
             |cutCake|
             |setCake|
             |setDeposit|
+            |increaseCake|
+            |decreaseCake|
             |stressLevel|
-            |nextTask|
             |updateObserverClient|)
-          :s-xml-rpc-exports))
+          :s-xml-rpc-exports)
+  (setf *prolog-mutex* (sb-thread:make-mutex :name "prolog lock")))
 
 
 (defun |sleepSomeTime| (status)
@@ -53,11 +55,6 @@ STATUS: Unused parameter to prevent issues with calls without parameters."
     (return-from |stressLevel| -1))
   
   (roslisp-queue:queue-size (roslisp::buffer (roslisp::subscriber-subscription *command-subscriber*))))
-
-
-(defun |nextTask| ()
-  "Returns the identifier of the next task, as is in the commands list."
-  "Not implemented!")
 
 
 (defun |updateObserverClient| (client-id host port)
@@ -102,4 +99,12 @@ GUEST-ID as string, the name of the guest
 LOCATION as string, like 'counter' or 'isle'"
   (handle-knowledge-update guest-id "setDeposit" location))
 
+(defun |increaseCake| (guest-id amount)
+  "Calls `handle-knowledge-update' to increase the cake for given guest by one.
+GUEST-ID as string, the guest to increase the cake for."
+  (handle-knowledge-update guest-id "increaseCake" amount))
 
+(defun |decreaseCake| (guest-id amount)
+  "Calls `handle-knowledge-update' to decrease the cake for given guest by one.
+GUEST-ID as string, the guest to decrease the cake for."
+  (handle-knowledge-update guest-id "decreaseCake" amount))
