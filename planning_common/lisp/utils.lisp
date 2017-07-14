@@ -86,18 +86,20 @@ using prolog interface."
 
 (defun get-object-info (object-type)
   "Get object infos for OBJECT-TYPE using prolog interface."
-  (cut:with-vars-bound
-      (?name ?frame ?timestamp ?pose ?width ?height ?depth)
-      (prolog-get-object-info object-type)
-    (make-object-info
-       :name (string-downcase (subseq (string ?name) 34))
-       :frame (string-downcase ?frame)
-       :type object-type
-       :timestamp ?timestamp
-       :pose ?pose
-       :height ?height
-       :width ?width
-       :depth ?depth)))
+  (let ((raw-response (prolog-get-object-info object-type)))
+    (when raw-response
+      (cut:with-vars-bound
+          (?name ?frame ?timestamp ?pose ?width ?height ?depth)
+          raw-response
+        (make-object-info
+         :name (string-downcase (subseq (string ?name) 34))
+         :frame (string-downcase ?frame)
+         :type object-type
+         :timestamp ?timestamp
+         :pose ?pose
+         :height ?height
+         :width ?width
+         :depth ?depth)))))
 
 ; if it doesn't work from the start, comment in the uncommented line. 
 ; Make sure the node is running though

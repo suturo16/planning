@@ -11,6 +11,8 @@
    :+double+
    :+transform+
 
+   :*guests*
+
    :low-level-failure
    :high-level-failure
    :action-timeout
@@ -37,7 +39,7 @@
    :prolog-seen-since
    :prolog-disconnect-frames
    :prolog-connect-frames
-   :prolog-guest-info
+   :prolog-assert-dialog-element
    
    :ensure-node-is-running
    :make-param
@@ -70,3 +72,6 @@
 ; param types
 (defconstant +double+ (symbol-code 'suturo_manipulation_msgs-msg:TypedParam :DOUBLE))
 (defconstant +transform+ (symbol-code 'suturo_manipulation_msgs-msg:TypedParam :TRANSFORM))
+
+;; The guest name queue
+(defparameter *guests* (list) "Names of all guests, used throughout the scene.")
