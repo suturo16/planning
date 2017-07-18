@@ -112,3 +112,13 @@ using prolog interface."
      :sound (symbol-code 'sound_play-msg:<soundrequest> :say)
      :command (symbol-code 'sound_play-msg:<soundrequest> :play_once)
      :arg a-string :arg2 "voice_kal_diphone")))
+
+(defun get-guest-ids ()
+  '(1 2 3 4 5 6))
+
+(defun get-guest-order (id)
+  "Get guest order of guest with ID."
+  (cut:with-vars-bound
+      (?amount)
+      (prolog-guest-info id)
+    ?amount))

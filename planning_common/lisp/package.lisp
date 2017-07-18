@@ -51,6 +51,8 @@
    :get-joint-config
    :get-controller-specs
    :say
+   :get-guest-ids
+   :get-guest-order
 
    :run-full-pipeline
    :run-pipeline
