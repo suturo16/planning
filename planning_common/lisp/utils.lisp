@@ -86,18 +86,20 @@ using prolog interface."
 
 (defun get-object-info (object-type)
   "Get object infos for OBJECT-TYPE using prolog interface."
-  (cut:with-vars-bound
-      (?name ?frame ?timestamp ?pose ?width ?height ?depth)
-      (prolog-get-object-info object-type)
-    (make-object-info
-       :name (string-downcase (subseq (string ?name) 34))
-       :frame (string-downcase ?frame)
-       :type object-type
-       :timestamp ?timestamp
-       :pose ?pose
-       :height ?height
-       :width ?width
-       :depth ?depth)))
+  (let ((raw-response (prolog-get-object-info object-type)))
+    (when raw-response
+      (cut:with-vars-bound
+          (?name ?frame ?timestamp ?pose ?width ?height ?depth)
+          raw-response
+        (make-object-info
+         :name (string-downcase (subseq (string ?name) 34))
+         :frame (string-downcase ?frame)
+         :type object-type
+         :timestamp ?timestamp
+         :pose ?pose
+         :height ?height
+         :width ?width
+         :depth ?depth)))))
 
 ; if it doesn't work from the start, comment in the uncommented line. 
 ; Make sure the node is running though
@@ -122,3 +124,17 @@ using prolog interface."
       (?amount)
       (prolog-guest-info id)
     ?amount))
+
+(defun get-current-order ()
+  "Retrieves the whole orders list via prolog. First checks orders where the delivered amount of cake is greater than 0,
+then if those orders are finished already. Else get a unstarted order or wait for new ones.")
+
+(defun get-remaining-amount-for-order (customer-id)
+  "Retrieve the remaining amount of pieces still to deliver. total - delivered = value"
+  (let ((raw-order (prolog-get-open-orders-of customer-id)))
+    (when raw-order
+      (cut:with-vars-bound
+          (?Item ?Amount ?Delivered)
+          raw-order
+        (- ?Amount ?Delivered)))))
+
