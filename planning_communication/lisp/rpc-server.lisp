@@ -9,10 +9,7 @@ RESTART-ROSNODE: Ste to T, if you want to force-start a new rosnode."
             |do|
             |cutCake|
             |assertDialogElement|
-            ;; |setCake|
-            ;; |setDeposit|
-            ;; |increaseCake|
-            ;; |decreaseCake|
+            |getGuestInfo|
             |stressLevel|
             |updateObserverClient|)
           :s-xml-rpc-exports)
@@ -89,27 +86,10 @@ PORT: Port of the calling machine."
     0))
 
 (defun |assertDialogElement| (json-string)
-"Calls `handle-knowledge-update' to handle the json object containing information from the dialog for the knowledgebase."
+"Calls `handle-knowledge-update' to handle the json object containing information from the dialog for the knowledgebase.
+Returns a JSON string with the response."
   (handle-knowledge-update json-string))
 
-;; (defun |setCake| (guest-id amount)
-;;   "Calls `handle-knowledge-update' to update the requested amount of cake for the guest with given guest-id.
-;; GUEST-ID as String value
-;; AMOUNT as integer"
-;;   (handle-knowledge-update guest-id "setCake" amount))
-
-;; (defun |setDeposit| (guest-id location)
-;;   "Calls `handle-knowledge-update' to update the deposit location of the cake for the guest-id.
-;; GUEST-ID as string, the name of the guest
-;; LOCATION as string, like 'counter' or 'isle'"
-;;   (handle-knowledge-update guest-id "setDeposit" location))
-
-;; (defun |increaseCake| (guest-id amount)
-;;   "Calls `handle-knowledge-update' to increase the cake for given guest by one.
-;; GUEST-ID as string, the guest to increase the cake for."
-;;   (handle-knowledge-update guest-id "increaseCake" amount))
-
-;; (defun |decreaseCake| (guest-id amount)
-;;   "Calls `handle-knowledge-update' to decrease the cake for given guest by one.
-;; GUEST-ID as string, the guest to decrease the cake for."
-;;   (handle-knowledge-update guest-id "decreaseCake" amount))
+(defun |getGuestInfo| (guest-id)
+"Get the information about the guest from the knowledgebase as JSON string."
+  (handle-get-customer-info guest-id))

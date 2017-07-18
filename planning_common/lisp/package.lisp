@@ -40,6 +40,11 @@
    :prolog-disconnect-frames
    :prolog-connect-frames
    :prolog-assert-dialog-element
+   :prolog-get-customer-infos
+   :prolog-get-open-orders-of
+   :prolog-get-free-table
+   :prolog-set-delivered-amount
+   :prolog-increase-delivered-amount
    
    :ensure-node-is-running
    :make-param
@@ -58,7 +63,8 @@
    :run-pipeline
    :connect-objects
    :disconnect-objects
-   :get-object-info))
+   :get-object-info
+   :get-remaining-amount-for-order))
 
 (in-package :planning-common-package)
 

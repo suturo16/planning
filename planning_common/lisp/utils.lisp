@@ -114,3 +114,16 @@ using prolog interface."
      :sound (symbol-code 'sound_play-msg:<soundrequest> :say)
      :command (symbol-code 'sound_play-msg:<soundrequest> :play_once)
      :arg a-string :arg2 "voice_kal_diphone")))
+
+(defun get-current-order ()
+  "Retrieves the whole orders list via prolog. First checks orders where the delivered amount of cake is greater than 0,
+then if those orders are finished already. Else get a unstarted order or wait for new ones.")
+
+(defun get-remaining-amount-for-order (customer-id)
+  "Retrieve the remaining amount of pieces still to deliver. total - delivered = value"
+  (let ((raw-order (prolog-get-open-orders-of customer-id)))
+    (when raw-order
+      (cut:with-vars-bound
+          (?Item ?Amount ?Delivered)
+          raw-order
+        (- ?Amount ?Delivered)))))
