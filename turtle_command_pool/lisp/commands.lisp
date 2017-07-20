@@ -1,5 +1,9 @@
 (in-package :turtle-command-pool-package)
 
+(defun init ()
+  (roslisp-utilities:startup-ros :name "lisp_node" :anonymous nil))
+
+
 (defun move (velocity &optional angle)
   "Let the turtle move with the given velocity and angle"
   (print velocity)
