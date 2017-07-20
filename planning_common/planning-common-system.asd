@@ -25,4 +25,5 @@
      (:file "prolog" :depends-on ("package"))
      (:file "utils" :depends-on ("package"))
      (:file "tf-utils" :depends-on ("package"))
-     (:file "yaml-utils" :depends-on ("package"))))))
+     (:file "yaml-utils" :depends-on ("package"))
+     (:file "physical-parts" :depends-on ("package" "prolog"))))))

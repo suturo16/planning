@@ -86,20 +86,21 @@ using prolog interface."
 
 (defun get-object-info (object-type)
   "Get object infos for OBJECT-TYPE using prolog interface."
-  (let ((raw-response (prolog-get-object-info object-type)))
+  (let ((raw-response (prolog-get-object-info-simple object-type)))
     (when raw-response
       (cut:with-vars-bound
           (?name ?frame ?timestamp ?pose ?width ?height ?depth)
           raw-response
         (make-object-info
-         :name (string-downcase (subseq (string ?name) 34))
-         :frame (string-downcase ?frame)
+         :name (knowrob->str ?name T)
+         :frame (knowrob->str ?frame)
          :type object-type
          :timestamp ?timestamp
          :pose ?pose
          :height ?height
          :width ?width
-         :depth ?depth)))))
+         :depth ?depth
+         :physical-parts (get-phys-parts (knowrob->str ?name T)))))))
 
 ; if it doesn't work from the start, comment in the uncommented line. 
 ; Make sure the node is running though
@@ -138,3 +139,11 @@ then if those orders are finished already. Else get a unstarted order or wait fo
           raw-order
         (- ?Amount ?Delivered)))))
 
+(defun knowrob->str (knowrob-sym &optional (split NIL))
+  "Turn a symbol representing a string returned by Knowledge into a normal string. Optionally cut off the knowrob prefix as well."
+  (let* ((pre-str (symbol-name knowrob-sym))
+         (str (subseq pre-str 1 (1- (length pre-str)))))
+    (if split
+        (when (find #\# str)
+          (second (split str "#")))
+        str)))

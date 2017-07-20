@@ -30,6 +30,7 @@
    :object-info-depth
    :object-info-type
    :object-info-pose
+   :get-object-part-detail
 
    :service-run-pipeline
 
@@ -61,6 +62,19 @@
    :get-guest-ids
    :get-guest-order
 
+   :+blade-of-cake-knife+
+   :+handle-of-cake-knife+
+   :+supporting-plane-of-cake-spatula+
+   :+handle-of-cake-spatula+
+   :+name-of-object+
+   :+width-of-object+
+   :+height-of-object+
+   :+depth-of-object+
+   :+length-of-object+
+   :+angle+
+   :+radius+
+   :get-phys-parts
+   
    :run-full-pipeline
    :run-pipeline
    :connect-objects
