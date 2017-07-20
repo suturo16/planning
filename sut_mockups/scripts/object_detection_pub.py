@@ -112,9 +112,10 @@ def detection_gen():
         seq += 1
 
         # Return one of the objects at random
-        return random.choice(
-            data[random.choice(data.keys())]
-        ).to_msg(seq)
+        # return random.choice(
+        #     data[random.choice(data.keys())]
+        # ).to_msg(seq)
+        return random.choice(data[data.keys()[(seq-1) % len(default_types)]]).to_msg(seq)
 
     return _generator
 
