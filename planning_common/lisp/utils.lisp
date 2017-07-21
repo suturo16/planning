@@ -86,20 +86,21 @@ using prolog interface."
 
 (defun get-object-info (object-type)
   "Get object infos for OBJECT-TYPE using prolog interface."
-  (let ((raw-response (prolog-get-object-info object-type)))
+  (let ((raw-response (prolog-get-object-info-simple object-type)))
     (when raw-response
       (cut:with-vars-bound
           (?name ?frame ?timestamp ?pose ?width ?height ?depth)
           raw-response
         (make-object-info
-         :name (string-downcase (subseq (string ?name) 34))
-         :frame (string-downcase ?frame)
+         :name (knowrob->str ?name T)
+         :frame (knowrob->str ?frame)
          :type object-type
          :timestamp ?timestamp
          :pose ?pose
          :height ?height
          :width ?width
-         :depth ?depth)))))
+         :depth ?depth
+         :physical-parts (get-phys-parts (knowrob->str ?name T)))))))
 
 ; if it doesn't work from the start, comment in the uncommented line. 
 ; Make sure the node is running though
@@ -114,6 +115,16 @@ using prolog interface."
      :sound (symbol-code 'sound_play-msg:<soundrequest> :say)
      :command (symbol-code 'sound_play-msg:<soundrequest> :play_once)
      :arg a-string :arg2 "voice_kal_diphone")))
+
+(defun get-guest-ids ()
+  '(1 2 3 4 5 6))
+
+(defun get-guest-order (id)
+  "Get guest order of guest with ID."
+  (cut:with-vars-bound
+      (?amount)
+      (prolog-guest-info id)
+    ?amount))
 
 (defun get-current-order ()
   "Retrieves the whole orders list via prolog. First checks orders where the delivered amount of cake is greater than 0,
@@ -136,3 +147,12 @@ then if those orders are finished already. Else get a jet untouched order or wai
           (?Item ?Amount ?Delivered)
           raw-order
         (- ?Amount ?Delivered)))))
+
+(defun knowrob->str (knowrob-sym &optional (split NIL))
+  "Turn a symbol representing a string returned by Knowledge into a normal string. Optionally cut off the knowrob prefix as well."
+  (let* ((pre-str (symbol-name knowrob-sym))
+         (str (subseq pre-str 1 (1- (length pre-str)))))
+    (if split
+        (when (find #\# str)
+          (second (split str "#")))
+        str)))

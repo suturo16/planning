@@ -41,7 +41,24 @@ class DetectedObject():
 def detection_gen():
     param_name = get_param_name(percepteros, object_detection)
     
-    default_types = ['BOX', 'CONE', 'CYLINDER', 'DROPZONE', 'MISC', 'SPHERE', 'KNIFE', 'PLATE', 'SPATULA']
+    default_types = ['BOX',
+                     'CONE',
+                     'CYLINDER',
+                     'DROPZONE',
+                     'MISC',
+                     'SPHERE',
+                     'KNIFE',
+                     'PLATE',
+                     'SPATULA']
+    default_type_map = {'BOX': 'box',
+                     'CONE': 'cone',
+                     'CYLINDER': 'cylinder',
+                     'DROPZONE': 'dropzone',
+                     'MISC': 'misc',
+                     'SPHERE': 'sphere',
+                     'KNIFE': 'cakeKnife',
+                     'PLATE': 'dinnerPlateForCake',
+                     'SPATULA': 'cakeSpatula'}
     data = {}
     global seq
     seq = 0
@@ -49,7 +66,7 @@ def detection_gen():
     def _create_obj(_type):
         num = len(data[_type])
         return DetectedObject(
-            name = _type.lower() + str(num if num != 0 else ""),
+            name = default_type_map[_type],
             type = getattr(ObjectDetection, _type, random.randint(len(default_types)+5, 100)),
             width = round(random.uniform(0.01, 0.5), 2),
             height = round(random.uniform(0.01, 0.5), 2),
@@ -95,9 +112,10 @@ def detection_gen():
         seq += 1
 
         # Return one of the objects at random
-        return random.choice(
-            data[random.choice(data.keys())]
-        ).to_msg(seq)
+        # return random.choice(
+        #     data[random.choice(data.keys())]
+        # ).to_msg(seq)
+        return random.choice(data[data.keys()[(seq-1) % len(default_types)]]).to_msg(seq)
 
     return _generator
 
