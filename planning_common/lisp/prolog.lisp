@@ -41,12 +41,12 @@ Disconnects the frames PARENT-FRAME-ID and CHILD-FRAME-ID."
 
 (defun prolog-assert-dialog-element (json-string) 
   "Query prolog with 'assert_dialog_element' to update guest info. Remove all double quotes in the json object."
-  (cut:lazy-car (json-prolog:prolog-simple
-                 (format nil "assert_dialog_element(~a)" (remove #\" json-string)) :lispify T :package :common)))
+  (json-prolog:prolog-simple
+   (format nil "assert_dialog_element('~a')" (remove #\space (remove #\" json-string))) :lispify T :package :common))
 
 (defun prolog-get-customer-infos (&optional customer-id)
   "Query prolog with 'get_customer_infos' to get the name and place of a specific guest. Provides all guest infos per default"
-  (cut:lazy-car (json-prolog:prolog
+  (cut:force-ll (json-prolog:prolog
                  `("get_customer_infos"
                    ,(if customer-id customer-id `?CustomerID)
                    ?Name

@@ -6,7 +6,7 @@
 (defparameter *json-assoc* (cl-json:encode-json-alist-to-string
                           '((:guestId . "1") (:query . ((:type . "setCake") (:amount . "1") (:name . "arthur"))))))
 
-(defparameter *without-quotes* "{guestid:1,query:{type:setCake,amount:1,name:arthur}}")
+(defparameter *without-quotes* "{guestId:1,query:{type:setCake,amount:1,guestName:arthur}}")
 
 
 (defun handle-knowledge-update (json-string)

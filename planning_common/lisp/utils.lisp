@@ -117,7 +117,16 @@ using prolog interface."
 
 (defun get-current-order ()
   "Retrieves the whole orders list via prolog. First checks orders where the delivered amount of cake is greater than 0,
-then if those orders are finished already. Else get a unstarted order or wait for new ones.")
+then if those orders are finished already. Else get a jet untouched order or wait for new ones."
+  (let* ((all-orders-raw (prolog-get-open-orders-of))
+         (all-orders-prio (map 'list
+                               (lambda (order)
+                                 (cut:with-vars-bound
+                                     (?CustomerID ?Item ?Amount ?Delivered)
+                                     order
+                                   (- (parse-integer ?Amount) (parse-integer ?Delivered))))
+                               all-orders-raw)))
+    (reduce #'< all-orders-prio)))
 
 (defun get-remaining-amount-for-order (customer-id)
   "Retrieve the remaining amount of pieces still to deliver. total - delivered = value"
