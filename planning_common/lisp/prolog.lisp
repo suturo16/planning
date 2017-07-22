@@ -61,7 +61,7 @@ Disconnects the frames PARENT-FRAME-ID and CHILD-FRAME-ID."
 
 (defun prolog-get-open-orders-of (&optional customer-id)
   "Query prolog with 'get_guest_info' to get the delivery item and the amount for a specific guest. Provides all orders per default."
-  (cut:lazy-car (json-prolog:prolog
+  (cut:force-ll (json-prolog:prolog
                  `("get_open_orders_of"
                    ,(if customer-id customer-id `?CustomerID)
                    ?Item

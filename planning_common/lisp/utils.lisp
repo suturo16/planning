@@ -129,15 +129,24 @@ using prolog interface."
 (defun get-current-order ()
   "Retrieves the whole orders list via prolog. First checks orders where the delivered amount of cake is greater than 0,
 then if those orders are finished already. Else get a jet untouched order or wait for new ones."
-  (let* ((all-orders-raw (prolog-get-open-orders-of))
-         (all-orders-prio (map 'list
-                               (lambda (order)
-                                 (cut:with-vars-bound
-                                     (?CustomerID ?Item ?Amount ?Delivered)
-                                     order
-                                   (- (parse-integer ?Amount) (parse-integer ?Delivered))))
-                               all-orders-raw)))
-    (reduce #'< all-orders-prio)))
+  (let ((all-orders-raw (prolog-get-open-orders-of)))
+    (unless all-orders-raw
+      (flet ((order-status (order)
+               (cut:with-vars-bound
+                   (?amount ?delivered)
+                   order
+                 (if (>= (symbol->integer ?delivered) (symbol->integer ?amount))
+                     :finished
+                     (if (< 0 (symbol->integer ?amount) (symbol->integer ?delivered))
+                         :started
+                         :queued)))))
+        (reduce (lambda (this next)
+                  (alexandria:switch ((order-status this))
+                    (:started (last (assoc "?customerid" this)))
+                    (:finished (last (assoc "?customerid" next)))
+                    (:queued (if (eq (order-status next) :queued)
+                                 (last (assoc "?customerid" this))
+                                 (last (assoc "?customerid" next)))))) all-orders-raw)))))
 
 (defun get-remaining-amount-for-order (customer-id)
   "Retrieve the remaining amount of pieces still to deliver. total - delivered = value"
@@ -156,3 +165,7 @@ then if those orders are finished already. Else get a jet untouched order or wai
         (when (find #\# str)
           (second (split str "#")))
         str)))
+
+(defun symbol->integer (symbol)
+  "Parses a symbol containing an integer into an integer. Symbol has to contain an integer value."
+  (parse-integer (remove #\| (write-to-string symbol))))

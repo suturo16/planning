@@ -21,3 +21,6 @@
 (defparameter *command-subscriber* nil)
 ;; mutex for the prolog knowledgebase requests
 (defparameter *prolog-mutex* nil)
+
+(defun get-prolog-mutex ()
+  (if *prolog-mutex* *prolog-mutex* (setf *prolog-mutex* (sb-thread:make-mutex :name "prolog-mutex"))))

@@ -16,7 +16,7 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
   ;; (unless (member guest-id common:*guests* :test #'equal)
   ;;   (nconc common:*guests* '(guest-id)))
   (sb-thread:make-thread (lambda ()
-                           (sb-thread:with-mutex (*prolog-mutex*)
+                           (sb-thread:with-mutex ((get-prolog-mutex))
                              (common:prolog-assert-dialog-element json-string))
                            (common:say "Thank you for the information.")
                            
@@ -37,17 +37,17 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
         name place item amount delivered)
     (when raw-customer-response
       (cut:with-vars-bound
-          (?Name ?Place)
+          (common::?Name common::?Place)
           raw-customer-response
-        (setf name ?Name)
-        (setf place ?Place)))
+        (setf name common::?Name)
+        (setf place common::?Place)))
     (when raw-order-response
       (cut:with-vars-bound
-          (?Item ?Amount ?Delivered)
+          (common::?Item common::?Amount common::?Delivered)
           raw-order-response
-        (setf item ?Item)
-        (setf amount ?Amount)
-        (setf delivered ?Delivered)))
+        (setf item common::?Item)
+        (setf amount common::?Amount)
+        (setf delivered common::?Delivered)))
     (cl-json:encode-json-alist-to-string
      (guest-info-arguments->a-list customer-id name place amount delivered))))
 
