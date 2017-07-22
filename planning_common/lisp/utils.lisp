@@ -127,10 +127,10 @@ using prolog interface."
     ?amount))
 
 (defun get-current-order ()
-  "Retrieves the whole orders list via prolog. First checks orders where the delivered amount of cake is greater than 0,
-then if those orders are finished already. Else get a jet untouched order or wait for new ones."
+  "Returns the customer-id of the current order. Retrieves the whole orders list via prolog. An already started order is always the current order.
+A finished order never is. If there is no order in the state :started, the next order in queue is the current order."
   (let ((all-orders-raw (prolog-get-open-orders-of)))
-    (unless all-orders-raw
+    (when all-orders-raw
       (flet ((order-status (order)
                (cut:with-vars-bound
                    (?amount ?delivered)
@@ -140,22 +140,33 @@ then if those orders are finished already. Else get a jet untouched order or wai
                      (if (< 0 (symbol->integer ?amount) (symbol->integer ?delivered))
                          :started
                          :queued)))))
-        (reduce (lambda (this next)
-                  (alexandria:switch ((order-status this))
-                    (:started (last (assoc "?customerid" this)))
-                    (:finished (last (assoc "?customerid" next)))
-                    (:queued (if (eq (order-status next) :queued)
-                                 (last (assoc "?customerid" this))
-                                 (last (assoc "?customerid" next)))))) all-orders-raw)))))
+        (symbol->integer
+         (cdr (assoc '?customerid
+                     (reduce (lambda (this next)
+                               (if next
+                                   (alexandria:switch ((order-status this))
+                                     (:started this)
+                                     (:finished next)
+                                     (:queued (if (eq (order-status next) :queued)
+                                                  this
+                                                  next)))
+                                   this)) all-orders-raw))))))))
 
-(defun get-remaining-amount-for-order (customer-id)
+(defun get-remaining-amount-for-order (&optional customer-id)
   "Retrieve the remaining amount of pieces still to deliver. total - delivered = value"
-  (let ((raw-order (prolog-get-open-orders-of customer-id)))
+  ;; Change let head  to the upper one as soon as prolog-get-customer-infos("1") works.
+  ;; (let* ((customer-id (if customer-id customer-id (get-current-order)))
+  ;;        (raw-order (prolog-get-open-orders-of customer-id)))
+  (let* ((customer-id (if customer-id customer-id (get-current-order)))
+         (all-orders-raw (prolog-get-open-orders-of))
+         (raw-order (loop for order in all-orders-raw
+                          when (equal customer-id (symbol->integer (cdr (assoc '?customerid order))))
+                            return order)))
     (when raw-order
       (cut:with-vars-bound
-          (?Item ?Amount ?Delivered)
+          (?amount ?delivered)
           raw-order
-        (- ?Amount ?Delivered)))))
+        (abs (- (symbol->integer ?amount) (symbol->integer ?delivered)))))))
 
 (defun knowrob->str (knowrob-sym &optional (split NIL))
   "Turn a symbol representing a string returned by Knowledge into a normal string. Optionally cut off the knowrob prefix as well."
@@ -167,5 +178,5 @@ then if those orders are finished already. Else get a jet untouched order or wai
         str)))
 
 (defun symbol->integer (symbol)
-  "Parses a symbol containing an integer into an integer. Symbol has to contain an integer value."
-  (parse-integer (remove #\| (write-to-string symbol))))
+  "Parses a symbol containing an integer into an integer. Symbol has to contain a valid integer value."
+  (parse-integer (remove #\_ (remove #\| (write-to-string symbol)))))
