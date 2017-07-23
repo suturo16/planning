@@ -51,14 +51,42 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
     (cl-json:encode-json-alist-to-string
      (guest-info-arguments->a-list customer-id name place amount delivered))))
 
+(defun handle-get-all-customer-info ()
+  "Queries the knowledgebase for the whole list of cstomer infos and parses the list to json."
+  (let ((raw-customer-response (common:prolog-get-customer-infos))
+        (raw-order-response (common:prolog-get-open-orders-of))
+         
+        customer-id name place item amount delivered)
+    (concatenate 'string
+                 "["
+                 (reduce (lambda (first next) (concatenate 'string first next))
+                         (loop for i from 0 to (- (length raw-customer-response) 1)
+                               do (when raw-customer-response
+                                    (cut:with-vars-bound
+                                        (common::?CustomerID common::?Name common::?Place)
+                                        (nth i raw-customer-response)
+                                      (setf customer-id common::?CustomerID)
+                                      (setf name common::?Name)
+                                      (setf place common::?Place)))
+                                  (when raw-order-response
+                                    (cut:with-vars-bound
+                                        (common::?Item common::?Amount common::?Delivered)
+                                        (nth i raw-order-response)
+                                      (setf item common::?Item)
+                                      (setf amount common::?Amount)
+                                      (setf delivered common::?Delivered)))
+                               collect (cl-json:encode-json-alist-to-string
+                                        (guest-info-arguments->a-list customer-id name place amount delivered))))
+                 "]")))
+
 (defun guest-info-arguments->a-list (customer-id name place amount delivered)
-  `(("guestId" . ,(format-nil nil "~a" customer-id))
+  `(("guestId" . ,(format nil "~a" customer-id))
     ("return" . (("type" . "getGuestInfo")
-                 ("name" . ,(format-nil nil "~a" name))
-                 ("location" . ,(format-nil nil "~a" place))
-                 ("total" . ,(format-nil nil "~a" amount))
-                 ("delivered" . ,(format-nil nil "~a" delivered))))))
+                 ("name" . ,(format nil "~a" name))
+                 ("location" . ,(format nil "~a" place))
+                 ("total" . ,(format nil "~a" amount))
+                 ("delivered" . ,(format nil "~a" delivered))))))
 
 (defun format-nil (destination control-string &rest args)
   "Uses the standard `format' function but maps NIL arguments to empty strings instead."
-  (format destination control-string (map 'list (lambda (x) (if x x "")) args)))
+  (format destination control-string (values-list (map 'list (lambda (x) (if x x "")) args))))

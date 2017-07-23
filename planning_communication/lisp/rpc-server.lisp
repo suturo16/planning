@@ -93,3 +93,7 @@ Returns a JSON string with the response."
 (defun |getGuestInfo| (guest-id)
 "Get the information about the guest from the knowledgebase as JSON string."
   (handle-get-customer-info guest-id))
+
+(defun |getAllGuestInfos| (status)
+"Get the information about the guest from the knowledgebase as JSON string."
+  (handle-get-customer-info))
