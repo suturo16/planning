@@ -102,7 +102,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES plan_generator
-  CATKIN_DEPENDS message_runtime roslisp std-msgs
+  CATKIN_DEPENDS message_runtime roslisp std_msgs
 #  DEPENDS system_lib
 )
 
