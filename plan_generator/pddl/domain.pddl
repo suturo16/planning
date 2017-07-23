@@ -7,7 +7,7 @@
 (:types knife spatula plate - tool
         tool cake pieceofcake - object
         gripper)
-(:constants z a - gripper)
+(:constants left right - gripper)
             
 (:predicates (at-rack ?t - tool)
              (on-table ?o - object)
