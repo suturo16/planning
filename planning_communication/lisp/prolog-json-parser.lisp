@@ -32,22 +32,22 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
 
 (defun handle-get-customer-info (&optional customer-id)
   "Queries the knowledgebase for information about a specific customer."
-  (let ((raw-customer-response (common:prolog-get-customer-infos customer-id))
-        (raw-order-response (common:prolog-get-open-orders-of customer-id))
+  (let ((raw-customer-response (car (common:prolog-get-customer-infos customer-id)))
+        (raw-order-response (car (common:prolog-get-open-orders-of customer-id)))
         name place item amount delivered)
     (when raw-customer-response
       (cut:with-vars-bound
-          (common::?Name common::?Place)
+          (common::|?Name| common::|?Place|)
           raw-customer-response
-        (setf name common::?Name)
-        (setf place common::?Place)))
+        (setf name common::|?Name|)
+        (setf place common::|?Place|)))
     (when raw-order-response
       (cut:with-vars-bound
-          (common::?Item common::?Amount common::?Delivered)
+          (common::|?Item| common::|?Amount| common::|?Delivered|)
           raw-order-response
-        (setf item common::?Item)
-        (setf amount common::?Amount)
-        (setf delivered common::?Delivered)))
+        (setf item common::|?Item|)
+        (setf amount common::|?Amount|)
+        (setf delivered common::|?Delivered|)))
     (cl-json:encode-json-alist-to-string
      (guest-info-arguments->a-list customer-id name place amount delivered))))
 
@@ -59,22 +59,22 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
         customer-id name place item amount delivered)
     (concatenate 'string
                  "["
-                 (reduce (lambda (first next) (concatenate 'string first next))
+                 (reduce (lambda (first next) (concatenate 'string first "," next))
                          (loop for i from 0 to (- (length raw-customer-response) 1)
                                do (when raw-customer-response
                                     (cut:with-vars-bound
-                                        (common::?CustomerID common::?Name common::?Place)
+                                        (common::|?CustomerID| common::|?Name| common::|?Place|)
                                         (nth i raw-customer-response)
-                                      (setf customer-id common::?CustomerID)
-                                      (setf name common::?Name)
-                                      (setf place common::?Place)))
+                                      (setf customer-id common::|?CustomerID|)
+                                      (setf name common::|?Name|)
+                                      (setf place common::|?Place|)))
                                   (when raw-order-response
                                     (cut:with-vars-bound
-                                        (common::?Item common::?Amount common::?Delivered)
+                                        (common::|?Item| common::|?Amount| common::|?Delivered|)
                                         (nth i raw-order-response)
-                                      (setf item common::?Item)
-                                      (setf amount common::?Amount)
-                                      (setf delivered common::?Delivered)))
+                                      (setf item common::|?Item|)
+                                      (setf amount common::|?Amount|)
+                                      (setf delivered common::|?Delivered|)))
                                collect (cl-json:encode-json-alist-to-string
                                         (guest-info-arguments->a-list customer-id name place amount delivered))))
                  "]")))

@@ -53,20 +53,15 @@ Disconnects the frames PARENT-FRAME-ID and CHILD-FRAME-ID."
 
 (defun prolog-get-customer-infos (&optional customer-id)
   "Query prolog with 'get_customer_infos' to get the name and place of a specific guest. Provides all guest infos per default"
-  (cut:force-ll (json-prolog:prolog
-                 `("get_customer_infos"
-                   ,(if customer-id customer-id `?CustomerID)
-                   ?Name
-                   ?Place) :lispify T :package :common)))
+  (cut:force-ll (json-prolog:prolog-simple
+                 (format nil "get_customer_infos(~a,Name,Place)"
+                         (if customer-id (format nil "'~a'" customer-id) "CustomerID")) :lispify T :package :common)))
 
 (defun prolog-get-open-orders-of (&optional customer-id)
   "Query prolog with 'get_guest_info' to get the delivery item and the amount for a specific guest. Provides all orders per default."
-  (cut:force-ll (json-prolog:prolog
-                 `("get_open_orders_of"
-                   ,(if customer-id customer-id `?CustomerID)
-                   ?Item
-                   ?Amount
-                   ?Delivered) :lispify T :package :common)))
+  (cut:force-ll (json-prolog:prolog-simple
+                 (format nil "get_open_orders_of(~a,Item,Amount,Delivered)"
+                         (if customer-id (format nil "'~a'" customer-id) "CustomerID")) :lispify T :package :common)))
 
 (defun prolog-get-free-table ()
   "Query prolog with 'get_free_table' to get the name of a free table."
