@@ -10,6 +10,7 @@ RESTART-ROSNODE: Ste to T, if you want to force-start a new rosnode."
             |cutCake|
             |assertDialogElement|
             |getGuestInfo|
+            |getAllGuestInfo|
             |stressLevel|
             |updateObserverClient|)
           :s-xml-rpc-exports)

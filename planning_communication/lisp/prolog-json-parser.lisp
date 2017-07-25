@@ -1,10 +1,13 @@
 (in-package :planning-communication-package)
 
 (defparameter *json-example* (cl-json:encode-json-alist-to-string
-                              '(("guestId" . "1") ("return" . (("type" . "setCake") ("success" . "1") ("location" . "table1"))))))
+                              '(("guestId" . "1") ("return" ("type" . "setCake") ("success" . "1") ("location" . "table1")))))
 
 (defparameter *json-assoc* (cl-json:encode-json-alist-to-string
-                          '((:guestId . "1") (:query . ((:type . "setCake") (:amount . "1") (:name . "arthur"))))))
+                            '((:guestId . "1") (:query (:type . "setCake") (:amount . "1") (:name . "arthur")))))
+
+(defparameter *json-assoc-d* (cl-json:encode-json-alist-to-string
+                              `((:guestId . "1") (:query (:type . "setLocation") ("tableId" . "TABLE1")))))
 
 (defparameter *without-quotes* "{guestId:1,query:{type:setCake,amount:1,guestName:arthur}}")
 
@@ -26,9 +29,19 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
 (defun compose-reponse (json-string)
   "Check the type of query in the json and decide, what to return to pepper."
   (let* ((json-object (cl-json:decode-json-from-string json-string))
-         (query-type (last (assoc :type (last (assoc :query json-object)))))
-         (response-a-list '(("guestId" . (cdr (assoc :guest-id json-object))))))
-    ))
+         (query-type (cdr (assoc :type (remove :query (assoc :query json-object)))))
+         (customer-id (cdr (assoc :guestid json-object))))
+    
+    (if (equal query-type "setCake")
+        (let ((place (common:get-free-table)))
+          (assign-guest-to-place customer-id place)
+          `(("guestId" . ,customer-id)
+            ("return" ("type" . ,query-type)
+                      ("success" . "1")
+                      ("place" . ,place))))
+        `(("guestId" . ,customer-id)
+            ("return" ("type" . ,query-type)
+                      ("success" . "1"))))))
 
 (defun handle-get-customer-info (&optional customer-id)
   "Queries the knowledgebase for information about a specific customer."
@@ -40,7 +53,7 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
           (common::|?Name| common::|?Place|)
           raw-customer-response
         (setf name common::|?Name|)
-        (setf place common::|?Place|)))
+        (setf place (place->string common::|?Place|))))
     (when raw-order-response
       (cut:with-vars-bound
           (common::|?Item| common::|?Amount| common::|?Delivered|)
@@ -55,7 +68,6 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
   "Queries the knowledgebase for the whole list of cstomer infos and parses the list to json."
   (let ((raw-customer-response (common:prolog-get-customer-infos))
         (raw-order-response (common:prolog-get-open-orders-of))
-         
         customer-id name place item amount delivered)
     (concatenate 'string
                  "["
@@ -67,7 +79,7 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
                                         (nth i raw-customer-response)
                                       (setf customer-id common::|?CustomerID|)
                                       (setf name common::|?Name|)
-                                      (setf place common::|?Place|)))
+                                      (setf place (place->string common::|?Place|))))
                                   (when raw-order-response
                                     (cut:with-vars-bound
                                         (common::|?Item| common::|?Amount| common::|?Delivered|)
@@ -79,14 +91,21 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
                                         (guest-info-arguments->a-list customer-id name place amount delivered))))
                  "]")))
 
+(defun assign-guest-to-place (customer-id place)
+  (common:prolog-assert-dialog-element (cl-json:encode-json-alist-to-string
+                                        `((:guestId . ,customer-id) (:query (:type . "setLocation") ("tableId" . ,place))))))
+
 (defun guest-info-arguments->a-list (customer-id name place amount delivered)
   `(("guestId" . ,(format nil "~a" customer-id))
-    ("return" . (("type" . "getGuestInfo")
-                 ("name" . ,(format nil "~a" name))
-                 ("location" . ,(format nil "~a" place))
-                 ("total" . ,(format nil "~a" amount))
-                 ("delivered" . ,(format nil "~a" delivered))))))
+    ("return" ("type" . "getGuestInfo")
+              ("name" . ,(format nil "~a" name))
+              ("location" . ,(format nil "~a" place))
+              ("total" . ,(format nil "~a" amount))
+              ("delivered" . ,(format nil "~a" delivered)))))
 
 (defun format-nil (destination control-string &rest args)
   "Uses the standard `format' function but maps NIL arguments to empty strings instead."
   (format destination control-string (values-list (map 'list (lambda (x) (if x x "")) args))))
+
+(defun place->string (knowrob-place)
+  (subseq (symbol-name knowrob-place) (1+ (position #\# (symbol-name knowrob-place) :from-end t))))

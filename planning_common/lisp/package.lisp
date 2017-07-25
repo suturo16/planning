@@ -80,6 +80,8 @@
    :connect-objects
    :disconnect-objects
    :get-object-info
+   :get-current-order
+   :get-free-table
    :get-remaining-amount-for-order))
 
 (in-package :planning-common-package)
