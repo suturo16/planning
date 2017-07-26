@@ -10,7 +10,7 @@ RESTART-ROSNODE: Ste to T, if you want to force-start a new rosnode."
             |cutCake|
             |assertDialogElement|
             |getGuestInfo|
-            |getAllGuestInfo|
+            |getAllGuestInfos|
             |stressLevel|
             |updateObserverClient|)
           :s-xml-rpc-exports))
@@ -88,14 +88,16 @@ PORT: Port of the calling machine."
 (defun |assertDialogElement| (json-string)
 "Calls `handle-knowledge-update' to handle the json object containing information from the dialog for the knowledgebase.
 Returns a JSON string with the response."
-  (handle-knowledge-update json-string))
+  ;; (roslisp:ros-warn (assertsd) "~a" json-string)
+  ;; (print json-string)
+  ;; (format nil "~a" json-string)
+  (handle-knowledge-update json-string)
+  )
 
 (defun |getGuestInfo| (guest-id)
 "Get the information about the guest from the knowledgebase as JSON string."
-  (handle-get-customer-info guest-id)
-  1)
+  (handle-get-customer-info (parse-integer guest-id)))
 
 (defun |getAllGuestInfos| (status)
 "Get the information about the guest from the knowledgebase as JSON string."
-  (handle-get-all-customer-info)
-  1)
+  (handle-get-all-customer-info))

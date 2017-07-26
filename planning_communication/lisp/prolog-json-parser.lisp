@@ -6,8 +6,9 @@
 (defparameter *json-assoc* (cl-json:encode-json-alist-to-string
                             '((:guestId . "1") (:query (:type . "setCake") (:amount . "1") (:name . "arthur")))))
 
+
 (defparameter *json-assoc-d* (cl-json:encode-json-alist-to-string
-                              `((:guestId . "1") (:query (:type . "setLocation") ("tableId" . "TABLE1")))))
+                              `(("guestId" . "1") ("query" ("type" . "setLocation") ("tableId" . "TABLE1")))))
 
 (defparameter *without-quotes* "{guestId:1,query:{type:setCake,amount:1,guestName:arthur}}")
 
@@ -16,39 +17,46 @@
   "Starts a new thread that updates the knowledgebase with given json string.
 The json structure is defined here:
 https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
-  (sb-thread:make-thread (lambda ()
-                           (sb-thread:with-mutex ((get-prolog-mutex))
-                             (common:prolog-assert-dialog-element json-string))
-                           (common:say "Thank you for the information.")
-                           (compose-reponse json-string)
-                           ;; (when (gethash :pepper *clients*)
-                           ;;   (fire-rpc-to-client :pepper "notify"))
-                           )))
+  (common:prolog-assert-dialog-element json-string)
+  (cl-json:encode-json-alist-to-string (compose-reponse json-string))
+  ;; (sb-thread:make-thread (lambda ()
+  ;;                          (sb-thread:with-mutex ((get-prolog-mutex))
+  ;;                            (common:prolog-assert-dialog-element json-string))
+  ;;                          (common:say "Thank you for the information.")
+  ;;                          (compose-reponse json-string)
+  ;;                          ;; (when (gethash :pepper *clients*)
+  ;;                          ;;   (fire-rpc-to-client :pepper "notify"))
+  ;;                          ))
+  )
 
 (defun handle-get-customer-info (&optional customer-id)
   "Starts a new thread to query the knowledgebase for information about a specific customer."
-  (sb-thread:make-thread (lambda ()
-                          (sb-thread:with-mutex ((get-prolog-mutex))
-                            (let ((response (thread-get-customer-info
+  (let ((response (thread-get-customer-info
                                               (if customer-id customer-id (common:get-current-order)))))
                               ;; (when (gethash :pepper *clients*)
                               ;;   (fire-rpc-to-client :pepper "notify" response))
-                              response)))))
+                              response)
+  ;; (sb-thread:make-thread (lambda ()
+  ;;                         (sb-thread:with-mutex ((get-prolog-mutex))
+  ;;                           )))
+  )
 
 (defun handle-get-all-customer-info ()
   "Starts a new thread to query the knowledgebase for information about all customers."
-  (sb-thread:make-thread (lambda ()
-                          (sb-thread:with-mutex ((get-prolog-mutex))
-                            (let ((response (thread-get-all-customer-info)))
+  (let ((response (thread-get-all-customer-info)))
                               ;; (when (gethash :pepper *clients*)
                               ;;   (fire-rpc-to-client :pepper "notify" response))
-                              response)))))
+                              response)
+  ;; (sb-thread:make-thread (lambda ()
+  ;;                         (sb-thread:with-mutex ((get-prolog-mutex))
+  ;;                           )))
+  )
 
 (defun compose-reponse (json-string)
   "Check the type of query in the json and decide, what to return to pepper."
   (let* ((json-object (cl-json:decode-json-from-string json-string))
          (query-type (cdr (assoc :type (remove :query (assoc :query json-object)))))
-         (customer-id (cdr (assoc :guestid json-object))))
+         (customer-id (cdr (assoc "guestId" json-object))))
     (if (equal query-type "setCake")
         (let ((place (common:get-free-table)))
           (assign-guest-to-place customer-id place)
@@ -109,7 +117,7 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
 
 (defun assign-guest-to-place (customer-id place)
   (common:prolog-assert-dialog-element (cl-json:encode-json-alist-to-string
-                                        `((:guestId . ,customer-id) (:query (:type . "setLocation") ("tableId" . ,place))))))
+                                        `(("guestId" . ,customer-id) ("query" ("type" . "setLocation") ("tableId" . ,place))))))
 
 (defun guest-info-arguments->a-list (customer-id name place amount delivered)
   `(("guestId" . ,(format nil "~a" customer-id))
