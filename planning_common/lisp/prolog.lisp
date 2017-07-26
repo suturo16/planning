@@ -21,7 +21,8 @@
   (cut:lazy-car (json-prolog:prolog-simple
                  (format NIL "get_object_infos(~a, FRAME, ~a, TIMESTAMP, POSE, WIDTH, HEIGHT, DEPTH)."
                          (if name name "NAME")
-                         (if type type "TYPE")))))
+                         (if type type "TYPE"))
+                 :package :common)))
 
 
 (defun prolog-seen-since (name frame-id timestamp)
