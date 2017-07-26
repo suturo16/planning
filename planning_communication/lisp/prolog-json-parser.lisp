@@ -16,22 +16,39 @@
   "Starts a new thread that updates the knowledgebase with given json string.
 The json structure is defined here:
 https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
-  ;; (unless (member guest-id common:*guests* :test #'equal)
-  ;;   (nconc common:*guests* '(guest-id)))
   (sb-thread:make-thread (lambda ()
                            (sb-thread:with-mutex ((get-prolog-mutex))
                              (common:prolog-assert-dialog-element json-string))
                            (common:say "Thank you for the information.")
-                           
-                           (when (gethash :pepper *clients*)
-                             (fire-rpc-to-client :pepper "notify")))))
+                           (compose-reponse json-string)
+                           ;; (when (gethash :pepper *clients*)
+                           ;;   (fire-rpc-to-client :pepper "notify"))
+                           )))
+
+(defun handle-get-customer-info (&optional customer-id)
+  "Starts a new thread to query the knowledgebase for information about a specific customer."
+  (sb-thread:make-thread (lambda ()
+                          (sb-thread:with-mutex ((get-prolog-mutex))
+                            (let ((response (thread-get-customer-info
+                                              (if customer-id customer-id (common:get-current-order)))))
+                              ;; (when (gethash :pepper *clients*)
+                              ;;   (fire-rpc-to-client :pepper "notify" response))
+                              response)))))
+
+(defun handle-get-all-customer-info ()
+  "Starts a new thread to query the knowledgebase for information about all customers."
+  (sb-thread:make-thread (lambda ()
+                          (sb-thread:with-mutex ((get-prolog-mutex))
+                            (let ((response (thread-get-all-customer-info)))
+                              ;; (when (gethash :pepper *clients*)
+                              ;;   (fire-rpc-to-client :pepper "notify" response))
+                              response)))))
 
 (defun compose-reponse (json-string)
   "Check the type of query in the json and decide, what to return to pepper."
   (let* ((json-object (cl-json:decode-json-from-string json-string))
          (query-type (cdr (assoc :type (remove :query (assoc :query json-object)))))
          (customer-id (cdr (assoc :guestid json-object))))
-    
     (if (equal query-type "setCake")
         (let ((place (common:get-free-table)))
           (assign-guest-to-place customer-id place)
@@ -43,8 +60,7 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
             ("return" ("type" . ,query-type)
                       ("success" . "1"))))))
 
-(defun handle-get-customer-info (&optional customer-id)
-  "Queries the knowledgebase for information about a specific customer."
+(defun thread-get-customer-info (customer-id)
   (let ((raw-customer-response (car (common:prolog-get-customer-infos customer-id)))
         (raw-order-response (car (common:prolog-get-open-orders-of customer-id)))
         name place item amount delivered)
@@ -64,7 +80,7 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
     (cl-json:encode-json-alist-to-string
      (guest-info-arguments->a-list customer-id name place amount delivered))))
 
-(defun handle-get-all-customer-info ()
+(defun thread-get-all-customer-info ()
   "Queries the knowledgebase for the whole list of cstomer infos and parses the list to json."
   (let ((raw-customer-response (common:prolog-get-customer-infos))
         (raw-order-response (common:prolog-get-open-orders-of))
