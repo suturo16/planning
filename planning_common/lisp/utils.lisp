@@ -123,23 +123,54 @@ using prolog interface."
 
 (defun get-guest-order (id)
   "Get guest order of guest with ID."
-  (cut:with-vars-bound
-      (?amount)
-      (prolog-guest-info id)
-    ?amount))
+  (let ((raw-order (car (prolog-get-open-orders-of id))))
+    (if raw-order
+        (cut:with-vars-bound
+            (|?Amount|)
+            raw-order
+          (symbol->integer |?Amount|))
+        (ros-info (get-guest-info) "No guest info with id ~a" id))))
 
 (defun get-current-order ()
-  "Retrieves the whole orders list via prolog. First checks orders where the delivered amount of cake is greater than 0,
-then if those orders are finished already. Else get a unstarted order or wait for new ones.")
+  "Returns the customer-id of the current order. Retrieves the whole orders list via prolog. An already started order is always the current order.
+A finished order never is. If there is no order in the state :started, the next order in queue is the current order."
+  (let ((all-orders-raw (prolog-get-open-orders-of)))
+    (when all-orders-raw
+      (flet ((order-status (order)
+               (cut:with-vars-bound (|?Amount| |?Delivered|) order
+                 (if (>= (symbol->integer |?Delivered|) (symbol->integer |?Amount|))
+                     :finished
+                     (if (< 0 (symbol->integer |?Amount|) (symbol->integer |?Delivered|))
+                         :started
+                         :queued)))))
+        (symbol->integer
+         (cdr
+          (assoc '|?CustomerID|
+                 (reduce (lambda (this next)
+                           (if next
+                               (alexandria:switch ((order-status this))
+                                 (:started this)
+                                 (:finished next)
+                                 (:queued (if (eq (order-status next) :started)
+                                              next
+                                              this)))
+                               this)) all-orders-raw))))))))
 
-(defun get-remaining-amount-for-order (customer-id)
+(defun get-remaining-amount-for-order (&optional customer-id)
   "Retrieve the remaining amount of pieces still to deliver. total - delivered = value"
-  (let ((raw-order (prolog-get-open-orders-of customer-id)))
+  (let* ((customer-id (if customer-id customer-id (get-current-order)))
+         (raw-order (car (prolog-get-open-orders-of customer-id))))
     (when raw-order
       (cut:with-vars-bound
-          (?Item ?Amount ?Delivered)
+          (|?Amount| |?Delivered|)
           raw-order
-        (- ?Amount ?Delivered)))))
+        (- (symbol->integer |?Amount|) (symbol->integer |?Delivered|))))))
+
+(defun get-free-table ()
+  "Returns the first free table available as plain string."
+  (let ((raw-place (prolog-get-free-table)))
+    (when raw-place
+      (symbol-name (cdr (assoc 'common::?nameoffreetable raw-place))))))
 
 (defun knowrob->str (knowrob-sym &optional (split NIL))
   "Turn a symbol representing a string returned by Knowledge into a normal string. Optionally cut off the knowrob prefix as well."
@@ -149,3 +180,8 @@ then if those orders are finished already. Else get a unstarted order or wait fo
         (when (find #\# str)
           (second (split str "#")))
         str)))
+
+(defun symbol->integer (symbol)
+  "Parses a symbol containing an integer into an integer. Symbol has to contain a valid integer value."
+  (parse-integer (remove #\_ (symbol-name symbol))))
+

@@ -18,5 +18,5 @@
 
   (:goal
     (and 
-        (on-plate pieceofcake0 plate1)
+        (on-plate pieceofcake0 plate0)
         (on-turtlebot plate0))))

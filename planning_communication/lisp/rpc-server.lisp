@@ -10,10 +10,10 @@ RESTART-ROSNODE: Ste to T, if you want to force-start a new rosnode."
             |cutCake|
             |assertDialogElement|
             |getGuestInfo|
+            |getAllGuestInfo|
             |stressLevel|
             |updateObserverClient|)
-          :s-xml-rpc-exports)
-  (setf *prolog-mutex* (sb-thread:make-mutex :name "prolog lock")))
+          :s-xml-rpc-exports))
 
 
 (defun |sleepSomeTime| (status)
@@ -92,4 +92,10 @@ Returns a JSON string with the response."
 
 (defun |getGuestInfo| (guest-id)
 "Get the information about the guest from the knowledgebase as JSON string."
-  (handle-get-customer-info guest-id))
+  (handle-get-customer-info guest-id)
+  1)
+
+(defun |getAllGuestInfos| (status)
+"Get the information about the guest from the knowledgebase as JSON string."
+  (handle-get-all-customer-info)
+  1)
