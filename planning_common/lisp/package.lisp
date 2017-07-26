@@ -60,8 +60,8 @@
    :get-joint-config
    :get-controller-specs
    :say
-   :get-guest-ids
    :get-guest-order
+   :get-current-order
 
    :+blade-of-cake-knife+
    :+handle-of-cake-knife+
