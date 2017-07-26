@@ -91,16 +91,18 @@ using prolog interface."
       (cut:with-vars-bound
           (?name ?frame ?timestamp ?pose ?width ?height ?depth)
           raw-response
-        (make-object-info
-         :name (knowrob->str ?name T)
-         :frame (knowrob->str ?frame)
-         :type object-type
-         :timestamp ?timestamp
-         :pose ?pose
-         :height ?height
-         :width ?width
-         :depth ?depth
-         :physical-parts (get-phys-parts (knowrob->str ?name T)))))))
+        (let ((name (knowrob->str ?name T)))
+          (make-object-info
+           :name name
+           :frame (knowrob->str ?frame)
+           :type object-type
+           :timestamp ?timestamp
+           :pose ?pose
+           :height ?height
+           :width ?width
+           :depth ?depth
+           :physical-parts (get-phys-parts name)
+           :details (prolog-get-details name)))))))
 
 ; if it doesn't work from the start, comment in the uncommented line. 
 ; Make sure the node is running though

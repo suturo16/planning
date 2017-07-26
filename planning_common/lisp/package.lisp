@@ -30,6 +30,7 @@
    :object-info-depth
    :object-info-type
    :object-info-pose
+   :get-object-detail
    :get-object-part-detail
 
    :service-run-pipeline

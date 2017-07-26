@@ -1,6 +1,6 @@
 (in-package :planning-common-package)
 
-(defstruct object-info name frame type timestamp pose (height 0) (width 0) (depth 0) physical-parts add-info)
+(defstruct object-info name frame type timestamp pose (height 0) (width 0) (depth 0) physical-parts details)
 
 (defun get-object-part-detail (obj-info part detail)
   "Get the DETAIL of the (physical) PART of OBJ-INFO."
@@ -17,3 +17,8 @@
                                                (find +name-of-object+ part-list :key #'first)))))
                                        (string-equal my-part (subseq name-of-obj 0 (1- (length name-of-obj)))))))
                        :key #'first))))
+
+
+(defun get-object-detail (obj-info detail)
+  (knowrob->str
+   (car (alexandria:assoc-value (object-info-details obj-info) detail))))
