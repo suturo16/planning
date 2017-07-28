@@ -1,10 +1,10 @@
 (defsystem turtle-command-pool-system
-  :depends-on (roslisp
-               cl-tf std_msgs-msg
+  :depends-on (cram-language
+               roslisp
+               std_msgs-msg
                actionlib_msgs-msg
                move_base_msgs-msg
                actionlib
-               cram-language
                geometry_msgs-msg
                cl-transforms
                cram-designators
@@ -20,6 +20,6 @@
      (:file "commands" :depends-on ("package"))
      (:file "action-designators" :depends-on ("package"))
      (:file "location-designators" :depends-on ("package"))
-     (:file "process-modules" :depends-on ("package"))
+     (:file "process-modules" :depends-on ("package" "turtle-action-client" "action-designators" "commands"))
      (:file "plans" :depends-on ("package"))
      (:file "turtle-action-client" :depends-on ("package"))))))

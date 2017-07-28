@@ -2,6 +2,8 @@
 ;;dependencies: cram_location_costmap cram_tf cram_occupancy_grid_costmap
 (defvar designator nil)
 (defvar costmap nil)
+(defvar solutions nil)
+(defvar valid-solutions nil)
 
 
 ;;start a node in REPL with 
@@ -9,18 +11,18 @@
   (roslisp-utilities:startup-ros :name "lisp_node" :anonymous nil))
 
 ;;start rviz and add Marker and MarkerArray, topic should contain lisp_node. define costmap parameters:
-(defun costmap-parameters ()
-  (prolog:def-fact-group costmap-metadata ()
-           (prolog:<- (location-costmap:costmap-size 10 10)) ; in meters
-           (prolog:<- (location-costmap:costmap-origin -5 -5))
+(prolog:def-fact-group costmap-metadata ()
+           (prolog:<- (location-costmap:costmap-size 15 15)) ; in meters
+           (prolog:<- (location-costmap:costmap-origin -5 -10))
            (prolog:<- (location-costmap:costmap-resolution 0.05))
-           (prolog:<- (location-costmap:costmap-padding 0.01))) ; padding to occupancy map obstacles
-  )
+           (prolog:<- (location-costmap:costmap-padding 0.02))) ; padding to occupancy map obstacles
+ 
 
 
 ;;6. create a designator and resolve it:
  (defun create-desig ()
    (setf designator (desig:make-designator :location `((:to :see)))))
+
 ;;7. to see which costmap was used, call this:
 (defun resolve-desig ()
    (desig:reference designator))
@@ -43,8 +45,7 @@
 
 ;;create a cost function which returns for each {x, y} in location costmap grid a value between [0, 1]
 (defun make-behind-cost-function (ref-x ref-y)
-  "`ref-x' and `ref-y' are the coordinates of the reference point according to which the
-   relation is resolved."
+  "`ref-x' and `ref-y' are the coordinates of the reference point according to which the relation is resolved."
   (let* ((translated-supp-pose (cl-transforms:make-transform
                                 (cl-transforms:make-3d-vector ref-x ref-y 0)
                                 (cl-transforms:make-identity-rotation)))
@@ -61,58 +62,114 @@
             0.0d0)))))
 
 
+(defun make-left-of-cost-function (ref-x ref-y)
+  "`ref-x' and `ref-y' are the coordinates of the reference point according to which the relation is resolved."
+  (let* ((translated-supp-pose (cl-transforms:make-transform
+                                (cl-transforms:make-3d-vector ref-x ref-y 0)
+                                (cl-transforms:make-identity-rotation)))
+         (world->supp-trans (cl-transforms:transform-inv translated-supp-pose)))
+    (lambda (x y)
+      (let* ((point (cl-transforms:transform-point world->supp-trans
+                                                   (cl-transforms:make-3d-vector x y 0)))
+             (vector-length (sqrt (+ (* (cl-transforms:x point) (cl-transforms:x point))
+                                     (* (cl-transforms:y point) (cl-transforms:y point))))))
+        (if (< (cl-transforms:x point) 0.0d0)
+            (if (> (abs (/ (cl-transforms:x point) vector-length)) 0)
+                (abs (/ (cl-transforms:x point) vector-length))
+                0.0d0)
+            0.0d0)))))
+
 ;; define order for your costmap function and give it a name:
 
-(defmethod location-costmap:costmap-generator-name->score ((name (eql 'behind-cost-function))) 10)
+(defmethod location-costmap:costmap-generator-name->score ((name (common-lisp:eql 'behind-cost-function))) 10)
 
 ;;define the prolog rule for generating costmaps:
-(defun prolog-generate-rules-for-costmap ()
-  (prolog:def-fact-group left-of-rules (location-costmap:desig-costmap)
+
+  (prolog:def-fact-group normal-left-of-rules (location-costmap:desig-costmap)
   (prolog:<- (location-costmap:desig-costmap ?designator ?costmap)
-    (desig:desig-prop ?designator (:behind ?pose))
+    (desig:desig-prop ?designator (:left-of ?pose))
     (prolog:lisp-fun cl-transforms:origin ?pose ?pose-origin)
     (prolog:lisp-fun cl-transforms:x ?pose-origin ?ref-x)
     (prolog:lisp-fun cl-transforms:y ?pose-origin ?ref-y)
     (location-costmap:costmap ?costmap)
     (location-costmap:costmap-add-function
-     behind-cost-function
+    behind-cost-function
      (make-behind-cost-function ?ref-x ?ref-y)
-     ?costmap))))
+     ?costmap)))
 
 ;;resolve your new awesome designator:
 (defun resolve-new-desig ()
-     (desig:reference (desig:make-designator :location `((:behind ,(cl-transforms:make-identity-pose))))))
+     (desig:reference (desig:make-designator :location `((:left-of ,(cl-transforms:make-identity-pose))))))
 
 
 ;;using gaussian costmap function:
-(defun gaussian-costmap ()
+;;rainbow around a certain point
   (prolog:def-fact-group left-of-rules (location-costmap:desig-costmap)
-  (prolog:<- (location-costmap:desig-costmap ?designator ?costmap)
-    (desig:desig-prop ?designator (:behind ?pose))
-    (prolog:lisp-fun cl-transforms:origin ?pose ?pose-origin)
-    (location-costmap:costmap ?costmap)
-    (location-costmap:costmap-add-function
-     behind-cost-function
-     (location-costmap:make-gauss-cost-function ?pose-origin #2A((0.5 0) (0 0.5)))
-     ?costmap))))
+    (prolog:<- (location-costmap:desig-costmap ?designator ?costmap)
+      (desig:desig-prop ?designator (:left-of ?pose))
+      (prolog:lisp-fun cl-transforms:origin ?pose ?pose-origin)
+      (location-costmap:costmap ?costmap)
+      (location-costmap:costmap-add-function
+       behind-cost-function
+       (location-costmap:make-gauss-cost-function ?pose-origin #2A((0.2 0) (0 0.2)))
+       ?costmap)))
 
 ;;using range costmap function:
-(defun range-costmap-fun ()
-(prolog:def-fact-group left-of-rules (location-costmap:desig-costmap)
-  (prolog:<- (location-costmap:desig-costmap ?designator ?costmap)
-    (desig:desig-prop ?designator (:behind ?pose))
-    (location-costmap:costmap ?costmap)
-    (location-costmap:costmap-add-function
-     behind-cost-function
-     (location-costmap:make-range-cost-function ?pose 1.0)
-     ?costmap)))
+;;range around a certain point
+(defun test-group ()
+  (prolog:def-fact-group range-left-of-rules (location-costmap:desig-costmap)
+    (prolog:<- (location-costmap:desig-costmap ?designator ?costmap)
+      (desig:desig-prop ?designator (:left-of ?pose))
+      (location-costmap:costmap ?costmap)
+      (location-costmap:costmap-add-function
+       behind-cost-function
+       (location-costmap:make-range-cost-function ?pose 1.0)
+       ?costmap))))
 
-(prolog:def-fact-group left-of-rules (location-costmap:desig-costmap)
-  (prolog:<- (location-costmap:desig-costmap ?designator ?costmap)
-    (desig:desig-prop ?designator (:behind ?pose))
-    (location-costmap:costmap ?costmap)
-    (location-costmap:costmap-add-function
-     behind-cost-function
-     (location-costmap:make-range-cost-function ?pose 1.0 :invert t)
-     ?costmap)))
-)
+;;opposite of the above
+(defun test-group2 ()
+  (prolog:def-fact-group negative-circle-left-of-rules (location-costmap:desig-costmap)
+    (prolog:<- (location-costmap:desig-costmap ?designator ?costmap)
+      (desig:desig-prop ?designator (:behind ?pose))
+      (location-costmap:costmap ?costmap)
+      (location-costmap:costmap-add-function
+       behind-cost-function
+       (location-costmap:make-range-cost-function ?pose 1.0 :invert t)
+       ?costmap))))
+
+
+(defvar origin nil)
+
+;(defun navigation-goal-validator (designator solution)
+;(declare (type location-designator designator))
+;(when (desig-prop-value designator :left-of)
+;(when (< (cl-transforms:y (cl-transforms:origin (desig-prop-value solution :left-of)))
+;(+ (cl-transforms:y (cl-transforms:origin origin)) 0.2))
+;:accept)))
+
+;(register-location-validation-function
+;5 navigation-goal-validator)
+
+ (defparameter test (desig:make-designator :location `((:left-of ,(cl-transforms:make-pose (cl-transforms:make-3d-vector 4.7 -6.8 0.0) (cl-transforms:make-quaternion 0.0 0.0 -0.035 0.9))))))
+
+(defun get-solutions (desig howmany)
+   (let (newdesig)
+     (dotimes (n howmany)
+       (setf newdesig desig)
+       (setf desig (next-solution newdesig))
+       (push (reference newdesig) solutions))))
+
+(defun reset-solutions ()
+  (setf solutions nil))
+
+(defun navigation-goal-validator (origin solution)
+  (if solution
+    (if (< (cl-transforms:y (cl-transforms:origin solution))
+           (+ (cl-transforms:y (cl-transforms:origin origin)) 0.2))
+        (progn (print solution)
+               (push solution valid-solutions)
+               :accept)
+        (progn
+          (print "invalid pose")
+          :reject))
+    (print "solution list is empty")))
