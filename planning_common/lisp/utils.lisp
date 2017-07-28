@@ -86,18 +86,43 @@ using prolog interface."
 
 (defun get-object-info (object-type)
   "Get object infos for OBJECT-TYPE using prolog interface."
-  (cut:with-vars-bound
-      (?name ?frame ?timestamp ?pose ?width ?height ?depth)
-      (prolog-get-object-info object-type)
-    (make-object-info
-       :name (string-downcase (subseq (string ?name) 34))
-       :frame (string-downcase ?frame)
-       :type object-type
-       :timestamp ?timestamp
-       :pose ?pose
-       :height ?height
-       :width ?width
-       :depth ?depth)))
+  (let ((raw-response (prolog-get-object-info-simple object-type)))
+    (when raw-response
+      (cut:with-vars-bound
+          (?name ?frame ?timestamp ?pose ?width ?height ?depth)
+          raw-response
+        (let ((name (knowrob->str ?name T)))
+          (make-object-info
+           :name name
+           :frame (knowrob->str ?frame)
+           :type object-type
+           :timestamp ?timestamp
+           :pose ?pose
+           :height ?height
+           :width ?width
+           :depth ?depth
+           :physical-parts (get-phys-parts name)
+           :details (prolog-get-details name)))))))
+
+(defun get-object-part-detail (obj-info part detail)
+  "Get the DETAIL of the (physical) PART of OBJ-INFO."
+  ;; get the value
+  (knowrob->str (second
+                 ;; find the right detail
+                 (find detail 
+                       ;; find the right part
+                       (find part (object-info-physical-parts obj-info)
+                             :test (lambda (my-part part-list)
+                                     (let ((name-of-obj
+                                             (knowrob->str
+                                              (second
+                                               (find +name-of-object+ part-list :key #'first)))))
+                                       (string-equal my-part (subseq name-of-obj 0 (1- (length name-of-obj)))))))
+                       :key #'first))))
+
+(defun get-object-detail (obj-info detail)
+  (knowrob->str
+   (car (alexandria:assoc-value (object-info-details obj-info) detail))))
 
 ; if it doesn't work from the start, comment in the uncommented line. 
 ; Make sure the node is running though
@@ -112,3 +137,71 @@ using prolog interface."
      :sound (symbol-code 'sound_play-msg:<soundrequest> :say)
      :command (symbol-code 'sound_play-msg:<soundrequest> :play_once)
      :arg a-string :arg2 "voice_kal_diphone")))
+
+(defun get-guest-ids ()
+  '(1 2 3 4 5 6))
+
+(defun get-guest-order (id)
+  "Get guest order of guest with ID."
+  (let ((raw-order (car (prolog-get-open-orders-of id))))
+    (if raw-order
+        (cut:with-vars-bound
+            (|?Amount|)
+            raw-order
+          (symbol->integer |?Amount|))
+        (ros-info (get-guest-info) "No guest info with id ~a" id))))
+
+(defun get-current-order ()
+  "Returns the customer-id of the current order. Retrieves the whole orders list via prolog. An already started order is always the current order.
+A finished order never is. If there is no order in the state :started, the next order in queue is the current order."
+  (let ((all-orders-raw (prolog-get-open-orders-of)))
+    (when all-orders-raw
+      (flet ((order-status (order)
+               (cut:with-vars-bound (|?Amount| |?Delivered|) order
+                 (if (>= (symbol->integer |?Delivered|) (symbol->integer |?Amount|))
+                     :finished
+                     (if (< 0 (symbol->integer |?Amount|) (symbol->integer |?Delivered|))
+                         :started
+                         :queued)))))
+        (symbol->integer
+         (cdr
+          (assoc '|?CustomerID|
+                 (reduce (lambda (this next)
+                           (if next
+                               (alexandria:switch ((order-status this))
+                                 (:started this)
+                                 (:finished next)
+                                 (:queued (if (eq (order-status next) :started)
+                                              next
+                                              this)))
+                               this)) all-orders-raw))))))))
+
+(defun get-remaining-amount-for-order (&optional customer-id)
+  "Retrieve the remaining amount of pieces still to deliver. total - delivered = value"
+  (let* ((customer-id (if customer-id customer-id (get-current-order)))
+         (raw-order (car (prolog-get-open-orders-of customer-id))))
+    (when raw-order
+      (cut:with-vars-bound
+          (|?Amount| |?Delivered|)
+          raw-order
+        (- (symbol->integer |?Amount|) (symbol->integer |?Delivered|))))))
+
+(defun get-free-table ()
+  "Returns the first free table available as plain string."
+  (let ((raw-place (prolog-get-free-table)))
+    (when raw-place
+      (symbol-name (cdr (assoc 'common::?nameoffreetable raw-place))))))
+
+(defun knowrob->str (knowrob-sym &optional (split NIL))
+  "Turn a symbol representing a string returned by Knowledge into a normal string. Optionally cut off the knowrob prefix as well."
+  (let* ((pre-str (symbol-name knowrob-sym))
+         (str (subseq pre-str 1 (1- (length pre-str)))))
+    (if split
+        (when (find #\# str)
+          (second (split str "#")))
+        str)))
+
+(defun symbol->integer (symbol)
+  "Parses a symbol containing an integer into an integer. Symbol has to contain a valid integer value."
+  (parse-integer (remove #\_ (symbol-name symbol))))
+

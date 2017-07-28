@@ -26,28 +26,26 @@
   :licence "MIT"
   :in-order-to ((test-op (test-op "cl-json.test")))
   :components ((:static-file "cl-json.asd")
-               (:module :cl-json
-                :components ((:module :src
-                               :components ((:file "package")
-                                            (:file "common" :depends-on ("package"))
-                                            #+cl-json-clos
-                                            (:file "objects" :depends-on ("package"))
-                                            (:file "camel-case" :depends-on ("package"))
-                                            (:file "decoder" :depends-on ("common" #+cl-json-clos "objects" "camel-case"))
-                                            (:file "encoder" :depends-on ("common" #+cl-json-clos "objects" "camel-case"))
-                                            (:file "utils" :depends-on ("decoder" "encoder"))
-                                            (:file "json-rpc" :depends-on ("package" "common" "utils" "encoder" "decoder"))))))))
+               (:module :src
+                :components ((:file "package")
+                             (:file "common" :depends-on ("package"))
+                             #+cl-json-clos
+                             (:file "objects" :depends-on ("package"))
+                             (:file "camel-case" :depends-on ("package"))
+                             (:file "decoder" :depends-on ("common" #+cl-json-clos "objects" "camel-case"))
+                             (:file "encoder" :depends-on ("common" #+cl-json-clos "objects" "camel-case"))
+                             (:file "utils" :depends-on ("decoder" "encoder"))
+                             (:file "json-rpc" :depends-on ("package" "common" "utils" "encoder" "decoder"))))))
 
 (defsystem :cl-json.test
   :depends-on (:cl-json :fiveam )
   ;; newer ASDF versions have this implicitly, but I know of no good way to detect this. [2010/01/02:rpg]
   :in-order-to ((test-op (load-op "cl-json.test")))
-  :components ((:module :cl-json
-                 :components ((:module :t
-                               :components ((:file "package")
-                                            (:file "testmisc" :depends-on ("package" "testdecoder" "testencoder"))
-                                            (:file "testdecoder" :depends-on ("package"))
-                                            (:file "testencoder" :depends-on ("package"))))))))
+  :components ((:module :t
+               :components ((:file "package")
+                            (:file "testmisc" :depends-on ("package" "testdecoder" "testencoder"))
+                            (:file "testdecoder" :depends-on ("package"))
+                            (:file "testencoder" :depends-on ("package"))))))
 
 (defmethod perform ((op test-op) (c (eql (find-system :cl-json.test))))
   (funcall (intern (symbol-name '#:run!) :it.bese.FiveAM)

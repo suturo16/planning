@@ -21,3 +21,5 @@ CB (function): Function capable of using message data to execute plans."
 
 CB (function): Look at `make-command-executer's docstring for further information."
   (setf *command-subscriber* (subscribe "/command" "std_msgs/String" (make-command-executer cb))))
+
+

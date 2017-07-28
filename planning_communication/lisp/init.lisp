@@ -1,6 +1,6 @@
 (in-package :planning-communication-package)
 
-(defun setup-pepper-communication (execute-cb &optional (pepper-ip "192.168.101.253") (pepper-port 8000))
+(defun setup-pepper-communication (execute-cb &key (pepper-ip "192.168.101.253") (pepper-port 8000))
   "Setup communcation with other agents.
 
 EXECUTE-CB (function): Look at `make-command-executer's docstring for further information.

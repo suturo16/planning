@@ -8,8 +8,10 @@ RESTART-ROSNODE: Ste to T, if you want to force-start a new rosnode."
   (import '(|sleepSomeTime|
             |do|
             |cutCake|
+            |assertDialogElement|
+            |getGuestInfo|
+            |getAllGuestInfos|
             |stressLevel|
-            |nextTask|
             |updateObserverClient|)
           :s-xml-rpc-exports))
 
@@ -53,11 +55,6 @@ STATUS: Unused parameter to prevent issues with calls without parameters."
   (roslisp-queue:queue-size (roslisp::buffer (roslisp::subscriber-subscription *command-subscriber*))))
 
 
-(defun |nextTask| ()
-  "Returns the identifier of the next task, as is in the commands list."
-  "Not implemented!")
-
-
 (defun |updateObserverClient| (client-id host port)
   "Update clients' information about host and port, using the client id as primary key.
 CLIENT-ID: Id of the calling client. See id definition of the machines above.
@@ -88,5 +85,19 @@ PORT: Port of the calling machine."
     
     0))
 
-     
-     
+(defun |assertDialogElement| (json-string)
+"Calls `handle-knowledge-update' to handle the json object containing information from the dialog for the knowledgebase.
+Returns a JSON string with the response."
+  ;; (roslisp:ros-warn (assertsd) "~a" json-string)
+  ;; (print json-string)
+  ;; (format nil "~a" json-string)
+  (handle-knowledge-update json-string)
+  )
+
+(defun |getGuestInfo| (guest-id)
+"Get the information about the guest from the knowledgebase as JSON string."
+  (handle-get-customer-info (parse-integer guest-id)))
+
+(defun |getAllGuestInfos| (status)
+"Get the information about the guest from the knowledgebase as JSON string."
+  (handle-get-all-customer-info))
