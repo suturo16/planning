@@ -183,8 +183,9 @@ A finished order never is. If there is no order in the state :started, the next 
     (when raw-order
       (cut:with-vars-bound
           (|?Amount| |?Delivered|)
-          raw-order
+        raw-order
         (- |?Amount|  |?Delivered|)))))
+
 
 (defun get-free-table ()
   "Returns the first free table available as plain string."

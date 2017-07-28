@@ -68,20 +68,13 @@ Disconnects the frames PARENT-FRAME-ID and CHILD-FRAME-ID."
   "Query prolog with 'get_free_table' to get the name of a free table."
   (cut:lazy-car (json-prolog:prolog-simple "get_free_table(NameOfFreeTable)" :lispify T :package :common)))
 
-(defun prolog-set-delivered-amount-old (customer-id amount)
-  "Query prolog with 'increase_deliver_amount' to set the delivered amount for an order."
-  (json-prolog:prolog
-     `("set_delivered_amount"
-       ,customer-id
-       ,amount) :lispify T :package :common))
-
 (defun prolog-set-delivered-amount (customer-id amount)
   "Query prolog with 'set_delivered_amount' to set the delivered amount of an order."
-  (json-prolog:prolog-simple (format nil "set_delivered_amount('~a',~a)" customer-id amount)))
+  (json-prolog:prolog-simple (format nil "set_delivered_amount('~a',~a)" customer-id amount) :package :common))
 
 (defun prolog-increase-delivered-amount (customer-id)
   "Query prolog with 'increase_delivered_amount' to increase the delivered amount for an order."
-  (json-prolog:prolog-simple (format nil "increase_delivered_amount('~a')" customer-id)))
+  (json-prolog:prolog-simple (format nil "increase_delivered_amount('~a')" customer-id) :package :common))
 
 (defun prolog-get-info-sanity ()
   ;; THIS WORKS! If not check if teh object is really there etc
