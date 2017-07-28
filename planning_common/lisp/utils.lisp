@@ -94,7 +94,7 @@ using prolog interface."
         (let ((name (knowrob->str ?name T)))
           (make-object-info
            :name name
-           :frame (knowrob->str ?frame)
+           :frame (knowrob->str (second ?frame))
            :type object-type
            :timestamp ?timestamp
            :pose ?pose
