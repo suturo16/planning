@@ -94,7 +94,7 @@ using prolog interface."
         (let ((name (knowrob->str ?name T)))
           (make-object-info
            :name name
-           :frame (knowrob->str (second ?frame))
+           :frame (knowrob->str ?frame)
            :type object-type
            :timestamp ?timestamp
            :pose ?pose
@@ -184,7 +184,7 @@ A finished order never is. If there is no order in the state :started, the next 
       (cut:with-vars-bound
           (|?Amount| |?Delivered|)
           raw-order
-        (- (symbol->integer |?Amount|) (symbol->integer |?Delivered|))))))
+        (-  (symbol->integer |?Amount|)  |?Delivered|)))))
 
 (defun get-free-table ()
   "Returns the first free table available as plain string."
