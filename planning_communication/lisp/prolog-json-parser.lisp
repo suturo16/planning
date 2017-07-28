@@ -63,7 +63,7 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
           `(("guestId" . ,customer-id)
             ("return" ("type" . ,query-type)
                       ("success" . "1")
-                      ("place" . ,place))))
+                      ("tableId" . ,place))))
         `(("guestId" . ,customer-id)
             ("return" ("type" . ,query-type)
                       ("success" . "1"))))))
