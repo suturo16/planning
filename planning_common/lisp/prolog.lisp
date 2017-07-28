@@ -66,9 +66,7 @@ Disconnects the frames PARENT-FRAME-ID and CHILD-FRAME-ID."
 
 (defun prolog-get-free-table ()
   "Query prolog with 'get_free_table' to get the name of a free table."
-  (cut:lazy-car (json-prolog:prolog
-                 `("get_free_table"
-                   ?NameOfFreeTable) :lispify T :package :common)))
+  (cut:lazy-car (json-prolog:prolog-simple "get_free_table(NameOfFreeTable)" :lispify T :package :common)))
 
 (defun prolog-set-delivered-amount-old (customer-id amount)
   "Query prolog with 'increase_deliver_amount' to set the delivered amount for an order."
