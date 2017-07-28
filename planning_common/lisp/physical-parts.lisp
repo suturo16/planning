@@ -14,6 +14,8 @@
 (alexandria:define-constant +angle+ '|'angle'|)
 (alexandria:define-constant +radius+ '|'radius'|)
 
+(defun prolog-get-details (name)
+  (cdr (car (car (prolog-get-info (format nil "[[nameOfObject,~a],radius,angle]" name))))))
 
 (defun prolog-get-info-physical-parts (name)
   (prolog-get-info (format nil "[[nameOfObject,~a],physicalParts]" name)))
@@ -29,7 +31,7 @@
   (get-part-detail-inner (get-phys-parts obj-name) part detail))
 
 (defun get-part-detail-inner (parts part detail)
-  (let ((name (symbol-name (car (alexandria:assoc-value (car parts) +nameofobject+)))))
+  (let ((name (symbol-name (car (alexandria:assoc-value (car parts) +name-of-object+)))))
     (if (string-equal name part :start1 1 :end1 (- (length name) 2))
           (let ((value (symbol-name (car (alexandria:assoc-value (car parts) detail)))))
             (subseq value 1 (1- (length value))))

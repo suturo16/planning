@@ -91,16 +91,38 @@ using prolog interface."
       (cut:with-vars-bound
           (?name ?frame ?timestamp ?pose ?width ?height ?depth)
           raw-response
-        (make-object-info
-         :name (knowrob->str ?name T)
-         :frame (knowrob->str ?frame)
-         :type object-type
-         :timestamp ?timestamp
-         :pose ?pose
-         :height ?height
-         :width ?width
-         :depth ?depth
-         :physical-parts (get-phys-parts (knowrob->str ?name T)))))))
+        (let ((name (knowrob->str ?name T)))
+          (make-object-info
+           :name name
+           :frame (knowrob->str ?frame)
+           :type object-type
+           :timestamp ?timestamp
+           :pose ?pose
+           :height ?height
+           :width ?width
+           :depth ?depth
+           :physical-parts (get-phys-parts name)
+           :details (prolog-get-details name)))))))
+
+(defun get-object-part-detail (obj-info part detail)
+  "Get the DETAIL of the (physical) PART of OBJ-INFO."
+  ;; get the value
+  (knowrob->str (second
+                 ;; find the right detail
+                 (find detail 
+                       ;; find the right part
+                       (find part (object-info-physical-parts obj-info)
+                             :test (lambda (my-part part-list)
+                                     (let ((name-of-obj
+                                             (knowrob->str
+                                              (second
+                                               (find +name-of-object+ part-list :key #'first)))))
+                                       (string-equal my-part (subseq name-of-obj 0 (1- (length name-of-obj)))))))
+                       :key #'first))))
+
+(defun get-object-detail (obj-info detail)
+  (knowrob->str
+   (car (alexandria:assoc-value (object-info-details obj-info) detail))))
 
 ; if it doesn't work from the start, comment in the uncommented line. 
 ; Make sure the node is running though

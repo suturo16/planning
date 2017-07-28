@@ -30,6 +30,7 @@
    :object-info-depth
    :object-info-type
    :object-info-pose
+   :get-object-detail
    :get-object-part-detail
 
    :service-run-pipeline
@@ -59,8 +60,8 @@
    :get-joint-config
    :get-controller-specs
    :say
-   :get-guest-ids
    :get-guest-order
+   :get-current-order
 
    :+blade-of-cake-knife+
    :+handle-of-cake-knife+
