@@ -17,17 +17,17 @@
 
 (defun generate-objects-section (objects)
 "Generate the objects-section with OBJECTS."
-	(format nil "~%~%  (:objects ~{~%    ~A~})"))
+	(format nil "~%~%  (:objects ~{~%    ~A~})" objects))
 
 
 (defun generate-init-section (predicates)
 "Generate the init-section with PREDICATES."
-	(format nil "~%~%  (:init ~{~%~^    (~A~^)~}))"))
+	(format nil "~%~%  (:init ~{~%~^    (~A~^)~}))" predicates))
 
 
 (defun generate-goal-section (predicates)
 "Generate the goal-section with PREDICATES."
-	(format nil "~%~%  (:goal~%    (and ~{~%~^        (~A~^)~}))))"))
+	(format nil "~%~%  (:goal~%    (and ~{~%~^        (~A~^)~}))))" predicates))
 
 
 (defun create-pddl-file (context)
