@@ -70,13 +70,11 @@ if __name__ == "__main__":
 (detach-tool-from-rack left knife)
 (grasp-tool right spatula)
 (hold-next-to-cake right spatula cake)
-(cut-cake left knife cake spatula right pieceofcake0)
-(place-piece-of-cake-on-plate right spatula plate pieceofcake0)
-(place-spatula-on-table right spatula)
+(cut-cake left knife spatula right cake pieceofcake0)
+(place-piece-of-cake-on-plate pieceofcake0 plate spatula right)
+(place-spatula-on-table spatula right)
 (grasp-tool right plate)
-(place-plate-on-turtlebot right plate)
+(place-plate-on-turtlebot plate right)
 ; cost = 9 (unit cost)"""
 
     print(transform_plan_to_json_string(plan))
-    
-    #print(create_json_string_with_object("a", "b", "v"))
