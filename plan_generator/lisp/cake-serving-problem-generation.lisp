@@ -17,7 +17,7 @@
 (defvar name "cake-on-turtlebot")
 
 "Path to the folder where the generated file should be saved."
-(defvar path "/home/jasmin/suturo/src/planning/plan_generator/pddl/")
+(defvar path "/home/jasmin/suturo_ws/src/planning/plan_generator/pddl/task.pddl")
 
 
 (defun create-pddl-file-for-cake-serving (&optional (n 1))
@@ -53,5 +53,5 @@ Optionally specify amount N, default is 1."
 "Add goal-predicates for N pieces-of-cake to a list of PREDICATES."
 	(append 
 		(loop for i to (- n 1) 
-			collect (concatenate 'string "on-plate pieceofcake" (write-to-string i) " plate1"))
+			collect (concatenate 'string "on-plate pieceofcake" (write-to-string i) " plate"))
 		predicates))

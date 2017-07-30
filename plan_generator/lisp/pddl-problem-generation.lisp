@@ -1,13 +1,14 @@
 (in-package :plan-generator-package)
 
 
-(defun generate-pddl-problem (name domain objects init-predicates goal-predicates)
+(defun generate-pddl-problem (name domain objects init-predicates goal-predicates path)
 "Generate a pddl-problem for the task of serving N pieces of cake."
 	(create-pddl-file(concatenate 'string 
 		(generate-header name domain) 			
 		(generate-objects-section objects)
 		(generate-init-section init-predicates) 
-		(generate-goal-section goal-predicates))))
+		(generate-goal-section goal-predicates))
+     		path))
 
 
 (defun generate-header (name domain)
@@ -30,9 +31,9 @@
 	(format nil "~%~%  (:goal~%    (and ~{~%~^        (~A~^)~}))))" predicates))
 
 
-(defun create-pddl-file (context)
+(defun create-pddl-file (context path)
 "Create pddl-file containing CONTEXT."
-	(with-open-file (str "/home/jasmin/documents/planning/plan generator/test/task.pddl"
+	(with-open-file (str path
                      	:direction :output
                     	:if-exists :supersede
                     	:if-does-not-exist :create)
