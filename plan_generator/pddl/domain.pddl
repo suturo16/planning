@@ -22,7 +22,7 @@
 ;; Use gripper g to grasp tool t.
 ;; Tools can be grasped from the rack or the table.
 (:action grasp-tool 
-    :parameters (?t - tool ?g - gripper) 
+    :parameters (?g - gripper ?t - tool) 
     :precondition   (and  
                         (free ?g)
                         (not (on-turtlebot ?t)))
@@ -33,7 +33,7 @@
 
 ;; Use gripper g to detach tool t from the rack.
 (:action detach-tool-from-rack
-    :parameters (?t - tool ?g - gripper) 
+    :parameters (?g - gripper ?t - tool) 
     :precondition   (and  
                         (at-gripper ?t ?g) 
                         (at-rack ?t)) 
@@ -42,7 +42,7 @@
 
 ;; Hold tool t at gripper g next to cake c.
 (:action hold-next-to-cake
-    :parameters (?t - tool ?g - gripper ?c - cake) 
+    :parameters (?g - gripper ?t - tool ?c - cake) 
     :precondition   (and  
                         (at-gripper ?t ?g) 
                         (not (at-rack ?t))) 
@@ -52,7 +52,7 @@
 ;; Use knife k at gripper g1 to cut a pieceofcake poc from cake c.
 ;; Use spatula s at gripper g2 next to c to put poc on it.
 (:action cut-cake 
-    :parameters ( ?k - knife ?g1 - gripper ?s - spatula  ?g2 - gripper ?c - cake ?poc - pieceofcake)
+    :parameters (?g1 - gripper ?k - knife ?c - cake ?s - spatula  ?g2 - gripper  ?poc - pieceofcake)
     :precondition   (and   
                         (on-table ?c)
                         (at-gripper ?k ?g1)
@@ -66,7 +66,7 @@
 
 ;; Lay spatula s at gripper g down on the table.
 (:action place-spatula-on-table
-   :parameters (?s - spatula ?g - gripper)
+   :parameters (?g - gripper ?s - spatula)
    :precondition    (and    
                         (at-gripper ?s ?g)
                         (not (at-rack ?s)))
@@ -78,7 +78,7 @@
 ;; Use spatula s at gripper g to place the pieceofcake poc on the plate p.
 ;; Only works if poc is already laying on s.
 (:action place-piece-of-cake-on-plate 
-    :parameters (?poc - pieceofcake ?p - plate ?s - spatula ?g - gripper)
+    :parameters (?g - gripper ?s - spatula ?p - plate ?poc - pieceofcake)
     :precondition   (and    
                         (on-table ?p)
                         (on-spatula ?poc ?s)
@@ -89,7 +89,7 @@
 
 ;; Place the plate p at gripper g on the turtlebot.                        
 (:action place-plate-on-turtlebot 
-    :parameters (?p - plate ?g - gripper)
+    :parameters (?g - gripper ?p - plate)
     :precondition   (and     
                         (at-gripper ?p ?g))
     :effect         (and     
