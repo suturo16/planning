@@ -2,13 +2,13 @@
 
 
 "Objects available in the problem scenario."
-(defvar objects '("knife0 - knife" "spatula0 - spatula" "plate0 - plate" "cake0 - cake"))
+(defvar objects '("knife - knife" "spatula - spatula" "plate - plate" "cake - cake"))
 
 "Predicates describing the init state of the problem scenario."
-(defvar init-predicates '("free left" "free right" "at-rack knife0" "on-table cake0" "on-table plate0"))
+(defvar init-predicates '("free left" "free right" "at-rack knife" "on-table cake" "on-table plate" "on-table spatula"))
 
 "Predicates describing the goal state of the problem scenario."
-(defvar goal-predicates '("on-turtlebot plate0"))
+(defvar goal-predicates '("on-turtlebot plate"))
 
 "Name of the domain to that the problem scenario belongs to."
 (defvar domain "caterros")

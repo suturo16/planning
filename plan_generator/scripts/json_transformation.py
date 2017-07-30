@@ -5,6 +5,8 @@ targets = {'hold-next-to-cake': 'next2cake', 'place-plate-on-turtlebot': 'delive
 
 arms = {'left': ',common:+right-arm+', 'right': ',common:+left-arm+'}
 
+objects = {'knife': 'cakeKnife', 'spatula': 'cakeSpatula', 'plate': 'dinnerPlateForCake', 'cake': 'box'}
+
 
 def transform_plan_to_json_string(plan):
     json_representation = "[{type: base-pose}"
@@ -14,22 +16,21 @@ def transform_plan_to_json_string(plan):
     
     for action in actions:
         action = action.replace('(', '').replace(')','').split()
-        
-        
+            
         if (action[0] == 'grasp-tool' or action[0] == 'detach-tool-from-rack'):
-            json_representation = json_representation + "," + create_json_string_with_object(types[action[0]], arms[action[1]], action[2]) #todo: reihenfolge aendern    
+            json_representation = json_representation + "," + create_json_string_with_object(types[action[0]], arms[action[1]], objects[action[2]]) 
        
         elif (action[0] == 'hold-next-to-cake' or action[0] == 'place-plate-on-turtlebot'):
-            json_representation = json_representation + "," + create_json_string_with_object_target(types[action[0]], arms[action[1]], action[2], targets[action[0]]) #todo: reihenfolge aendern    
+            json_representation = json_representation + "," + create_json_string_with_object_target(types[action[0]], arms[action[1]], objects[action[2]], targets[action[0]]) 
         
         elif (action[0] == 'cut-cake'):
-            json_representation = json_representation + "," + create_json_string_with_cake_knife_target(types[action[0]], arms[action[1]], action[2], action[3], action[4])
+            json_representation = json_representation + "," + create_json_string_with_cake_knife_target(types[action[0]], arms[action[1]], objects[action[2]], objects[action[3]], objects[action[4]])
     
         elif (action[0] == 'place-piece-of-cake-on-plate'):
-            json_representation = json_representation + "," + create_json_string_with_tool_target(types[action[0]], arms[action[1]], action[2], action[3]) #todo: reihenfolge aendern  
+            json_representation = json_representation + "," + create_json_string_with_tool_target(types[action[0]], arms[action[1]], objects[action[2]], objects[action[3]]) 
 
         elif (action[0] == 'place-spatula-on-table'):
-             json_representation = json_representation + "," + create_json_string_with_three_types(types[action[0]][0], types[action[0]][1], types[action[0]][2], arms[action[1]], action[2], targets[action[0]][0], targets[action[0]][1])
+             json_representation = json_representation + "," + create_json_string_with_three_types(types[action[0]][0], types[action[0]][1], types[action[0]][2], arms[action[1]], objects[action[2]], targets[action[0]][0], targets[action[0]][1])
     
         else:
             print ("Action " + str(action[0]) + " does not exist!")
@@ -44,7 +45,7 @@ def create_json_string_with_object(action_type, arm, object_used):
 
 # (hold-next-to-cake spatula0 right cake0) & (place-plate-on-turtlebot plate0 right)
 def create_json_string_with_object_target(action_type, arm, object_used, target):
-    s = "{{type: move-with-arm, arm: {}, object: {}, target: {}}}"
+    s = "{{type: {}, arm: {}, object: {}, target: {}}}"
     return s.format(action_type, arm, object_used, target)
 
 # (cut-cake knife0 left spatula0 right cake0 pieceofcake0)  
@@ -59,8 +60,8 @@ def create_json_string_with_tool_target(action_type, arm, tool, target):
 
 # (place-spatula-on-table spatula0 right)  
 def create_json_string_with_three_types(type1, type2, type3, arm, object_used, target1, target2):
-    s = "{{type: {}, arm: {}, object: {}, target: {}}}, {{type: {}, arm: {}, object: {}, target: {}}},{{type: {}, arm: {}}}"
-    return s.format(type1, arm, object_used, target1, type2, arm, object_used, target2, type3, arm)
+    s = "{{type: {}, arm: {}, object: {}, target: {}}},{{type: {}, arm: {}, target: {}}},{{type: {}, arm: {}}}"
+    return s.format(type1, arm, object_used, target1, type2, arm, target2, type3, arm)
   
  
  

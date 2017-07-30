@@ -14,6 +14,7 @@
     (at-rack knife)
     (on-table cake)
     (on-table plate)
+    (on-table spatula) 
     (not-existing pieceofcake0))
 
   (:goal
