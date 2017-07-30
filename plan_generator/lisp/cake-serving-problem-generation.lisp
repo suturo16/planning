@@ -5,7 +5,7 @@
 (defvar objects '("knife - knife" "spatula - spatula" "plate - plate" "cake - cake"))
 
 "Predicates describing the init state of the problem scenario."
-(defvar init-predicates '("free left" "free right" "at-rack knife" "on-table cake" "on-table plate" "on-table spatula"))
+(defvar init-predicates '("free left" "free right" "at-rack knife" "on-table cake" "on-table plate" "on-table spatula" "empty spatula"))
 
 "Predicates describing the goal state of the problem scenario."
 (defvar goal-predicates '("on-turtlebot plate"))

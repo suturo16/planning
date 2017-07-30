@@ -17,6 +17,7 @@
              (on-turtlebot ?t - tool)
 	     (next-to-cake ?t - tool ?c - cake)
              (free ?g - gripper) ;; gripper g does not hold any tool
+	     (empty ?s - spatula) ;; nothing is laying on the spatula
              (not-existing ?poc - pieceofcake))
 
 ;; Use gripper g to grasp tool t.
@@ -59,9 +60,11 @@
 		  	(at-gripper ?s ?g2)
                         (not (at-rack ?k))
                         (next-to-cake ?s ?c)
+			(empty ?s)
                         (not-existing ?poc))
     :effect         (and 
                         (not (not-existing ?poc))
+			(not (empty ?s))
                         (on-spatula ?poc ?s)))
 
 ;; Lay spatula s at gripper g down on the table.
@@ -84,7 +87,8 @@
                         (on-spatula ?poc ?s)
 			(at-gripper ?s ?g))
     :effect         (and    
-                        (on-plate ?poc ?p) 
+                        (on-plate ?poc ?p)
+			(empty ?s) 
                         (not (on-spatula ?poc ?s))))
 
 ;; Place the plate p at gripper g on the turtlebot.                        
