@@ -6,6 +6,7 @@
                pr2-command-pool-system
                turtle-command-pool-system
                planning-common-system
+	       plan-generator-system
                cram-designators
                cram-prolog
                cram-process-modules
