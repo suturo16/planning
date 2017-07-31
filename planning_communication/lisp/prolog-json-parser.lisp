@@ -8,7 +8,14 @@
 
 
 (defparameter *json-assoc-d* (cl-json:encode-json-alist-to-string
-                              `(("guestId" . "1") ("query" ("type" . "setLocation") ("tableId" . "TABLE1")))))
+                              `(("guestId" . "1") ("query" ("type" . "setLocation") ("tableId" . "table1")))))
+
+(defparameter *json-set-cake* (cl-json:encode-json-alist-to-string
+                              `(("guestId" . "1") ("query" ("type" . "setCake") ("amount" . "1") ("guestName" . "arthur")))))
+
+(defparameter *json-set-cake-unescaped* "{\"guestId\":\"1\",\"query\":{\"type\":\"setCake\",\"amount\":\"1\",\"guestName\":\"arthur\"}}")
+
+(defparameter *json-set-cake-unescaped2* "{\"guestId\":\"2\",\"query\":{\"type\":\"setCake\",\"amount\":\"1\",\"guestName\":\"arthur\"}}")
 
 (defparameter *without-quotes* "{guestId:1,query:{type:setCake,amount:1,guestName:arthur}}")
 
@@ -24,46 +31,32 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
   ;;                            (common:prolog-assert-dialog-element json-string))
   ;;                          (common:say "Thank you for the information.")
   ;;                          (compose-reponse json-string)
-  ;;                          ;; (when (gethash :pepper *clients*)
-  ;;                          ;;   (fire-rpc-to-client :pepper "notify"))
   ;;                          ))
   )
 
 (defun handle-get-customer-info (&optional customer-id)
   "Starts a new thread to query the knowledgebase for information about a specific customer."
   (let ((response (thread-get-customer-info
-                                              (if customer-id customer-id (common:get-current-order)))))
-                              ;; (when (gethash :pepper *clients*)
-                              ;;   (fire-rpc-to-client :pepper "notify" response))
-                              response)
-  ;; (sb-thread:make-thread (lambda ()
-  ;;                         (sb-thread:with-mutex ((get-prolog-mutex))
-  ;;                           )))
-  )
+                   (if customer-id customer-id (common:get-current-order)))))
+    response))
 
 (defun handle-get-all-customer-info ()
   "Starts a new thread to query the knowledgebase for information about all customers."
   (let ((response (thread-get-all-customer-info)))
-                              ;; (when (gethash :pepper *clients*)
-                              ;;   (fire-rpc-to-client :pepper "notify" response))
-                              response)
-  ;; (sb-thread:make-thread (lambda ()
-  ;;                         (sb-thread:with-mutex ((get-prolog-mutex))
-  ;;                           )))
-  )
+    response))
 
 (defun compose-reponse (json-string)
   "Check the type of query in the json and decide, what to return to pepper."
   (let* ((json-object (cl-json:decode-json-from-string json-string))
-         (query-type (cdr (assoc :type (remove :query (assoc :query json-object)))))
-         (customer-id (cdr (assoc "guestId" json-object))))
+         (query-type (alexandria:assoc-value (alexandria:assoc-value  json-object :query) :type))
+         (customer-id (alexandria:assoc-value json-object :guest-id)))
     (if (equal query-type "setCake")
         (let ((place (common:get-free-table)))
           (assign-guest-to-place customer-id place)
           `(("guestId" . ,customer-id)
             ("return" ("type" . ,query-type)
                       ("success" . "1")
-                      ("place" . ,place))))
+                      ("tableId" . ,place))))
         `(("guestId" . ,customer-id)
             ("return" ("type" . ,query-type)
                       ("success" . "1"))))))
@@ -116,8 +109,9 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
                  "]")))
 
 (defun assign-guest-to-place (customer-id place)
-  (common:prolog-assert-dialog-element (cl-json:encode-json-alist-to-string
-                                        `(("guestId" . ,customer-id) ("query" ("type" . "setLocation") ("tableId" . ,place))))))
+  (let ((id (if (integerp customer-id) (write-to-string customer-id) customer-id)))
+    (common:prolog-assert-dialog-element (cl-json:encode-json-alist-to-string
+                              `(("guestId" . ,id) ("query" ("type" . "setLocation") ("tableId" . ,place)))))))
 
 (defun guest-info-arguments->a-list (customer-id name place amount delivered)
   `(("guestId" . ,(format nil "~a" customer-id))
@@ -132,4 +126,4 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
   (format destination control-string (values-list (map 'list (lambda (x) (if x x "")) args))))
 
 (defun place->string (knowrob-place)
-  (subseq (symbol-name knowrob-place) (1+ (position #\# (symbol-name knowrob-place) :from-end t))))
+  (string-downcase (subseq (symbol-name knowrob-place) (1+ (position #\# (symbol-name knowrob-place) :from-end t)))))

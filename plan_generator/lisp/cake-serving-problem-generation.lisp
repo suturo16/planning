@@ -2,13 +2,13 @@
 
 
 "Objects available in the problem scenario."
-(defvar objects '("knife0 - knife" "spatula0 - spatula" "plate0 - plate" "cake0 - cake"))
+(defvar objects '("knife - knife" "spatula - spatula" "plate - plate" "cake - cake"))
 
 "Predicates describing the init state of the problem scenario."
-(defvar init-predicates '("free left" "free right" "at-rack knife0" "on-table cake0" "on-table plate0"))
+(defvar init-predicates '("free left" "free right" "at-rack knife" "on-table cake" "on-table plate" "on-table spatula" "empty spatula"))
 
 "Predicates describing the goal state of the problem scenario."
-(defvar goal-predicates '("on-turtlebot plate0"))
+(defvar goal-predicates '("on-turtlebot plate"))
 
 "Name of the domain to that the problem scenario belongs to."
 (defvar domain "caterros")
@@ -17,7 +17,7 @@
 (defvar name "cake-on-turtlebot")
 
 "Path to the folder where the generated file should be saved."
-(defvar path "/home/jasmin/suturo/src/planning/plan_generator/pddl/")
+(defvar path "/home/jasmin/suturo_ws/src/planning/plan_generator/pddl/task.pddl")
 
 
 (defun create-pddl-file-for-cake-serving (&optional (n 1))
@@ -53,5 +53,5 @@ Optionally specify amount N, default is 1."
 "Add goal-predicates for N pieces-of-cake to a list of PREDICATES."
 	(append 
 		(loop for i to (- n 1) 
-			collect (concatenate 'string "on-plate pieceofcake" (write-to-string i) " plate1"))
+			collect (concatenate 'string "on-plate pieceofcake" (write-to-string i) " plate"))
 		predicates))

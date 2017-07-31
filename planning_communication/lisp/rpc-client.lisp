@@ -61,4 +61,11 @@ If host or port is nil, default is used."
                (sb-bsd-sockets:socket-name
                 (second (first s-xml-rpc::*server-processes*))))))
 
-
+(defun notify-order-ready (customer-id)
+  "Sends notification to pepper about a finished order."
+  (let ((json-string (cl-json:encode-json-alist-to-string
+                      `(("guestId" . ,customer-id)
+                        ("return" ("type" . "complete")
+                                  ("success" . "1"))))))
+    (when (gethash :pepper *clients*)
+      (fire-rpc-to-client :pepper "new_notify" json-string))))

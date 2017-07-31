@@ -6,7 +6,7 @@
 TASK (string): Natural language description of the task.
                As of now it has to be one of the strings defined in `task->designators'."
   (common:ensure-node-is-running)
-  (format T "command: ~a" task)
+  (format T "Execute command: ~a" task)
   (execute-task task))
   
 
@@ -90,7 +90,7 @@ DESIG (list of designators): List of designators to be executed."
     ('("cut")
       (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "cakeSpatula") (:target "next2cake")))
             (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "cakeKnife") (:cake "box") (:target "cakeSpatula")))
-            (make-designator :action `((:type :move-n-flip) (:arm ,common:+left-arm+) (:tool "cakeSpatula") (:target "dinnePlateForCake")))))
+            (make-designator :action `((:type :move-n-flip) (:arm ,common:+left-arm+) (:tool "cakeSpatula") (:target "dinnerPlateForCake")))))
     ('("deliver")
       (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "cakeSpatula") (:target "spatulaDropZone")))
             (make-designator :action `((:type :move-gripper) (:arm ,common:+left-arm+) (:target "open")))
@@ -112,3 +112,12 @@ DESIG (list of designators): List of designators to be executed."
            (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake") (:target "deliver")))))))
 
 
+(defun task-reference (task)
+  (reference-desigs (task->designators task)))
+
+(defun reference-desigs (desigs)
+  (if desigs
+      (progn
+        (print (reference (car desigs)))
+        (reference-desigs (cdr desigs)))
+      (print "Done referencing!")))

@@ -183,14 +183,15 @@ A finished order never is. If there is no order in the state :started, the next 
     (when raw-order
       (cut:with-vars-bound
           (|?Amount| |?Delivered|)
-          raw-order
-        (- (symbol->integer |?Amount|) (symbol->integer |?Delivered|))))))
+        raw-order
+        (- |?Amount|  |?Delivered|)))))
+
 
 (defun get-free-table ()
   "Returns the first free table available as plain string."
   (let ((raw-place (prolog-get-free-table)))
     (when raw-place
-      (symbol-name (cdr (assoc 'common::?nameoffreetable raw-place))))))
+      (string-downcase (symbol-name (alexandria:assoc-value raw-place 'common::|?NameOfFreeTable|))))))
 
 (defun knowrob->str (knowrob-sym &optional (split NIL))
   "Turn a symbol representing a string returned by Knowledge into a normal string. Optionally cut off the knowrob prefix as well."
