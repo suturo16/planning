@@ -158,23 +158,15 @@ A finished order never is. If there is no order in the state :started, the next 
     (when all-orders-raw
       (flet ((order-status (order)
                (cut:with-vars-bound (|?Amount| |?Delivered|) order
-                 (if (>= (symbol->integer |?Delivered|) (symbol->integer |?Amount|))
+                 (if (>= |?Delivered| |?Amount|)
                      :finished
-                     (if (< 0 (symbol->integer |?Amount|) (symbol->integer |?Delivered|))
+                     (if (< 0 |?Amount| |?Delivered|)
                          :started
                          :queued)))))
-        (symbol->integer
-         (cdr
-          (assoc '|?CustomerID|
-                 (reduce (lambda (this next)
-                           (if next
-                               (alexandria:switch ((order-status this))
-                                 (:started this)
-                                 (:finished next)
-                                 (:queued (if (eq (order-status next) :started)
-                                              next
-                                              this)))
-                               this)) all-orders-raw))))))))
+        (let ((result (alexandria:assoc-value (unless (find :started all-orders-raw :key #'order-status)
+                                                (find :queued all-orders-raw :key #'order-status))
+                                              '|?CustomerID|)))
+          (when result (symbol->integer result)))))))
 
 (defun get-remaining-amount-for-order (&optional customer-id)
   "Retrieve the remaining amount of pieces still to deliver. total - delivered = value"
