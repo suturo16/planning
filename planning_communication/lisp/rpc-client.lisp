@@ -34,25 +34,29 @@ If host or port is nil, default is used."
    :port port))
 
 (defun get-local-ip ()
-  "Returns the IP of the current connection, NIL if there is none."
-  (let* ((eth-interfaces
-           (ip-interfaces:get-ip-interfaces-by-flags '(:iff-up :iff-running :iff-broadcast)))
-         (eth-adress
-           (ip-interfaces:ip-interface-address (first eth-interfaces))))
-    (when eth-adress
-      (format nil "~{~a~^.~}" (map 'list #'identity eth-adress)))))
+  "Return the current ROS_IP of the system."
+  (sb-posix:getenv "ROS_IP"))
 
-(defun get-local-ip-by-name (if-name)
-  "Returns the IP of the interface with given name, NIL if there is none of this name."
-  (let ((interfaces
-          (ip-interfaces:get-ip-interfaces))
-        (found-interface nil))
-    (loop for interface in interfaces
-          do (when (equal (ip-interfaces:ip-interface-name interface) if-name)
-               (setf found-interface interface)))
-    (when found-interface
-      (format nil "~{~a~^.~}"
-              (map 'list #'identity (ip-interfaces:ip-interface-address found-interface))))))
+;; (defun get-local-ip ()
+;;   "Returns the IP of the current connection, NIL if there is none."
+;;   (let* ((eth-interfaces
+;;            (ip-interfaces:get-ip-interfaces-by-flags '(:iff-up :iff-running :iff-broadcast)))
+;;          (eth-adress
+;;            (ip-interfaces:ip-interface-address (first eth-interfaces))))
+;;     (when eth-adress
+;;       (format nil "~{~a~^.~}" (map 'list #'identity eth-adress)))))
+
+;; (defun get-local-ip-by-name (if-name)
+;;   "Returns the IP of the interface with given name, NIL if there is none of this name."
+;;   (let ((interfaces
+;;           (ip-interfaces:get-ip-interfaces))
+;;         (found-interface nil))
+;;     (loop for interface in interfaces
+;;           do (when (equal (ip-interfaces:ip-interface-name interface) if-name)
+;;                (setf found-interface interface)))
+;;     (when found-interface
+;;       (format nil "~{~a~^.~}"
+;;               (map 'list #'identity (ip-interfaces:ip-interface-address found-interface))))))
 
 (defun get-local-port ()
   "Returns the local port of the server."
