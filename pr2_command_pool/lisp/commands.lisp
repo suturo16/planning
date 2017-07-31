@@ -146,7 +146,7 @@ Assume that the object is attached to ARM."
   (action-move-robot (format nil "pr2_grasp_fingerHandle_~a" arm)
                      (alexandria:curry #'error-break-function +grasp-spatula-error-limit+)
                      NIL
-                     (make-param +transform+ NIL "handle_frame" (format nil "~a ~a" "spatula_handle" "base_link"))
+                     (make-param +transform+ NIL "handle_frame" (format nil "~a ~a" "HandleOfCakeSpatula1" "base_link"))
                      (make-param +double+ T "handle_depth" (write-to-string +spatula-handle-depth+))
                      (make-param +double+ T "handle_width" (write-to-string +spatula-handle-width+))))
 
