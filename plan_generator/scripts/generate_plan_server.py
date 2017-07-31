@@ -3,15 +3,30 @@
 from plan_generator.srv import *
 import rospy
 import sys
+import os
 from downward.driver.main import main
 import json_transformation
+import rospkg
 
 def handle_generate_plan(req):
-    sys.argv = ['fast-downward.py', req.domain, req.task, '--search', 'astar(lmcut())']
-    print(sys.argv)
+
+    # get absolute path to input files
+    rospack = rospkg.RosPack()
+    path = rospack.get_path('plan_generator') + '/pddl/'
+    d = path + req.domain
+    t = path + req.task
+    
+    # initialize planner and run it
+    sys.argv = ['fast-downward.py', d, t, '--search', 'astar(lmcut())']
     main()
+    
+    # transform plan output to json format
     plan = open('sas_plan', 'r').read()
     json_plan = json_transformation.transform_plan_to_json_string(plan)
+    
+    # remove output files of plan generation
+    os.remove('sas_plan')
+    os.remove('output.sas')
     
     return GeneratePlanResponse(json_plan)
 
