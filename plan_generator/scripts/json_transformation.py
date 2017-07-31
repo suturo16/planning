@@ -3,7 +3,7 @@ types = {'grasp-tool': 'grasp', 'detach-tool-from-rack': 'detach', 'hold-next-to
 
 targets = {'hold-next-to-cake': 'next2cake', 'place-plate-on-turtlebot': 'deliver', 'place-spatula-on-table': ('spatulaDropZone', 'open')}
 
-arms = {'left': ',common:+right-arm+', 'right': ',common:+left-arm+'}
+arms = {'left': 'r', 'right': 'l'}
 
 objects = {'knife': 'cakeKnife', 'spatula': 'cakeSpatula', 'plate': 'dinnerPlateForCake', 'cake': 'box'}
 
