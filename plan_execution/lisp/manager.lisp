@@ -9,7 +9,7 @@
   (loop
     while (not *current-guest-id*)
     do (setf *current-guest-id* (common:get-current-order))
-    unless *current-guest-id* do (sleep 1)))
+    unless *current-guest-id* do (progn (print "Waiting for guest...") (sleep 5))))
 
 (defun get-order ()
   (common:get-guest-order *current-guest-id*))
@@ -37,4 +37,6 @@
           when (<= (common:get-remaining-amount-for-order *current-guest-id*) 0) do (finish-order)))
 
 (defun test-guest ()
-  (common::prolog-assert-dialog-element "{guestId:\"1\",query:{type:\"setCake\",amount:2,guestName:\"arthur\"}}"))
+  (if (common::prolog-get-customer-infos 1)
+      (common::prolog-set-delivered-amount 1 0)
+      (common::prolog-assert-dialog-element "{guestId:\"1\",query:{type:\"setCake\",amount:2,guestName:\"arthur\"}}")))
