@@ -40,3 +40,10 @@
   (if (common::prolog-get-customer-infos 1)
       (common::prolog-set-delivered-amount 1 0)
       (common::prolog-assert-dialog-element "{guestId:\"1\",query:{type:\"setCake\",amount:2,guestName:\"arthur\"}}")))
+
+(defun transform-plan-to-action-designators (plan)
+"Transform PLAN to list of action designators."
+ (map 'cons (lambda (task) (make-designator :action
+               (map 'cons
+                    (lambda (x) (cons (intern (string-upcase (first x))) (cdr x)))
+                    task))) (yason:parse plan :object-as :alist)))

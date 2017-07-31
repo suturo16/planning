@@ -1,15 +1,15 @@
-types = {'grasp-tool': 'grasp', 'detach-tool-from-rack': 'detach', 'hold-next-to-cake': 'move-with-arm', 'place-plate-on-turtlebot': 'move-with-arm',
-	 'cut-cake': 'cut', 'place-piece-of-cake-on-plate': 'move-n-flip', 'place-spatula-on-table': ('move-with-arm', 'move-gripper', 'release')}
+types = {'grasp-tool': '\"grasp\"', 'detach-tool-from-rack': '\"detach\"', 'hold-next-to-cake': '\"move-with-arm\"', 'place-plate-on-turtlebot': '\"move-with-arm\"',
+	 'cut-cake': '\"cut\"', 'place-piece-of-cake-on-plate': '\"move-n-flip\"', 'place-spatula-on-table': ('\"move-with-arm\"', '\"move-gripper\"', '\"release\"')}
 
-targets = {'hold-next-to-cake': 'next2cake', 'place-plate-on-turtlebot': 'deliver', 'place-spatula-on-table': ('spatulaDropZone', 'open')}
+targets = {'hold-next-to-cake': '\"next2cake\"', 'place-plate-on-turtlebot': '\"deliver\"', 'place-spatula-on-table': ('\"spatulaDropZone\"', '\"open\"')}
 
-arms = {'left': ',common:+right-arm+', 'right': ',common:+left-arm+'}
+arms = {'left': '\"r\"', 'right': '\"l\"'}
 
-objects = {'knife': 'cakeKnife', 'spatula': 'cakeSpatula', 'plate': 'dinnerPlateForCake', 'cake': 'box'}
+objects = {'knife': '\"cakeKnife\"', 'spatula': '\"cakeSpatula\"', 'plate': '\"dinnerPlateForCake\"', 'cake': '\"box\"'}
 
 
 def transform_plan_to_json_string(plan):
-    json_representation = "[{type: base-pose}"
+    json_representation = "[{type: \"base-pose\"}"
   
     actions = plan.split(";")[0].split('\n')
     actions = filter(None, actions)
