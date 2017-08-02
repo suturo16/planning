@@ -8,15 +8,42 @@
       (setf *plan-visualizer-pub* (advertise "/plan_visualization" "visualization_msgs/Marker"))))
 
 (defstruct plan-state
-  (scenario "CaterROS") plan step failures controller (feedback (make-msg "suturo_manipulation_msgs/MoveRobotFeedback")))
+  (scenario "CaterROS")
+  plan
+  step
+  failures
+  controller
+  (feedback (make-msg "suturo_manipulation_msgs/MoveRobotFeedback")))
 
-(defparameter *plan-state* (make-plan-state))
+;; (defvar *plan-state* (cpl:make-fluent :name :plan-state :value (make-plan-state)))
 
-(defun set-plan-state (&key plan step)
-  (when plan
-    (setf (plan-state-plan *plan-state*) plan))
-  (when step
-    (setf (plan-state-step *plan-state*) step)))
+;; (defparameter *plan-state* (cpl:make-fluent :name :plan-state :value (make-plan-state)))
+
+(defvar *plan-state* (make-plan-state))
+
+;; (defvar *plan-state-changed* (cpl:fl-or
+;;                               (cpl:pulsed *plan-state*)
+;;                               (cpl:pulsed (plan-state-scenario *plan-state*))
+;;                               (cpl:pulsed (cpl:fl-funcall #'plan-state-step *plan-state*))
+;;                               (cpl:pulsed (cpl:fl-funcall #'plan-state-failures *plan-state*))
+;;                               (cpl:pulsed (cpl:fl-funcall #'plan-state-controller *plan-state*))
+;;                               (cpl:pulsed (cpl:fl-funcall #'plan-state-feedback *plan-state*))))
+
+(defun set-plan-state (&rest key-values)
+  "Set multiple slots of *plan-state*. Pass arguments as `(slot ,value)."
+  (when key-values
+    (let ((slot-value (car key-values)))
+      (set-plan-state-slot (first slot-value) (second slot-value))
+      (apply #'set-plan-state (cdr key-values)))))
+
+(defun set-plan-state-slot (slot value)
+  "Set a single slot on *plan-state*."
+  (setf (slot-value *plan-state* slot) value))
+
+;;(cpl:whenever ((cpl:fl-or (cpl:pulsed test-fl2) (cpl:pulsed test-fl)))
+;;  (print "test"))
+
+;(cpl:whenever ((pulsed new-fluent)) (print "test"))
 
 (defun plan-state->string (state)
   (with-fields
@@ -60,4 +87,6 @@ e.g. 'retries: <retry-name> <fails>/<max-fails> --- <retry-name2> <fails>/<max-f
   (visualize (plan-state->string state)))
 
 (defun visualize-current-state ()
-  (visualize-state *plan-state*))
+  (print (plan-state->string *plan-state*)))
+  ;;(visualize-state *plan-state*))
+

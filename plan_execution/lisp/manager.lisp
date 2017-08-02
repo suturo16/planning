@@ -32,12 +32,14 @@
 (defun use-generator ()
   "Use the plan generator to generate a plan for serving the desired amount of cake slices."
   (ros-info (plan-manager) "Using plan generator to plan to serve cake.")
-  (execute-desigs
-   (transform-plan-to-action-designators
-    (pgeneration::generate-plan-for-cake-serving
-     (common:get-remaining-amount-for-order *current-guest-id*)))))
+  (with-pr2-process-modules
+    (process-module-alias :manipulation 'giskard-manipulation)
+    (execute-desigs
+     (transform-plan-to-action-designators
+      (pgeneration::generate-plan-for-cake-serving
+       (common:get-remaining-amount-for-order *current-guest-id*))))))
 
-(defun start-caterros (&optional (use-generator NIL))
+(defun start-caterros-wip (&optional (use-generator NIL))
   (loop
     unless *current-guest-id*
       do (next-guest-id)
@@ -54,6 +56,22 @@
               when (<= (common:get-remaining-amount-for-order *current-guest-id*) 0)
                 do (finish-order)))
 
+(defun start-caterros (&optional (use-generator NIL))
+  (if use-generator
+      (progn
+        (when (not *current-guest-id*)
+          (next-guest-id))
+        (use-generator))
+      (loop
+        unless *current-guest-id*
+          do (next-guest-id)
+        unless (member *last-phase* '(:prep :cut))
+          do (prep)
+        when (not (= (common:get-remaining-amount-for-order *current-guest-id*) 0))
+          do (do-order)
+        when (<= (common:get-remaining-amount-for-order *current-guest-id*) 0)
+          do (finish-order))))
+
 (defun test-guest ()
   (if (common::prolog-get-customer-infos 1)
       (common::prolog-set-delivered-amount 1 0)
@@ -63,5 +81,9 @@
   "Transform PLAN to list of action designators."
   (map 'cons (lambda (task) (make-designator :action
                                              (map 'cons
-                                                  (lambda (x) (cons (intern (string-upcase (first x))) (cdr x)))
+                                                  (lambda (x) (list
+                                                               (intern (string-upcase (first x)) :keyword)
+                                                               (if (string-equal (first x) "type")
+                                                                   (intern (string-upcase (cdr x)) :keyword)
+                                                                   (cdr x))))
                                                   task))) (yason:parse plan :object-as :alist)))

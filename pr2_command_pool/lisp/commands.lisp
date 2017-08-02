@@ -107,9 +107,13 @@ Assume that the object is attached to ARM."
     (action-move-robot (format nil "knife_grasp_~a" arm)
                        (alexandria:curry #'error-break-function +grasp-knife-error-limit+)
                        NIL
-                       (make-param +transform+ NIL "target_frame" (format nil  "~a ~a" (object-info-name knife-info) "base_link"))
-                       (make-param +double+ T "handle_height" (write-to-string +handle-height+))
-                       (make-param +double+ T "handle_length" (write-to-string +handle-length+)))))
+                       (make-param +transform+ NIL "target_frame" (format nil "~a ~a" (object-info-name knife-info) "base_link"))
+                       (make-param +double+ T "handle_height"
+                                   ;;;(common:get-object-part-detail knife-info common:+handle-of-cake-knife+ common:+height-of-object+))
+                                   (write-to-string +handle-height+))
+                       (make-param +double+ T "handle_length"
+                                   ;;;(common:get-object-part-detail knife-info common:+handle-of-cake-knife+ common:+length-of-object+)))))
+                                   (write-to-string +handle-length+)))))
 
 ;; adrian hat den Teller vermessen:
 ; durchmesser 22cm
@@ -128,10 +132,18 @@ Assume that the object is attached to ARM."
                      (alexandria:curry #'error-break-function +grasp-plate-error-limit+)
                      NIL
                      (make-param +transform+ NIL "plate_frame" (format nil "~a ~a" (object-info-name plate-info) "base_link"))
-                     (make-param +double+ T "edge_radius" (write-to-string +edge-radius+))
-                     (make-param +double+ T "edge_z" (write-to-string +edge-height+))
-                     (make-param +double+ T "edge_depth" (write-to-string +edge-width+))
-                     (make-param +double+ T "edge_angle" (write-to-string +edge-angle+))))
+                     (make-param +double+ T "edge_radius"
+                                 ;;;(common:get-object-detail plate-info common:+radius+))
+                                 (write-to-string +edge-radius+))
+                     (make-param +double+ T "edge_z"
+                                 ;;;(common:get-object-detail plate-info common:+height-of-object+))
+                                 (write-to-string +edge-height+))
+                     (make-param +double+ T "edge_depth"
+                                 ;;;(common:get-object-detail plate-info common:+width-of-object+))
+                                 (write-to-string +edge-width+))
+                     (make-param +double+ T "edge_angle"
+                                 ;;;(common:get-object-detail plate-info common:+angle+))))
+                                 (write-to-string +edge-angle+))))
 
 ;; spatula constants
 ; adrian hat vermessen:

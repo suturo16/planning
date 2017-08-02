@@ -82,7 +82,7 @@ Disconnects the frames PARENT-FRAME-ID and CHILD-FRAME-ID."
    `("get_info" ((("nameOfObject") ("cakeKnife1")) "physicalParts") ?Returns) :lispify T :package :common))
 
 (defun prolog-get-info (query)
-  (json-prolog:prolog-simple-1 (format nil "get_info(~a, Returns)" query)))
+  (json-prolog:prolog-simple-1 (format nil "get_info(~a, Returns)" query) :package :common))
 
 (defun prolog-cap-on-robot (capability)
   (json-prolog:prolog-simple (format NIL "cap_available_on_robot(suturo_cap:'~a',R)." capability)))
