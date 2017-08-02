@@ -25,7 +25,7 @@
 
 (defun finish-order ()
   (execute "deliver")
-  ;; (notify-order-ready *current-guest-id*)
+  (notify-of-completion)
   (setf *current-guest-id* NIL)
   (setf *last-phase* :deliver))
 
@@ -37,7 +37,14 @@
     (execute-desigs
      (transform-plan-to-action-designators
       (pgeneration::generate-plan-for-cake-serving
-       (common:get-remaining-amount-for-order *current-guest-id*))))))
+       (common:get-remaining-amount-for-order *current-guest-id*)))))
+  (notify-of-completion))
+
+(defun notify-of-completion ()
+  (pcomm:fire-rpc-to-client :pepper "new_notify"
+                            (format NIL
+                                    "{guestId:'~a',return:{type:'complete',success:'1'}}"
+                                    *current-guest-id*)))
 
 (defun start-caterros-wip (&optional (use-generator NIL))
   (loop
