@@ -22,5 +22,11 @@
     (desig-prop ?desig (:type :test)))
   )
 
+(def-fact-group goal-actions (action-desig)
+  (<- (action-desig ?desig (go-to ?pose))
+    (desig-prop ?desig (:type :goal))
+    (desig-prop ?desig (:go-to :table))
+    (desig-prop ?desig (:goal ?pose))))
+
 (defun make-test-desig ()
   (defparameter test-desig (make-designator :action '((:type :move-to) (:location (1 2 3)) (:next-to "table1")))))
