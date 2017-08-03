@@ -7,9 +7,11 @@ arms = {'left': '\"r\"', 'right': '\"l\"'}
 
 objects = {'knife': '\"cakeKnife\"', 'spatula': '\"cakeSpatula\"', 'plate': '\"dinnerPlateForCake\"', 'cake': '\"box\"'}
 
+base_pose = "[{type: \"base-pose\"}"
+
 
 def transform_plan_to_json_string(plan):
-    json_representation = "[{type: \"base-pose\"}"
+    json_representation = base_pose
   
     actions = plan.split(";")[0].split('\n')
     actions = filter(None, actions)
@@ -18,7 +20,9 @@ def transform_plan_to_json_string(plan):
         action = action.replace('(', '').replace(')','').split()
             
         if (action[0] == 'grasp-tool' or action[0] == 'detach-tool-from-rack'):
-            json_representation = json_representation + "," + create_json_string_with_object(types[action[0]], arms[action[1]], objects[action[2]]) 
+            json_representation = json_representation + "," + create_json_string_with_object(types[action[0]], arms[action[1]], objects[action[2]])
+            if (action[2] == 'spatula'):
+	        json_representation = json_representation + "," + base_pose
        
         elif (action[0] == 'hold-next-to-cake' or action[0] == 'place-plate-on-turtlebot'):
             json_representation = json_representation + "," + create_json_string_with_object_target(types[action[0]], arms[action[1]], objects[action[2]], targets[action[0]]) 
@@ -70,12 +74,6 @@ if __name__ == "__main__":
     plan = """(grasp-tool left knife)
 (detach-tool-from-rack left knife)
 (grasp-tool right spatula)
-(hold-next-to-cake right spatula cake)
-(cut-cake left knife spatula right cake pieceofcake0)
-(place-piece-of-cake-on-plate pieceofcake0 plate spatula right)
-(place-spatula-on-table spatula right)
-(grasp-tool right plate)
-(place-plate-on-turtlebot plate right)
 ; cost = 9 (unit cost)"""
 
     print(transform_plan_to_json_string(plan))
