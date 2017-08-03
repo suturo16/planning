@@ -21,12 +21,11 @@
 
 (defun generate-plan-for-cake-serving (&optional (n 1))
 "Generate a plan for serving N pieces of cake."
-	(create-pddl-file-for-cake-serving n)
-	(service-generate-plan "domain.pddl" "task.pddl"))
+	(service-generate-plan "domain.pddl" (create-pddl-task-for-cake-serving n)))
 
 
 
-(defun create-pddl-file-for-cake-serving (&optional (n 1))
+(defun create-pddl-task-for-cake-serving (&optional (n 1))
 "Create pddl file for the serving of pieces of cake.
 Optionally specify amount N, default is 1."
 	(generate-pddl-problem 
@@ -35,7 +34,6 @@ Optionally specify amount N, default is 1."
 		(add-pieces-of-cake n objects)
 		(add-init-predicates-for-pieces-of-cake n init-predicates)
 		(add-goal-predicates-for-pieces-of-cake n goal-predicates)
-		path
 ))
 
 

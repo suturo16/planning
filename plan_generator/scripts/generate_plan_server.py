@@ -13,11 +13,15 @@ def handle_generate_plan(req):
     # get absolute path to input files
     rospack = rospkg.RosPack()
     path = rospack.get_path('plan_generator') + '/pddl/'
-    d = path + req.domain
-    t = path + req.task
+    
+    domain_path = path + req.domain
+    task_path = path + "task.pddl"
+    
+    create_task_file(task_path,req.task)
+    
     
     # initialize planner and run it
-    sys.argv = ['fast-downward.py', d, t, '--search', 'astar(lmcut())']
+    sys.argv = ['fast-downward.py', domain_path, task_path, '--search', 'astar(lmcut())']
     main()
     
     # transform plan output to json format
@@ -35,6 +39,12 @@ def generate_plan_server():
     s = rospy.Service('generate_plan', GeneratePlan, handle_generate_plan)
     print("Ready to generate a plan.")
     rospy.spin()
+   
+   
+def create_task_file(path, task):
+  text_file = open(path, "w")
+  text_file.write(task)
+  text_file.close()
 
 
     

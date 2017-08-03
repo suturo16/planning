@@ -1,14 +1,13 @@
 (in-package :plan-generator-package)
 
 
-(defun generate-pddl-problem (name domain objects init-predicates goal-predicates path)
+(defun generate-pddl-problem (name domain objects init-predicates goal-predicates)
 "Generate a pddl-problem for the task of serving N pieces of cake."
-	(create-pddl-file(concatenate 'string 
+	(concatenate 'string 
 		(generate-header name domain) 			
 		(generate-objects-section objects)
 		(generate-init-section init-predicates) 
-		(generate-goal-section goal-predicates))
-     		path))
+		(generate-goal-section goal-predicates)))
 
 
 (defun generate-header (name domain)
