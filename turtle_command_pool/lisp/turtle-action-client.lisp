@@ -19,10 +19,12 @@
   *move-base-client*)
 
 (defun make-move-base-goal (pose-stamped-goal)
+  (print "make-move-bse-goal")
   (actionlib:make-action-goal (get-action-client)
     target_pose pose-stamped-goal))
 
 (defun call-move-base-action (frame-id translation rotation)
+  (print "call-move-base-action")
   (unless (eq roslisp::*node-status* :running)
     (roslisp:start-ros-node "move-base-lisp-client"))
 
@@ -40,8 +42,9 @@
     (values result status)))
 
 (defun execute-navigation-action (goal-pose)
+  (print "execute-navigation-action")
     (unless (eq roslisp::*node-status* :running)
-    (roslisp:start-ros-node "tortugaot1/move-base-lisp-client"))
+    (roslisp:start-ros-node "tortugabot1/move-base-lisp-client"))
 
   (multiple-value-bind (result status)
       (let ((actionlib:*action-server-timeout* 10.0))

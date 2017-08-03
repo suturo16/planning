@@ -45,7 +45,7 @@
                             (let ((target-point (reference action-goal)))
                               (roslisp:ros-info (turtle-process-modules)
                                                 "going to point ~a" target-point)
-                              (or (execute-navigation-action target-point)
+                              (or (execute-navigation-action (cl-tf:to-msg target-point))
                               (fail 'navigation-failed))))))))
 
 (defmacro with-turtle-process-modules (&body body)

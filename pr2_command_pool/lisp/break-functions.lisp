@@ -7,7 +7,7 @@
 (defparameter +move-n-flip-object-with-arm-error-limit+ 0.01)
 (defparameter +grasp-knife-error-limit+ 0.025)
 (defparameter +grasp-plate-error-limit+ 0.125)
-(defparameter +grasp-spatula-error-limit+ 0.10)
+(defparameter +grasp-spatula-error-limit+ 0.11)
 (defparameter +release-error-limit+ 0.0000001)
 (defparameter +detach-knife-from-rack-error-limit+ 0.000001)
 (defparameter +take-cutting-position-error-limit+ 0.07)

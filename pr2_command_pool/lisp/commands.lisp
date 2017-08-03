@@ -32,7 +32,7 @@
   (action-move-robot (format nil "pr2_grasp_control_~a" arm)
                      (alexandria:curry #'error-break-function +move-arm-to-object-error-limit+)
                      NIL
-                     (make-param +transform+ nil "cylinder_frame"
+                     (make-bparam +transform+ nil "cylinder_frame"
                                  (format nil "~a ~a" (object-info-name obj-info) "base_link"))
                      (make-param +double+ T "cylinder_width" (write-to-string (object-info-width obj-info)))
                      (make-param +double+ T "cylinder_height" (write-to-string (object-info-height obj-info)))))
@@ -47,7 +47,7 @@ Assume that the object is attached to ARM."
                        (make-param +transform+ NIL "target_frame"
                                    (format nil "~a ~a" (object-info-name loc-info) "base_link"))
                        (make-param +transform+ NIL "cylinder_in_gripper"
-                                   (format nil "~a ~a" (object-info-name obj-info) (format nil "~a_wrist_roll_link" arm)))
+                                   (format nil "~a ~a" "SupportingPlaneOfCakeSpatula1" (format nil "~a_wrist_roll_link" arm)))
                        (make-param +double+ T "cylinder_width" (write-to-string (object-info-width obj-info)))
                        (make-param +double+ T "cylinder_height" (write-to-string (object-info-height obj-info)))
                        (make-param +double+ T (format nil "~a_gripper_effort" arm) (write-to-string 50))))
@@ -135,7 +135,7 @@ Assume that the object is attached to ARM."
 
 ;; spatula constants
 ; adrian hat vermessen:
-; tiefe und breite, wenn man sich den pfannenheber von der seite anguckt
+; tiefe und breite, wenn man sich den pfannenheber von der seite angucktf
 ;4.5cm tiefe
 ;3.5cm breite
 (alexandria:define-constant +spatula-handle-depth+ 0.045)
