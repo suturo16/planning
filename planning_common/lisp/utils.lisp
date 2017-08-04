@@ -60,7 +60,7 @@ STRINGS (list of strings): Alternating keys and values. Has to have an even leng
   (sleep 10)
   (ros-info "run-full-pipeline" "recognizing Cake...")
   (service-run-pipeline "cake")
-  (sleep 15)
+  (sleep 20)
   (service-run-pipeline "plate")
   (ros-info "run-full-pipeline" "recognizing Plate...")
   (sleep 10)

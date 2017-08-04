@@ -50,7 +50,7 @@
 
 (defmacro with-turtle-process-modules (&body body)
   `(with-process-modules-running
-       (simple-navigation)
+       (turtle-do:simple-navigation)
      ,@body))
 
 ;; point is a cl-tf pose tho

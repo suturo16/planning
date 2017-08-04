@@ -92,7 +92,7 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
   (ros-info (grasp plate) "Move arm to object ~a." (common:object-info-name plate-info))
   (pr2-do:grasp-plate plate-info arm)
   (ros-info (grasp plate) "Close gripper.")
-  (pr2-do:close-gripper arm 100)
+  (pr2-do:close-gripper arm 100  -0.03)
   (ros-info (grasp plate) "Done."))
 
 
@@ -103,8 +103,7 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
   (ros-info (grasp spatula) "Move arm to spatula.")
   (pr2-do:grasp-spatula spatula-info arm)
   (ros-info (grasp spatula) "Close gripper.")
- ;(pr2-do:close-gripper arm 100)
-  )
+  (pr2-do:close-gripper arm 100))
 
 
 (defun grasp-object (obj-info arm)

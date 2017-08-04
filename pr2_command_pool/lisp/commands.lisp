@@ -41,29 +41,18 @@
 (defun move-object-with-arm (loc-info obj-info arm)
   "Call action to place the object of OBJ-INFO at the location of LOC-INFO.
 Assume that the object is attached to ARM."
-  (if (string= (object-info-type obj-info) "dinnerPlateForCake")
-      
-      (action-move-robot (format nil "pr2_place_control_~a" arm)
-                         (alexandria:curry #'error-break-function +move-object-with-arm-error-limit+)
-                         NIL
-                         (make-param +transform+ NIL "target_frame"
-                                     (format nil "~a ~a" (object-info-name loc-info) "base_link"))
-                         (make-param +transform+ NIL "cylinder_in_gripper"
-                                     (format nil "~a ~a" "dinnerPlateForCake1" (format nil "~a_wrist_roll_link" arm)))
-                         (make-param +double+ T "cylinder_width" (write-to-string (object-info-width obj-info)))
-                         (make-param +double+ T "cylinder_height" (write-to-string (object-info-height obj-info)))
-                         (make-param +double+ T (format nil "~a_gripper_effort" arm) (write-to-string 50)))
-      
-      (action-move-robot (format nil "pr2_place_control_~a" arm)
-                         (alexandria:curry #'error-break-function +move-object-with-arm-error-limit+)
-                         NIL
-                         (make-param +transform+ NIL "target_frame"
-                                     (format nil "~a ~a" (object-info-name loc-info) "base_link"))
-                         (make-param +transform+ NIL "cylinder_in_gripper"
-                                     (format nil "~a ~a" "SupportingPlaneOfCakeSpatula1" (format nil "~a_wrist_roll_link" arm)))
-                         (make-param +double+ T "cylinder_width" (write-to-string (object-info-width obj-info)))
-                         (make-param +double+ T "cylinder_height" (write-to-string (object-info-height obj-info)))
-                         (make-param +double+ T (format nil "~a_gripper_effort" arm) (write-to-string 50)))))
+  (print (object-info-name loc-info))
+  (print (object-info-name obj-info))    
+    (action-move-robot (format nil "pr2_place_control_~a" arm)
+                       (alexandria:curry #'error-break-function +move-object-with-arm-error-limit+)
+                       NIL
+                       (make-param +transform+ NIL "target_frame"
+                                   (format nil "~a ~a" (object-info-name loc-info) "base_link"))
+                       (make-param +transform+ NIL "cylinder_in_gripper"
+                                   (format nil "~a ~a" (object-info-name obj-info) (format nil "~a_wrist_roll_link" arm)))
+                       (make-param +double+ T "cylinder_width" (write-to-string (object-info-width obj-info)))
+                       (make-param +double+ T "cylinder_height" (write-to-string (object-info-height obj-info)))
+                       (make-param +double+ T (format nil "~a_gripper_effort" arm) (write-to-string 50))))
 
 
 ;; move-n-flip constants
@@ -76,7 +65,7 @@ Assume that the object is attached to ARM."
                        (alexandria:curry #'error-break-function +move-n-flip-object-with-arm-error-limit+)
                        NIL
                        (make-param +transform+ NIL "spatula_in_gripper"
-                                   (format nil "~a ~a" (object-info-name tool-info) (format nil  "~a_wrist_roll_link" arm)))
+                                   (format nil "~a ~a" "SupportingPlaneOfCakeSpatula1" (format nil  "~a_wrist_roll_link" arm)))
                        (make-param +transform+ NIL "goal_frame"
                                    (format nil "~a ~a" (object-info-name loc-info) "base_link"))
                        (make-param +double+ T "spatula_radius" (write-to-string +tool-width+))
@@ -135,9 +124,9 @@ Assume that the object is attached to ARM."
 ; edge angle 110 grad
 ;teller usrsprungs height: 0.016
 ;; teller konstanten
-(alexandria:define-constant +edge-radius+ 0.11)
-(alexandria:define-constant +edge-height+ 0.004)
-(alexandria:define-constant +edge-width+ 0.025)
+(alexandria:define-constant +edge-radius+ 0.15)
+(alexandria:define-constant +edge-height+ 0.01)
+(alexandria:define-constant +edge-width+ 0.022)
 (alexandria:define-constant +edge-angle+ 1.92)
 
 (defun grasp-plate (plate-info arm)
