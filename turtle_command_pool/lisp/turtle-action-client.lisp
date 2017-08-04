@@ -41,7 +41,7 @@
     (roslisp:ros-info (navigate-map) "Move_base action finished.")
     (values result status)))
 
-(defun execute-navigation-action (goal-pose)
+(def-cram-function execute-navigation-action (goal-pose)
   (print "execute-navigation-action")
     (unless (eq roslisp::*node-status* :running)
     (roslisp:start-ros-node "tortugabot1/move-base-lisp-client"))

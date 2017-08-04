@@ -86,7 +86,32 @@ ACTION-DESIGNATOR (designator): description of the desired action in the form as
   
   (<- (matching-process-module ?desig simple-navigation)
     (desig-prop ?desig (:type :goal)))
-  ;(<- (matching-process-module ?desig giskard-manipulation)
-  ;(desig-prop ?desig (:type ?type)))
-  )
+  
+  (<- (matching-process-module ?desig giskard-manipulation)
+    (desig-prop ?desig (:type :move-gripper)))
+  
+  (<- (matching-process-module ?desig giskard-manipulation)
+     (desig-prop ?desig (:type :release)))
+  
+  (<- (matching-process-module ?desig giskard-manipulation)
+     (desig-prop ?desig (:type :grasp)))
+
+  (<- (matching-process-module ?desig giskard-manipulation)
+      (desig-prop ?desig (:type :move-with-arm)))
+
+  (<- (matching-process-module ?desig giskard-manipulation)
+      (desig-prop ?desig (:type :move-gripper)))
+
+  (<- (matching-process-module ?desig giskard-manipulation)
+         (desig-prop ?desig (:type :move-n-flip)))
+         
+  (<- (matching-process-module ?desig giskard-manipulation)         
+    (desig-prop ?desig (:type :detach)))
+  
+  (<- (matching-process-module ?desig giskard-manipulation)
+    (desig-prop ?desig (:type :cut)))
+  
+  (<- (matching-process-module ?desig giskard-manipulation)
+    (desig-prop ?desig (:type :base-pose))))
+  
 ;; alternatively define all the types here. it would be safer that way.

@@ -20,10 +20,10 @@
         (execute-navigation-action goal-pose)
         (fail 'navigation-failed))))))
 
-(defmacro with-turtle-process-modules (&body body)
-  `(with-process-modules-running
-       (turtle-navigation turtle-test-module)
-     ,@body))
+;(defmacro with-turtle-process-modules (&body body)
+;`(with-process-modules-running
+;(turtle-navigation turtle-test-module)
+;,@body))
 
 (defun test-fun ()
   (top-level
@@ -41,20 +41,22 @@
   (destructuring-bind (command action-goal) (reference action-designator)
                        (ecase command
                          (go-to
+                         (format t "action-goal: ~a" action-designator)
+                          (format t "action-designator: ~a" (reference action-designator))
+                       ;   (print (reference action-goal))
                           (when (typep action-goal 'location-designator)
                             (let ((target-point (reference action-goal)))
                               (roslisp:ros-info (turtle-process-modules)
                                                 "going to point ~a" target-point)
-                              (or (execute-navigation-action (cl-tf:to-msg target-point))
-                              (fail 'navigation-failed))))))))
+                              (execute-navigation-action (cl-tf:to-msg target-point))))))))
 
 (defmacro with-turtle-process-modules (&body body)
-  `(with-process-modules-running
-       (turtle-do:simple-navigation)
-     ,@body))
+`(with-process-modules-running
+(turtle-do:simple-navigation)
+,@body))
 
 ;; point is a cl-tf pose tho
-(defun move-to (point)
+(defun goto-location (point)
  (top-level
     (with-turtle-process-modules
       (process-module-alias :navigation 'simple-navigation)
