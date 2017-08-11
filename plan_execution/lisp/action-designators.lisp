@@ -64,7 +64,8 @@ See cram documentation for further information."
     (desig-prop ?desig (:target ?target))
     (lisp-fun common:get-object-info ?knife ?knife-info)
     (lisp-fun common:get-object-info ?cake ?cake-info)
-    (lisp-fun common:make-object-info :type ?target :name (format nil "~a1" ?target) ?target-info))
+    (lisp-fun format nil "~a1" ?target ?target-name)
+    (lisp-fun common:make-object-info :type ?target :name ?target-name ?target-info))
     
 
   ;; without pushing
