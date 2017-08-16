@@ -29,28 +29,42 @@
 
 (defun move-arm-to-object (obj-info arm)
   "Call action to move ARM to the object of OBJ-INFO."
-  (action-move-robot (format nil "pr2_grasp_control_~a" arm)
-                     (alexandria:curry #'error-break-function +move-arm-to-object-error-limit+)
-                     NIL
-                     (make-param +transform+ nil "cylinder_frame"
-                                 (format nil "~a ~a" (object-info-name obj-info) "base_link"))
-                     (make-param +double+ T "cylinder_width" (write-to-string (object-info-width obj-info)))
-                     (make-param +double+ T "cylinder_height" (write-to-string (object-info-height obj-info)))))
+   (if (string= (object-info-name obj-info) "SupportingPlaneOfCakeSpatula1")
+       (action-move-robot (format nil "pr2_grasp_control_~a" arm)
+                          (alexandria:curry #'error-break-function +move-arm-to-object-error-limit+)
+                          NIL
+                          (make-param +transform+ nil "cylinder_frame"
+                                      (format nil "~a ~a" "SupportingPlaneOfCakeSpatula1" "base_link"))
+                          (make-param +double+ T "cylinder_width" (write-to-string (object-info-width obj-info)))
+                          (make-param +double+ T "cylinder_height" (write-to-string (object-info-height obj-info))))))
 
 
 (defun move-object-with-arm (loc-info obj-info arm)
   "Call action to place the object of OBJ-INFO at the location of LOC-INFO.
 Assume that the object is attached to ARM."
-    (action-move-robot (format nil "pr2_place_control_~a" arm)
-                       (alexandria:curry #'error-break-function +move-object-with-arm-error-limit+)
-                       NIL
-                       (make-param +transform+ NIL "target_frame"
-                                   (format nil "~a ~a" (object-info-name loc-info) "base_link"))
-                       (make-param +transform+ NIL "cylinder_in_gripper"
-                                   (format nil "~a ~a" (object-info-name obj-info) (format nil "~a_wrist_roll_link" arm)))
-                       (make-param +double+ T "cylinder_width" (write-to-string (object-info-width obj-info)))
-                       (make-param +double+ T "cylinder_height" (write-to-string (object-info-height obj-info)))
-                       (make-param +double+ T (format nil "~a_gripper_effort" arm) (write-to-string 50))))
+  (print (object-info-name loc-info))
+  (print (object-info-name obj-info))
+  (if (string= (object-info-name obj-info) "cakeSpatula1")
+      (action-move-robot (format nil "pr2_place_control_~a" arm)
+                         (alexandria:curry #'error-break-function +move-object-with-arm-error-limit+)
+                         NIL
+                         (make-param +transform+ NIL "target_frame"
+                                     (format nil "~a ~a" (object-info-name loc-info) "base_link"))
+                         (make-param +transform+ NIL "cylinder_in_gripper"
+                                     (format nil "~a ~a" "SupportingPlaneOfCakeSpatula1" (format nil "~a_wrist_roll_link" arm)))
+                         (make-param +double+ T "cylinder_width" (write-to-string (object-info-width obj-info)))
+                         (make-param +double+ T "cylinder_height" (write-to-string (object-info-height obj-info)))
+                         (make-param +double+ T (format nil "~a_gripper_effort" arm) (write-to-string 50))))
+  (action-move-robot (format nil "pr2_place_control_~a" arm)
+                         (alexandria:curry #'error-break-function +move-object-with-arm-error-limit+)
+                         NIL
+                         (make-param +transform+ NIL "target_frame"
+                                     (format nil "~a ~a" (object-info-name loc-info) "base_link"))
+                         (make-param +transform+ NIL "cylinder_in_gripper"
+                                     (format nil "~a ~a" "SupportingPlaneOfCakeSpatula1" (format nil "~a_wrist_roll_link" arm)))
+                         (make-param +double+ T "cylinder_width" (write-to-string (object-info-width obj-info)))
+                         (make-param +double+ T "cylinder_height" (write-to-string (object-info-height obj-info)))
+                         (make-param +double+ T (format nil "~a_gripper_effort" arm) (write-to-string 50))))
 
 
 ;; move-n-flip constants
@@ -63,7 +77,7 @@ Assume that the object is attached to ARM."
                        (alexandria:curry #'error-break-function +move-n-flip-object-with-arm-error-limit+)
                        NIL
                        (make-param +transform+ NIL "spatula_in_gripper"
-                                   (format nil "~a ~a" (object-info-name tool-info) (format nil  "~a_wrist_roll_link" arm)))
+                                   (format nil "~a ~a" "SupportingPlaneOfCakeSpatula1" (format nil  "~a_wrist_roll_link" arm)))
                        (make-param +transform+ NIL "goal_frame"
                                    (format nil "~a ~a" (object-info-name loc-info) "base_link"))
                        (make-param +double+ T "spatula_radius" (write-to-string +tool-width+))
@@ -120,10 +134,11 @@ Assume that the object is attached to ARM."
 ; hoehe 3.2cm
 ; edge breite 2.5 cm
 ; edge angle 110 grad
+;teller usrsprungs height: 0.016
 ;; teller konstanten
-(alexandria:define-constant +edge-radius+ 0.11)
-(alexandria:define-constant +edge-height+ 0.016)
-(alexandria:define-constant +edge-width+ 0.025)
+(alexandria:define-constant +edge-radius+ 0.15)
+(alexandria:define-constant +edge-height+ 0.01)
+(alexandria:define-constant +edge-width+ 0.022)
 (alexandria:define-constant +edge-angle+ 1.92)
 
 (defun grasp-plate (plate-info arm)
@@ -147,7 +162,7 @@ Assume that the object is attached to ARM."
 
 ;; spatula constants
 ; adrian hat vermessen:
-; tiefe und breite, wenn man sich den pfannenheber von der seite anguckt
+; tiefe und breite, wenn man sich den pfannenheber von der seite angucktf
 ;4.5cm tiefe
 ;3.5cm breite
 (alexandria:define-constant +spatula-handle-depth+ 0.045)
@@ -158,7 +173,7 @@ Assume that the object is attached to ARM."
   (action-move-robot (format nil "pr2_grasp_fingerHandle_~a" arm)
                      (alexandria:curry #'error-break-function +grasp-spatula-error-limit+)
                      NIL
-                     (make-param +transform+ NIL "handle_frame" (format nil "~a ~a" "spatula_handle" "base_link"))
+                     (make-param +transform+ NIL "handle_frame" (format nil "~a ~a" "HandleOfCakeSpatula1" "base_link"))
                      (make-param +double+ T "handle_depth" (write-to-string +spatula-handle-depth+))
                      (make-param +double+ T "handle_width" (write-to-string +spatula-handle-width+))))
 

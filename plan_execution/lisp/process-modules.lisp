@@ -69,10 +69,49 @@ ACTION-DESIGNATOR (designator): description of the desired action in the form as
 
       (test
        ; Just a test stub to appease one's sanity.
-       nil))))
+       nil)
+      )))
 
 (defmacro with-pr2-process-modules (&body body)
   "Wrapper for with-process-modules-running for the PR2 process modules."
   `(with-process-modules-running
-       (giskard-manipulation)
+       (pexecution:giskard-manipulation)
      ,@body))
+
+
+(def-fact-group navigation-process-modules (available-process-module
+                                            matching-process-module)
+  (<- (available-process-module simple-navigation))
+  (<- (available-process-module giskard-manipulation))
+  
+  (<- (matching-process-module ?desig simple-navigation)
+    (desig-prop ?desig (:type :goal)))
+  
+  (<- (matching-process-module ?desig giskard-manipulation)
+    (desig-prop ?desig (:type :move-gripper)))
+  
+  (<- (matching-process-module ?desig giskard-manipulation)
+     (desig-prop ?desig (:type :release)))
+  
+  (<- (matching-process-module ?desig giskard-manipulation)
+     (desig-prop ?desig (:type :grasp)))
+
+  (<- (matching-process-module ?desig giskard-manipulation)
+      (desig-prop ?desig (:type :move-with-arm)))
+
+  (<- (matching-process-module ?desig giskard-manipulation)
+      (desig-prop ?desig (:type :move-gripper)))
+
+  (<- (matching-process-module ?desig giskard-manipulation)
+         (desig-prop ?desig (:type :move-n-flip)))
+         
+  (<- (matching-process-module ?desig giskard-manipulation)         
+    (desig-prop ?desig (:type :detach)))
+  
+  (<- (matching-process-module ?desig giskard-manipulation)
+    (desig-prop ?desig (:type :cut)))
+  
+  (<- (matching-process-module ?desig giskard-manipulation)
+    (desig-prop ?desig (:type :base-pose))))
+  
+;; alternatively define all the types here. it would be safer that way.
