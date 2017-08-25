@@ -28,6 +28,7 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
          (query-type (alexandria:assoc-value (alexandria:assoc-value  json-object :query) :type))
          (customer-id (alexandria:assoc-value json-object :guest-id))
          (request-valid (is-request-valid customer-id query-type)))
+    (ros-info (handle-knowledge-update) "Request of type '~a' for customer id '~a' is ~aVALID!" query-type customer-id (if request-valid "" "NOT "))
     (when request-valid
         (common:prolog-assert-dialog-element json-string))
     (cl-json:encode-json-alist-to-string (compose-reponse customer-id query-type request-valid))))
@@ -88,7 +89,7 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
      (guest-info-arguments->a-list customer-id name place amount delivered))))
 
 (defun thread-get-all-customer-info ()
-  "Queries the knowledgebase for the whole list of cstomer infos and parses the list to json."
+  "Queries the knowledgebase for the whole list of customer infos and parses the list to json."
   (let ((raw-customer-response (common:prolog-get-customer-infos))
         (raw-order-response (common:prolog-get-open-orders-of))
         customer-id name place item amount delivered)
@@ -117,6 +118,7 @@ https://docs.google.com/document/d/1wCUxW6c1LhdxML294Lvj3MJEqbX7I0oGpTdR5ZNIo_w"
 (defun assign-guest-to-place (customer-id place)
   (when (and customer-id place)
     (let ((id (if (integerp customer-id) (write-to-string customer-id) customer-id)))
+      (ros-info (assign-guest-to-place) "Assigning guest of id ~a to place ~a." customer-id place)
       (common:prolog-assert-dialog-element (cl-json:encode-json-alist-to-string
                                             `(("guestId" . ,id) ("query" ("type" . "setLocation") ("tableId" . ,place))))))))
 
