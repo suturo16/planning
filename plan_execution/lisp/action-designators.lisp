@@ -25,6 +25,17 @@ See cram documentation for further information."
     (desig-prop ?desig (:object ?object))
     (lisp-fun common:get-object-info ?object ?obj-info))
 
+  ;; move-with-arm for spatula
+  (<- (action-desig ?desig (move-with-arm ((arm ?arm) (object-info ?plane-info) (target-info ?target-info))))
+    (desig-prop ?desig (:type :move-with-arm))
+    (desig-prop ?desig (:object "cakeSpatula"))
+    (desig-prop ?desig (:arm ?arm))
+    (desig-prop ?desig (:target ?target))
+    (lisp-fun common:get-object-info "cakeSpatula" ?obj-info)
+    (lisp-fun common:get-object-part-detail ?obj-info "SupportingPlaneOfCakeSpatula" "nameOfObject" ?plane-name)
+    (lisp-fun common:make-object-info :name ?plane-name ?plane-info)
+    (lisp-fun common:make-object-info :type ?target :name ?target ?target-info))
+  
   ;; move-with-arm
   (<- (action-desig ?desig (move-with-arm ((arm ?arm) (object-info ?obj-info) (target-info ?target-info))))
     (desig-prop ?desig (:type :move-with-arm))
@@ -37,7 +48,7 @@ See cram documentation for further information."
     ; get object-info
     (lisp-fun common:get-object-info ?object ?obj-info))
     ;(lisp-fun common:make-object-info :type ?object :name ?object ?obj-info))
-
+  
   ; place
   (<- (action-desig ?desig (place ((arm ?arm) (obj-info ?obj-info) (target ?target))))
     (desig-prop ?desig (:type :place))
@@ -61,11 +72,12 @@ See cram documentation for further information."
     (desig-prop ?desig (:arm ?arm))
     (desig-prop ?desig (:knife ?knife))
     (desig-prop ?desig (:cake ?cake))
-    (desig-prop ?desig (:target ?target))
+    (desig-prop ?desig (:target "cakeSpatula"))
     (lisp-fun common:get-object-info ?knife ?knife-info)
     (lisp-fun common:get-object-info ?cake ?cake-info)
-    (lisp-fun format nil "~a1" ?target ?target-name)
-    (lisp-fun common:make-object-info :type ?target :name ?target-name ?target-info))
+    (lisp-fun common:get-object-info "cakeSpatula" ?spatula-info)
+    (lisp-fun common:get-object-part-detail ?spatula-info "SupportingPlaneOfCakeSpatula" "nameOfObject" ?plane-name)
+    (lisp-fun common:make-object-info :name ?plane-name ?target-info))
     
 
   ;; without pushing

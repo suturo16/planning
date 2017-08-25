@@ -51,8 +51,8 @@ TYPED-PARAMS (suturo_manipulation_msgs-msg:TypedParam): Params to be send with t
          (get-move-robot-client)
          (get-move-robot-goal-conv controller-name typed-params)
          :feedback-cb 'move-robot-feedback-cb
-         :result-timeout 14
-         :exec-timeout 14)
+         :result-timeout 30
+         :exec-timeout 30)
       (declare (ignore result))
       (alexandria:switch (status)
         (:ABORTED :SUCCESS)
