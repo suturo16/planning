@@ -91,20 +91,20 @@ ACTION-DESIGNATOR (designator): description of the desired action in the form as
     (desig-prop ?desig (:type :move-gripper)))
   
   (<- (matching-process-module ?desig giskard-manipulation)
-     (desig-prop ?desig (:type :release)))
+    (desig-prop ?desig (:type :release)))
   
   (<- (matching-process-module ?desig giskard-manipulation)
-     (desig-prop ?desig (:type :grasp)))
+    (desig-prop ?desig (:type :grasp)))
 
   (<- (matching-process-module ?desig giskard-manipulation)
-      (desig-prop ?desig (:type :move-with-arm)))
+    (desig-prop ?desig (:type :move-with-arm)))
 
   (<- (matching-process-module ?desig giskard-manipulation)
-      (desig-prop ?desig (:type :move-gripper)))
+    (desig-prop ?desig (:type :move-gripper)))
 
   (<- (matching-process-module ?desig giskard-manipulation)
-         (desig-prop ?desig (:type :move-n-flip)))
-         
+    (desig-prop ?desig (:type :move-n-flip)))
+  
   (<- (matching-process-module ?desig giskard-manipulation)         
     (desig-prop ?desig (:type :detach)))
   
