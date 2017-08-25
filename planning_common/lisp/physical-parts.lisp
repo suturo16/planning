@@ -6,13 +6,13 @@
 (alexandria:define-constant +handle-of-cake-spatula+ "HandleOfCakeSpatula" :test #'string-equal)
 
 
-(alexandria:define-constant +name-of-object+ '|'nameOfObject'|)
-(alexandria:define-constant +width-of-object+ '|'widthOfObject'|)
-(alexandria:define-constant +height-of-object+ '|'heightOfObject'|)
-(alexandria:define-constant +depth-of-object+ '|'depthOfObject'|)
-(alexandria:define-constant +length-of-object+ '|'lengthOfObject'|)
-(alexandria:define-constant +angle+ '|'angle'|)
-(alexandria:define-constant +radius+ '|'radius'|)
+(alexandria:define-constant +name-of-object+ "nameOfObject" :test #'string-equal)
+(alexandria:define-constant +width-of-object+ "widthOfObject" :test #'string-equal)
+(alexandria:define-constant +height-of-object+ "heightOfObject" :test #'string-equal)
+(alexandria:define-constant +depth-of-object+ "depthOfObject" :test #'string-equal)
+(alexandria:define-constant +length-of-object+ "lengthOfObject" :test #'string-equal)
+(alexandria:define-constant +angle+ "angle" :test #'string-equal)
+(alexandria:define-constant +radius+ "radius" :test #'string-equal)
 
 (defun prolog-get-details (name)
   (cdr (car (car (prolog-get-info (format nil "[[nameOfObject,~a],radius,angle]" name))))))

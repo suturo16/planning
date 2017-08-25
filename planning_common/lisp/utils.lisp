@@ -115,20 +115,22 @@ using prolog interface."
   ;; get the value
   (knowrob->str (second
                  ;; find the right detail
-                 (find detail 
+                 (find (intern (concatenate 'string "'" detail "'"))
                        ;; find the right part
+                       ;; my-part = part for every step
+                       ;; part-list = result of :key (in this case the parts of obj-info as an alist)
                        (find part (object-info-physical-parts obj-info)
                              :test (lambda (my-part part-list)
                                      (let ((name-of-obj
                                              (knowrob->str
                                               (second
-                                               (find +name-of-object+ part-list :key #'first)))))
+                                               (find (intern "'nameOfObject'") part-list :key #'first)))))
                                        (string-equal my-part (subseq name-of-obj 0 (1- (length name-of-obj)))))))
                        :key #'first))))
 
 (defun get-object-detail (obj-info detail)
   (knowrob->str
-   (car (alexandria:assoc-value (object-info-details obj-info) detail))))
+   (car (alexandria:assoc-value (object-info-details obj-info) (intern (concatenate 'string "'" detail "'"))))))
 
 ; if it doesn't work from the start, comment in the uncommented line. 
 ; Make sure the node is running though
