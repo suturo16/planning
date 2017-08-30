@@ -75,7 +75,7 @@ DESIG (list of designators): List of designators to be executed."
      (list (make-designator :action `((:type :detach) (:arm ,common:+right-arm+) (:object "cakeKnife")))))
     ('("move spatula next to cake" "step3")
      (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "cakeSpatula") (:target "next2cake")))))
-    ('("grasp spatula")
+    ('("grasp spatula" "step3a")
       (list (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "cakeSpatula")))))
     ('("just cut" "step4b")
      (list (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "cakeKnife") (:cake "box")))))
@@ -99,7 +99,8 @@ DESIG (list of designators): List of designators to be executed."
      (list (make-designator :action `((:type :base-pose)))
            (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "cakeKnife")))
            (make-designator :action `((:type :detach) (:arm ,common:+right-arm+) (:object "cakeKnife")))
-           (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "cakeSpatula")))))
+           (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "cakeSpatula")))
+           (make-designator :action `((:type :base-pose)))))
     ('("cut")
       (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "cakeSpatula") (:target "next2cake")))
             (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "cakeKnife") (:cake "box") (:target "cakeSpatula")))
@@ -129,7 +130,7 @@ DESIG (list of designators): List of designators to be executed."
            (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake")))
            (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake") (:target "deliver")))))
     ('("move cake hack")
-      (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+right-arm+) (:object "cakeKnife") (:target "cakeSpatula")))))))
+      (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+right-arm+) (:object "cakeKnife") (:target "SupportingPlaneOfSpatula1")))))))
 
 
 (defun task-reference (task)

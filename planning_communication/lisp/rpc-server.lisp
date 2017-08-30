@@ -81,8 +81,7 @@ PORT: Port of the calling machine."
            (setf (client-port client) port))
          (gethash client-key *clients*))
         (setf (gethash client-key *clients*)
-              (make-client :host host :port port)))
-    
+              (make-client :host host :port port)))    
     0))
 
 (defun |assertDialogElement| (json-string)
@@ -91,7 +90,9 @@ Returns a JSON string with the response."
   ;; (roslisp:ros-warn (assertsd) "~a" json-string)
   ;; (print json-string)
   ;; (format nil "~a" json-string)
+  
   (handle-knowledge-update json-string)
+  
   )
 
 (defun |getGuestInfo| (guest-id)

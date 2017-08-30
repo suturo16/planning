@@ -47,7 +47,7 @@ Disconnects the frames PARENT-FRAME-ID and CHILD-FRAME-ID."
                  `("disconnect_frames"
                    ,parent-frame-id ,child-frame-id) :lispify T :package :common))
 
-(defun prolog-assert-dialog-element (json-string) 
+(defun prolog-assert-dialog-element (json-string)
   "Query prolog with 'assert_dialog_element' to update guest info. Remove all double quotes in the json object."
   (json-prolog:prolog-simple
    (format nil "assert_dialog_element('~a')" (remove #\space (remove #\" json-string))) :lispify T :package :common))
