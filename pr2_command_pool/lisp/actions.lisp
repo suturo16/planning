@@ -8,6 +8,6 @@
     (common:action-move-robot
      (format nil "gripper_control_~a" arm)
      (alexandria:curry #'error-break-function +action-move-gripper-error-limit+)
-     NIL
+     T
      (make-param +double+ T "gripper_goal" (write-to-string target-width))
      (make-param +double+ T effort-param-name (write-to-string strength)))))

@@ -4,7 +4,7 @@
   "Call action to close the gripper of ARM with STRENGTH."
   (action-move-gripper width arm strength))
 
-(defun open-gripper (arm &optional (width 0.09))
+(defun open-gripper (arm &optional (width 0.085))
   "Call action to open the gripper of ARM."
   (action-move-gripper width arm 70))
 
