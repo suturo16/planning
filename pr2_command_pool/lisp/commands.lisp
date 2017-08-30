@@ -248,3 +248,10 @@ to cut pieces with SLICE-WIDTH."
                      (alexandria:curry #'error-break-function +look-at-error-limit+)
                      NIL
                      (make-param +transform+ NIL "focal_point" (format nil "~a ~a" (object-info-name obj-info) "base_link"))))
+
+(defun look-at-frame (frame-name)
+  "Call action to look at the position of the object of OBJ-INFO."
+  (action-move-robot (format nil "pr2_look_at")
+                     (alexandria:curry #'error-break-function +look-at-error-limit+)
+                     NIL
+                     (make-param +transform+ NIL "focal_point" (format nil "~a ~a" frame-name "base_link"))))
