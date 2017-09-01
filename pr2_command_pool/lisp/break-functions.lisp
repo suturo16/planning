@@ -1,7 +1,7 @@
 (in-package :pr2-command-pool-package)
 
 (defparameter +get-in-base-pose-error-limit+ 0.09)
-(defparameter +action-move-gripper-error-limit+ 0.035)
+(defparameter +action-move-gripper-error-limit+ 0.005)
 (defparameter +move-arm-to-object-error-limit+ 0.01)
 (defparameter +move-object-with-arm-error-limit+ 0.025)
 (defparameter +move-n-flip-object-with-arm-error-limit+ 0.01)

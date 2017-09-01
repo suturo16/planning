@@ -4,7 +4,7 @@
   "Call action to close the gripper of ARM with STRENGTH."
   (action-move-gripper width arm strength))
 
-(defun open-gripper (arm &optional (width 0.09))
+(defun open-gripper (arm &optional (width 0.085))
   "Call action to open the gripper of ARM."
   (action-move-gripper width arm 70))
 
@@ -145,10 +145,10 @@ Assume that the object is attached to ARM."
                                  (common:get-object-detail plate-info "radius"))
                                  ;;;(write-to-string +edge-radius+))
                      (make-param +double+ T "edge_z"
-                                 ;;;(common:get-object-detail plate-info '|'heightOfObject'|))
+                                 ;;;(common:get-object-detail plate-info "heightOfObject"))
                                  (write-to-string +edge-height+))
                      (make-param +double+ T "edge_depth"
-                                 ;;;(common:get-object-detail plate-info common:+width-of-object+))
+                                 ;;;(common:get-object-detail plate-info "widthOfObject"))
                                  (write-to-string +edge-width+))
                      (make-param +double+ T "edge_angle"
                                  (common:get-object-detail plate-info "angle"))))

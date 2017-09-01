@@ -89,10 +89,10 @@
 
 ; constants
 ; arms
-(alexandria:define-constant +no-arm+ "n" :test #'equal)
-(alexandria:define-constant +right-arm+ "r" :test #'equal)
-(alexandria:define-constant +left-arm+ "l" :test #'equal)
-(alexandria:define-constant +both-arms+ "b" :test #'equal)
+(alexandria:define-constant +no-arm+ "n" :test #'string-equal)
+(alexandria:define-constant +right-arm+ "r" :test #'string-equal)
+(alexandria:define-constant +left-arm+ "l" :test #'string-equal)
+(alexandria:define-constant +both-arms+ "b" :test #'string-equal)
 
 ; param types
 (defconstant +double+ (symbol-code 'suturo_manipulation_msgs-msg:TypedParam :DOUBLE))
