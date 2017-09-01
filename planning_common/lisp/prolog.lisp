@@ -86,3 +86,8 @@ Disconnects the frames PARENT-FRAME-ID and CHILD-FRAME-ID."
 
 (defun prolog-cap-on-robot (capability)
   (json-prolog:prolog-simple (format NIL "cap_available_on_robot(suturo_cap:'~a',R)." capability)))
+
+(defun prolog-delete-object (object-name-or-type)
+  "Delete an object from the beliefstate. It won't be published to tf anymore.
+As identifier you can use the frame name, to delete a pecific frame, or the object type, to delete all objects of that type."
+  (json-prolog:prolog-simple (format nil "close_object('~a')" object-name-or-type) :package :common))
