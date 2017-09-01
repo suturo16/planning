@@ -1,6 +1,6 @@
 (in-package :turtle-command-pool-package)
 
-(defun init ()
+(defun init-turtle ()
   (roslisp-utilities:startup-ros :name "tortugabot1/lisp_node" :anonymous nil))
 
 
