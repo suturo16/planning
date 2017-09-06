@@ -194,8 +194,9 @@ Assume that the knife is connected to ARM."
                      (make-param +transform+ NIL "knife_frame_wrist" (format nil  "~a ~a" (object-info-name knife-info)
                                                                              (format nil "~a_wrist_roll_link" arm)))
                      (make-param +transform+ T "rack_frame"  (common:tf-lookup->string "base_link" (object-info-name knife-info)))
-                     (make-param 5 T "debug" "rack_frame")
-                     (make-param 5 T "debug2" "rack_dist")))
+                     ;; (make-param 5 T "debug" "rack_frame")
+                     ;; (make-param 5 T "debug2" "rack_dist")
+                     ))
 
 (defun take-cutting-position (cake-info knife-info arm slice-width)
   "Call action to take a position ready to cut the cake of CAKE-INFO.
