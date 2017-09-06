@@ -88,7 +88,7 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
 (defun grasp-plate (plate-info arm)
   "Grasp the plate described by PLATE-INFO with ARM."
   (ros-info (grasp plate) "Open gripper")
-  (pr2-do:open-gripper arm 0.01)
+  (pr2-do:open-gripper arm 0.02)
   (ros-info (grasp plate) "Move arm to object ~a." (common:object-info-name plate-info))
   (pr2-do:grasp-plate plate-info arm)
   (ros-info (grasp plate) "Close gripper.")
