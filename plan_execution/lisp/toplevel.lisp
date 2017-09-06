@@ -27,13 +27,13 @@ TASK (string): Natural language description of the task.
     (process-module-alias :manipulation 'giskard-manipulation)
 
     (turtle-do::with-turtle-process-modules
-    (process-module-alias :navigation 'turtle-do::simple-navigation))
+    (process-module-alias :navigation 'turtle-do::simple-navigation)
     
     
     ;; Translate the task to designators and execute
-    (format t "DESIG-PROP ~a~%" (cram-prolog:prolog (list 'desig-prop (car (task->designators "turtle deliver")) '(:type ?x))))
-    (format t "MATCHING-PROCESS-MODULE ~a~%" (cram-prolog:prolog (list 'matching-process-module (car (task->designators "turtle deliver")) '?y)))
-    (execute-desigs (task->designators task)))
+      (format t "DESIG-PROP ~a~%" (cram-prolog:prolog (list 'desig-prop (car (task->designators "turtle deliver")) '(:type ?x))))
+      (format t "MATCHING-PROCESS-MODULE ~a~%" (cram-prolog:prolog (list 'matching-process-module (car (task->designators "turtle deliver")) '?y)))
+      (execute-desigs (task->designators task))))
   
   
 
