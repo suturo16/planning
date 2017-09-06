@@ -112,7 +112,7 @@ Assume that the object is attached to ARM."
   "Call action to grasp the knife of KNIFE-INFO with ARM."
   (action-move-robot (format nil "knife_grasp_~a" arm)
                      (alexandria:curry #'error-break-function +grasp-knife-error-limit+)
-                     NIL
+                     T
                      (make-param +transform+ NIL "target_frame" (format nil "~a ~a" (object-info-name knife-info) "base_link"))
                      (make-param +double+ T "handle_height"
                                  (common:get-object-part-detail knife-info common:+handle-of-cake-knife+ "heightOfObject"))
@@ -134,8 +134,10 @@ Assume that the object is attached to ARM."
 (alexandria:define-constant +edge-angle+ 1.92)
 
 (defun grasp-plate (plate-info arm)
-  (print (common:get-object-detail plate-info "radius"))
-  (print (common:get-object-detail plate-info "angle"))
+  (common:get-object-detail plate-info "radius")
+  (common:get-object-detail plate-info "angle")
+  (common:get-object-detail plate-info "heightToOuterEdge")
+  (common:get-object-detail plate-info "widthOfEdge")
   "Call action to grasp the plate of PLATE-INFO with ARM."
   (action-move-robot (format nil "pr2_grasp_plate_~a" arm)
                      (alexandria:curry #'error-break-function +grasp-plate-error-limit+)
@@ -145,11 +147,11 @@ Assume that the object is attached to ARM."
                                  (common:get-object-detail plate-info "radius"))
                                  ;;;(write-to-string +edge-radius+))
                      (make-param +double+ T "edge_z"
-                                 ;;;(common:get-object-detail plate-info "heightOfObject"))
-                                 (write-to-string +edge-height+))
+                                 (common:get-object-detail plate-info "heightToOuterEdge"))
+                                 ;;; (write-to-string +edge-height+))
                      (make-param +double+ T "edge_depth"
-                                 ;;;(common:get-object-detail plate-info "widthOfObject"))
-                                 (write-to-string +edge-width+))
+                                 (common:get-object-detail plate-info "widthOfEdge"))
+                                 ;;; (write-to-string +edge-width+))
                      (make-param +double+ T "edge_angle"
                                  (common:get-object-detail plate-info "angle"))))
                                  ;;;(write-to-string +edge-angle+))))

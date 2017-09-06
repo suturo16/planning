@@ -15,7 +15,7 @@
 (alexandria:define-constant +radius+ "radius" :test #'string-equal)
 
 (defun prolog-get-details (name)
-  (cdr (car (car (prolog-get-info (format nil "[[nameOfObject,~a],radius,angle]" name))))))
+  (cdr (car (car (prolog-get-info (format nil "[[nameOfObject,~a],radius,angle,widthOfEdge,heightToOuterEdge]" name))))))
 
 (defun prolog-get-info-physical-parts (name)
   (prolog-get-info (format nil "[[nameOfObject,~a],physicalParts]" name)))

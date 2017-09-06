@@ -109,7 +109,8 @@ DESIG (list of designators): List of designators to be executed."
             (make-designator :action `((:type :move-gripper) (:arm ,common:+left-arm+) (:target "open")))
             (make-designator :action `((:type :release) (:arm ,common:+left-arm+)))
             (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake")))
-            (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake") (:target "deliver")))))
+            (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake") (:target "deliver")))
+            (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake") (:target "tortugabot1/surface")))))
     ('("turtle deliver")
       (list (make-designator :action `((:type :goal) (:go-to :table) (:goal
                                                                        ,(make-designator :location `((:go-to ,(cl-transforms-stamped:make-pose-stamped "map" (roslisp:ros-time)

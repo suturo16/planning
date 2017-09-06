@@ -59,7 +59,7 @@ TYPED-PARAMS (suturo_manipulation_msgs-msg:TypedParam): Params to be send with t
         (:LOST (error 'common:action-lost))
         (:TIMEOUT (signal 'common:action-timeout))))))
 
-(defparameter +alt-rate-limit+ 0.0000000005)
+(defparameter +alt-rate-limit+ 0.00005)
 (defparameter +min-alt-rate-count+ 50)
 
 (defun make-feedback-signal-handler (&optional
@@ -82,5 +82,5 @@ ERROR-CB (function): Break condition. (eg. '(lambda (v) (< v 0.05)))"
                    (funcall error-cb current_value)
                    (when (and use-alt-rates (>= (length alt-rates) +min-alt-rate-count+))
                      ;; if we should use the alteration rate and have enough samples, check it
-                     (< (/ (reduce #'+ (subseq alt-rates 0 5)) +min-alt-rate-count+) +alt-rate-limit+)))
+                     (< (/ (reduce #'+ (subseq alt-rates 0 +min-alt-rate-count+)) +min-alt-rate-count+) +alt-rate-limit+)))
               (invoke-restart 'actionlib:abort-goal))))))))
