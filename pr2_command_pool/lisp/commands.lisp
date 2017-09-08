@@ -243,7 +243,7 @@ to cut pieces with SLICE-WIDTH."
                      (make-param +transform+ NIL "knife_in_gripper" (format nil "~a ~a_wrist_roll_link" (object-info-name knife-info) arm))
                      (make-param +transform+ NIL "cake" (format nil "~a base_link" (object-info-name cake-info)))
                      (make-param +transform+ NIL "plate" (format nil "~a base_link" (object-info-name target-info)))
-                     (make-param +transform+ NIL "knife_height" (format nil "~a base_link" +blade-height+))))
+                     (make-param +double+ NIL "knife_height" (write-to-string +blade-height+))))
 
 
 (defun look-at (obj-info)

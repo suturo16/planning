@@ -1,10 +1,10 @@
 (in-package :plan-execution-package)
 
-(defun init-planning (&key (use-pepper NIL) (perception NIL))
+(defun init-planning (&key (use-pepper NIL) (perception NIL) (name "planning"))
   "Initialize everything planning needs to run.
 
 MY-IP (string): Look at `pcomm:setup-pepper-communication's docstring for further information."
-  (start-ros-node "planning")
+  (start-ros-node name)
   ;(roslisp-utilities:startup-ros :name "lisp_node" :anonymous nil)
   
   ;; Initialize communication with pepper
