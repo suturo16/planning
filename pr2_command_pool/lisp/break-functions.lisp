@@ -11,8 +11,8 @@
 (defparameter +release-error-limit+ 0.0000001)
 (defparameter +detach-knife-from-rack-error-limit+ 0.000001)
 (defparameter +take-cutting-position-error-limit+ 0.07)
-(defparameter +cut-cake-error-limit+ 0.025)
-(defparameter +move-slice-aside-error-limit+ 0.015)
+(defparameter +cut-cake-error-limit+ 0.00001)
+(defparameter +move-slice-aside-error-limit+ 0.05)
 (defparameter +look-at-error-limit+ 0.015)
 
 (defun error-break-function (limit error-val)
