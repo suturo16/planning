@@ -99,7 +99,19 @@ Assume that the object is attached to ARM."
                      (make-param +double+ T "r_wrist_flex_joint_goal" "-1.56861")
                      (make-param +double+ T "r_wrist_roll_joint_goal" "0")))
 
-
+(defun get-arm-in-base-pose (&optional (arm +right-arm+))
+  "Bring arm into base pose."
+  (action-move-robot (format t "pr2_~a_arm_joint_control" (if (equalp arm +left-arm+)
+                                                              "left" "right")) 
+                     (alexandria:curry #'error-break-function +get-in-base-pose-error-limit+)
+                     NIL
+                     (make-param +double+ T "shoulder_pan_joint_goal" (format t "~a1.23679" (if (equalp arm +left-arm+) "" "-")))
+                     (make-param +double+ T "shoulder_lift_joint_goal" "-0.247593")
+                     (make-param +double+ T "upper_arm_roll_joint_goal" (format t "~a0.614271" (if (equalp arm +left-arm+) "" "-")))
+                     (make-param +double+ T "elbow_flex_joint_goal" "-1.38094")
+                     (make-param +double+ T "forearm_roll_joint_goal" (format t "~a4.94757" (if (equalp arm +left-arm+) "-" "")))
+                     (make-param +double+ T "wrist_flex_joint_goal" "-1.56861")
+                     (make-param +double+ T "wrist_roll_joint_goal" "0")))
 
 (alexandria:define-constant +blade-%+ 0.63)
 ;; temp constants for knife dimensions
