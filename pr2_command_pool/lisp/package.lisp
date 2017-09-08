@@ -21,4 +21,5 @@
    :take-cutting-position
    :cut-cake
    :move-slice-aside
-   :look-at))
+   :look-at
+   :get-arm-in-base-pose))

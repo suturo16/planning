@@ -47,6 +47,7 @@
    :prolog-get-free-table
    :prolog-set-delivered-amount
    :prolog-increase-delivered-amount
+   :prolog-delete-object
    
    :ensure-node-is-running
    :make-param
