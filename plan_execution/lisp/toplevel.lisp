@@ -142,6 +142,11 @@ DESIG (list of designators): List of designators to be executed."
        (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake")))
        (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake") (:target "deliver")))
        (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake") (:target "tortugabot1/surface")))))
+    ('("open and base")
+      (list
+       (make-designator :action `((:type :move-gripper) (:arm ,common:+right-arm+) (:target "open")))
+       (make-designator :action `((:type :move-gripper) (:arm ,common:+left-arm+) (:target "open")))
+       (make-designator :action `((:type :base-pose)))))
     ('("move cake hack")
       (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+right-arm+) (:object "cakeKnife") (:target "SupportingPlaneOfSpatula1")))))))
 
