@@ -3,6 +3,11 @@
 (def-fact-group move-robot-actions (action-desig)
   "cram fact-group for referencing action designators.
 See cram documentation for further information."
+  ;; one-sided base pose
+  (<- (action-desig ?desig (base-pose ((arm ?arm))))
+    (desig-prop ?desig (:type :base-pose))
+    (desig-prop ?desig (:arm ?arm)))
+  
   ;; base pose
   (<- (action-desig ?desig (base-pose ()))
     (desig-prop ?desig (:type :base-pose)))

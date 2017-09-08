@@ -11,7 +11,10 @@ ACTION-DESIGNATOR (designator): description of the desired action in the form as
     (ecase command
       (base-pose
        ;; Just get in the base pose.
-       (pr2-do:get-in-base-pose))
+       (let ((arm (alexandria:assoc-value specs 'arm)))
+         (if arm
+             (pr2-do:get-arm-in-base-pose (car arm))
+             (pr2-do:get-in-base-pose))))
 
       (move-gripper
        ;; Open or close the gripper.
