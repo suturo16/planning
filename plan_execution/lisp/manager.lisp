@@ -64,20 +64,20 @@
                 do (finish-order)))
 
 (defun start-caterros (&optional (use-generator NIL))
-  (if use-generator
-      (progn
-        (when (not *current-guest-id*)
-          (next-guest-id))
-        (use-generator))
-      (loop
-        unless *current-guest-id*
-          do (next-guest-id)
-        unless (member *last-phase* '(:prep :cut))
-          do (prep)
-        when (not (= (common:get-remaining-amount-for-order *current-guest-id*) 0))
-          do (do-order)
-        when (<= (common:get-remaining-amount-for-order *current-guest-id*) 0)
-          do (finish-order))))
+   (if use-generator
+       (top-level (progn
+                    (when (not *current-guest-id*)
+                      (next-guest-id))
+                    (use-generator)))
+         (loop
+           unless *current-guest-id*
+             do (next-guest-id)
+           unless (member *last-phase* '(:prep :cut))
+             do (prep)
+           when (not (= (common:get-remaining-amount-for-order *current-guest-id*) 0))
+             do (do-order)
+           when (<= (common:get-remaining-amount-for-order *current-guest-id*) 0)
+             do (finish-order))))
 
 (defun test-guest ()
   (if (common::prolog-get-customer-infos 1)
