@@ -8,6 +8,7 @@ arms = {'left': '\"r\"', 'right': '\"l\"'}
 objects = {'knife': '\"cakeKnife\"', 'spatula': '\"cakeSpatula\"', 'plate': '\"dinnerPlateForCake\"', 'cake': '\"box\"'}
 
 base_pose = "[{type: \"base-pose\"}"
+base_pose_right = "[{type: \"base-pose\", arm: \"r\"}"
 
 
 def transform_plan_to_json_string(plan):
@@ -28,7 +29,7 @@ def transform_plan_to_json_string(plan):
             json_representation = json_representation + "," + create_json_string_with_object_target(types[action[0]], arms[action[1]], objects[action[2]], targets[action[0]]) 
         
         elif (action[0] == 'cut-cake'):
-            json_representation = json_representation + "," + create_json_string_with_cake_knife_target(types[action[0]], arms[action[1]], objects[action[2]], objects[action[3]], objects[action[4]])
+            json_representation = json_representation + "," + create_json_string_with_cake_knife_target(types[action[0]], arms[action[1]], objects[action[2]], objects[action[3]], objects[action[4]]) + base_pose_right
     
         elif (action[0] == 'place-piece-of-cake-on-plate'):
             json_representation = json_representation + "," + create_json_string_with_tool_target(types[action[0]], arms[action[1]], objects[action[2]], objects[action[3]]) 
@@ -66,7 +67,6 @@ def create_json_string_with_tool_target(action_type, arm, tool, target):
 def create_json_string_with_three_types(type1, type2, type3, arm, object_used, target1, target2):
     s = "{{type: {}, arm: {}, object: {}, target: {}}},{{type: {}, arm: {}, target: {}}},{{type: {}, arm: {}}}"
     return s.format(type1, arm, object_used, target1, type2, arm, target2, type3, arm)
-  
  
  
 if __name__ == "__main__":
@@ -74,6 +74,7 @@ if __name__ == "__main__":
     plan = """(grasp-tool left knife)
 (detach-tool-from-rack left knife)
 (grasp-tool right spatula)
+(cut-cake right knife cake spatula left pieceofcake0)
 ; cost = 9 (unit cost)"""
 
     print(transform_plan_to_json_string(plan))
