@@ -128,7 +128,7 @@ DESIG (list of designators): List of designators to be executed."
     ('("test turtle")
       (list (make-designator :action `((:type :goal) (:go-to :table) (:goal
                                                                       ,(make-designator :location `((:go-to ,(cl-transforms-stamped:make-pose-stamped "map" (roslisp:ros-time)
-                                                                                                                                                      (cl-transforms:make-3d-vector 1.76 5.38 0.0) (cl-transforms:make-quaternion -0.0 -0.0 -0.0 1.0))))))))))
+                                                                                                                                                      (cl-transforms:make-3d-vector 0.42 1.28 0.0) (cl-transforms:make-quaternion 0.0 0.0 0.0 1.0))))))))))
     ('("demo")
       (list
        (make-designator :action `((:type :base-pose)))

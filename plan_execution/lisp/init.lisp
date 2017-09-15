@@ -5,7 +5,10 @@
 
 MY-IP (string): Look at `pcomm:setup-pepper-communication's docstring for further information."
   ;;(start-ros-node name)
+  ;;start a ros node like this since it's important for the costmaps of turtle
   (roslisp-utilities:startup-ros :name "lisp_node" :anonymous nil)
+  ;;start the turtle action client
+  (turtle-do::init-action-client)
   
   ;; Initialize communication with pepper
   (when use-pepper

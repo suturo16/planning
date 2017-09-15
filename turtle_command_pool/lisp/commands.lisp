@@ -24,6 +24,6 @@
   (let ((transform))
     (progn 
       (setq transform (cl-tf:lookup-transform *transform-listener* "map" object))
-      (cl-transforms-stamped:make-pose-stamped object (roslisp:ros-time)
+      (cl-transforms-stamped:make-pose-stamped "map" (roslisp:ros-time)
                                                (cl-tf:translation transform)
                                                (cl-tf:rotation transform)))))
