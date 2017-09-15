@@ -196,7 +196,7 @@ A finished order never is. If there is no order in the state :started, the next 
 (defun get-place-of-guest (&optional (customer-id (get-current-order)))
   (let ((order (prolog-get-customer-infos customer-id)))
     (if order
-        (let ((place (pcomm::place->string (alexandria:assoc-value (first order) 'common::|?Place|))))
+        (let ((place (place->string (alexandria:assoc-value (first order) 'common::|?Place|))))
           (if (< 0 (string-lessp "table" place))
               place
               (progn (ros-warn (get-place-for-guest) "The guest with ID ~a has no place assigned yet! Just use table1 per default." customer-id)
@@ -217,3 +217,5 @@ A finished order never is. If there is no order in the state :started, the next 
   "Parses a symbol containing an integer into an integer. Symbol has to contain a valid integer value."
   (parse-integer (remove #\_ (symbol-name symbol))))
 
+(defun place->string (knowrob-place)
+  (string-downcase (symbol-name knowrob-place)))

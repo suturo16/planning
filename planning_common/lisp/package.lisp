@@ -63,7 +63,8 @@
    :say
    :get-guest-order
    :get-current-order
-
+   :get-place-of-guest
+   
    :+blade-of-cake-knife+
    :+handle-of-cake-knife+
    :+supporting-plane-of-cake-spatula+
