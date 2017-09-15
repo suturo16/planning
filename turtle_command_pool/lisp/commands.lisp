@@ -1,5 +1,7 @@
 (in-package :turtle-command-pool-package)
 
+(defparameter *transform-listener* (make-instance 'cl-tf:transform-listener))
+
 (defun init-turtle ()
   (roslisp-utilities:startup-ros :name "tortugabot1/lisp_node" :anonymous nil))
 
@@ -15,3 +17,13 @@
 
 (defun go-to-table ()
   (call-move-base-action "map" (cl-transforms:make-3d-vector 0.072 -0.100 0)(cl-transforms:make-quaternion 0 0 -0.704 0.710)))
+
+
+;; get pose of the object the turtle wants to go to
+(defun get-pose-of (object)
+  (let ((transform))
+    (progn 
+      (setq transform (cl-tf:lookup-transform *transform-listener* "map" object))
+      (cl-transforms-stamped:make-pose-stamped object (roslisp:ros-time)
+                                               (cl-tf:translation transform)
+                                               (cl-tf:rotation transform)))))
