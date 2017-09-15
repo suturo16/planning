@@ -193,6 +193,17 @@ A finished order never is. If there is no order in the state :started, the next 
     (when raw-place
       (string-downcase (symbol-name (alexandria:assoc-value raw-place 'common::|?NameOfFreeTable|))))))
 
+(defun get-place-of-guest (&optional (customer-id (get-current-order)))
+  (let ((order (prolog-get-customer-infos customer-id)))
+    (if order
+        (let ((place (pcomm::place->string (alexandria:assoc-value (first order) 'common::|?Place|))))
+          (if (< 0 (string-lessp "table" place))
+              place
+              (progn (ros-warn (get-place-for-guest) "The guest with ID ~a has no place assigned yet! Just use table1 per default." customer-id)
+                     "table1")))
+        (progn (ros-warn (get-place-for-guest) "There is no order with guest ID ~a! Just use table1 per default." customer-id)
+               "table1"))))
+
 (defun knowrob->str (knowrob-sym &optional (split NIL))
   "Turn a symbol representing a string returned by Knowledge into a normal string. Optionally cut off the knowrob prefix as well."
   (let* ((pre-str (symbol-name knowrob-sym))
