@@ -124,7 +124,7 @@ DESIG (list of designators): List of designators to be executed."
             ))
     ('("turtle deliver")
       (list (make-designator :action `((:type :goal) (:go-to :table) (:goal
-                                                                      ,(make-designator :location `((:go-to ,(turtle-do::get-pose-of (common:get-free-table)) ))))))))
+                                                                      ,(make-designator :location `((:go-to ,(turtle-do::get-pose-of (common:get-place-of-guest)) ))))))))
     ('("test turtle")
       (list (make-designator :action `((:type :goal) (:go-to :table) (:goal
                                                                       ,(make-designator :location `((:go-to ,(cl-transforms-stamped:make-pose-stamped "map" (roslisp:ros-time)
