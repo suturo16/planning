@@ -1,6 +1,12 @@
 (in-package :turtle-command-pool-package)
 
-(defparameter *transform-listener* (make-instance 'cl-tf:transform-listener))
+(defparameter *transform-listener* nil)
+
+(defun get-transform-listener ()
+  "Retrueve the transform listener."
+  (unless *transform-listener*
+    (setf *transform-listener* (make-instance 'cl-tf:transform-listener)))
+  *transform-listener*)
 
 (defun init-turtle ()
   (roslisp-utilities:startup-ros :name "tortugabot1/lisp_node" :anonymous nil))
@@ -23,7 +29,7 @@
 (defun get-pose-of (object)
   (let ((transform))
     (progn 
-      (setq transform (cl-tf:lookup-transform *transform-listener* "map" object))
+      (setq transform (cl-tf:lookup-transform (get-transform-listener) "map" object))
       (cl-transforms-stamped:make-pose-stamped "map" (roslisp:ros-time)
                                                (cl-tf:translation transform)
                                                (cl-tf:rotation transform)))))
