@@ -130,6 +130,7 @@ DESIG (list of designators): List of designators to be executed."
             (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake") (:target "tortugabot1/surface")))
             (make-designator :action `((:type :move-gripper) (:arm ,common:+left-arm+) (:target "open")))
             (make-designator :action `((:type :release) (:arm ,common:+left-arm+)))
+            (make-designator :action `((:type :base-pose)))
             (make-designator :action `((:type :goal) (:go-to :table) (:goal
                                                                         ,(make-designator :location `((:go-to ,(turtle-do::get-pose-of (common:get-place-of-guest))))))))
             ))
