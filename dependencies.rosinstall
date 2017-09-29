@@ -13,6 +13,7 @@
 - git:
     local-name: cram_common
     uri: https://github.com/cram2/cram_common.git
+    version: e34935aa5a81f52d84a566cad1c9e757de1297cf
 - git:
     local-name: cram_3rdparty
     uri: https://github.com/cram2/cram_3rdparty.git
@@ -22,6 +23,7 @@
 - git:
     local-name: cram_beliefstate
     uri: https://github.com/cram2/cram_beliefstate.git
+    version: b794bb7d6f2c83978729a8b7fa9da89964a22b24
 - git:
     local-name: designator_integration
     uri: https://github.com/code-iai/designator_integration.git
