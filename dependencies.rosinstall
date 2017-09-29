@@ -11,6 +11,9 @@
     local-name: cram_core
     uri: https://github.com/cram2/cram_core.git
 - git:
+    local-name: cram_common
+    uri: https://github.com/cram2/cram_common.git
+- git:
     local-name: cram_3rdparty
     uri: https://github.com/cram2/cram_3rdparty.git
 - git:
@@ -25,4 +28,4 @@
 ## Turtles
 - git:
     local-name: snap_map_icp
-    uti: https://github.com/code-iai/snap_map_icp.git
+    uri: https://github.com/code-iai/snap_map_icp.git
