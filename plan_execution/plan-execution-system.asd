@@ -6,6 +6,7 @@
                pr2-command-pool-system
                turtle-command-pool-system
                planning-common-system
+               plan-generator-system
                cram-designators
                cram-prolog
                cram-process-modules
@@ -20,4 +21,5 @@
      (:file "action-designators" :depends-on ("package"))
      (:file "process-modules" :depends-on ("package" "plans"))
      (:file "toplevel" :depends-on ("package" "process-modules" "action-designators"))
-     (:file "init" :depends-on ("package" "toplevel"))))))
+     (:file "init" :depends-on ("package" "toplevel"))
+     (:file "manager" :depends-on ("package" "toplevel" "init"))))))

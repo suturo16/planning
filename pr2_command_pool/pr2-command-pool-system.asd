@@ -16,5 +16,6 @@
   ((:module "lisp"
     :components
     ((:file "package")
-     (:file "actions" :depends-on ("package"))
-     (:file "commands" :depends-on ("package" "actions"))))))
+     (:file "break-functions" :depends-on ("package"))
+     (:file "actions" :depends-on ("package" "break-functions"))
+     (:file "commands" :depends-on ("package" "actions" "break-functions"))))))

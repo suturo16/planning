@@ -3,34 +3,37 @@
 import rospy
 import tf
 import thread
+import random
 
 
-def broadcast():
-    br = tf.TransformBroadcaster()
-    br.sendTransform((0, 1, 0),
-                     tf.transformations.quaternion_from_euler(0, 0, 1),
-                     rospy.Time.now(),
-                     "spatula_shovel",
-                     "spatula1")
+# def broadcast():
+#     br = tf.TransformBroadcaster()
+#     br.sendTransform((0, 1, 0),
+#                      tf.transformations.quaternion_from_euler(0, 0, 1),
+#                      rospy.Time.now(),
+#                      "spatula_shovel",
+#                      "spatula1")
 
 
 transforms = [
-    {
-        'name':'spatula1_shovel',
-        'parent': 'spatula1'
-    },
-    {
-        'name':'spatula1_handle',
-        'parent':'spatula1'
-    },
+    # {
+    #     'name':'spatula1_shovel',
+    #     'parent': 'spatula1'
+    # },
+    # {
+    #     'name':'spatula1_handle',
+    #     'parent':'spatula1'
+    # },
     
     {
         'name':'r_wrist_roll_link',
-        'parent':'base_link'
+        'parent':'base_link',
+        'rot':tf.transformations.quaternion_from_euler(90,0,0)
     },
     {
         'name':'l_wrist_roll_link',
-        'parent':'base_link'
+        'parent':'base_link',
+        'rot':tf.transformations.quaternion_from_euler(0,90,0)
     },
     {
         'name':'base_link',
@@ -64,7 +67,7 @@ def start_broadcast():
             rot = t['rot'] if 'rot' in t else (0,0,0,1)
             
             br.sendTransform(pos, rot, rospy.Time.now(), t['name'], t['parent'])
-        rospy.sleep(0.1)
+        rospy.sleep(0.2)
 
 
 if __name__ == '__main__':

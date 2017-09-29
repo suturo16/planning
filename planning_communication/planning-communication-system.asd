@@ -2,7 +2,9 @@
   :depends-on (roslisp
                std_msgs-msg
                planning-common-system
-               s-xml-rpc)
+               s-xml-rpc
+               ;; ip-interfaces
+               cl-json)
   :components
   ((:module "lisp"
     :components
@@ -10,4 +12,5 @@
      (:file "rpc-server" :depends-on ("package"))
      (:file "rpc-client" :depends-on ("package"))
      (:file "command-handler" :depends-on ("package"))
+     (:file "prolog-json-parser" :depends-on ("package"))
      (:file "init" :depends-on ("package" "rpc-server" "rpc-client" "command-handler"))))))

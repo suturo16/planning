@@ -1,6 +1,6 @@
 (in-package :planning-communication-package)
 
-(defun setup-pepper-communication (execute-cb my-ip &optional (pepper-ip "192.168.101.253") (pepper-port 8000))
+(defun setup-pepper-communication (execute-cb &key (pepper-ip "192.168.100.234") (pepper-port 8000))
   "Setup communcation with other agents.
 
 EXECUTE-CB (function): Look at `make-command-executer's docstring for further information.
@@ -17,6 +17,6 @@ PEPPER-PORT (int): RPC-Port of Pepper."
   (|updateObserverClient| +pepper-client-id+ pepper-ip pepper-port)
 
   ;; Tell Pepper where we are.
-  (update-connection-credentials my-ip :client :pepper))
+  (update-connection-credentials :client :pepper))
 
   

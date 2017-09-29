@@ -58,16 +58,16 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
         (beliefstate::annotate-resource "arm" arm "knowrob")
         ;; grasp it
         (seq
-          (cpl:with-retry-counters ((timeouts 1))
+          (cpl:with-retry-counters ((timeouts 3))
             (cpl:with-failure-handling
                 ((common:action-timeout (e)
                    (cpl:do-retry timeouts
                      (ros-warn (grasp) "Grasping went-wrong: ~a" e)
                      (cpl:retry))))
               (alexandria:switch ((common:object-info-type obj-info) :test #'equal)
-                ("knife" (grasp-knife obj-info arm))
-                ("plate" (grasp-plate obj-info arm))
-                ("spatula" (grasp-spatula obj-info arm))
+                ("cakeKnife" (grasp-knife obj-info arm))
+                ("dinnerPlateForCake" (grasp-plate obj-info arm))
+                ("cakeSpatula" (grasp-spatula obj-info arm))
                 ("cylinder" (grasp-object obj-info arm)))))
           (pr2-do:connect-obj-with-gripper obj-info arm)
           (ros-info (grasp) "Connected object ~a with arm ~a."
@@ -88,11 +88,11 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
 (defun grasp-plate (plate-info arm)
   "Grasp the plate described by PLATE-INFO with ARM."
   (ros-info (grasp plate) "Open gripper")
-  (pr2-do:open-gripper arm 0.01)
+  (pr2-do:open-gripper arm 0.02)
   (ros-info (grasp plate) "Move arm to object ~a." (common:object-info-name plate-info))
   (pr2-do:grasp-plate plate-info arm)
   (ros-info (grasp plate) "Close gripper.")
-  (pr2-do:close-gripper arm 100)
+  (pr2-do:close-gripper arm 100  -0.03)
   (ros-info (grasp plate) "Done."))
 
 
@@ -212,34 +212,3 @@ ARM (string): Which arm to use. Use one of the constants defined in planning-com
   ;; else complain
   (ros-error (move-n-flip) "Cannot find object '~a', on which I am supposed to deliver the object."
              (common:object-info-name target-info))))
-
-
-(defun ms2-grasp-knife (knife-info arm)
-  (ros-info (ms2-grasp-knife) "connect Knife frame to ododm.")
-  (common:prolog-connect-frames "/odom_combined"  "/Knife")
-  (ros-info (ms2-grasp-knife) "grasp the knife.")
-  (pr2-do:grasp-knife knife-info arm)
-  (ros-info (ms2-grasp-knife) "close-gripper")
-  (pr2-do:close-gripper arm 100)
-  ;; (pr2-do::detach-knife-from-rack (pr2-do::get-object-info "Knife") pr2-do::+right-arm+)
-  (ros-info (ms2-grasp-knife) "reconnect frames from odom to arm")
-  (common:prolog-disconnect-frames "/odom_combined" "/Knife")
-  (common:prolog-connect-frames "/r_wrist_roll_link" "/Knife")
-  ;;(pr2-do:get-in-base-pose)
-  ;;TODO: test detach, add it in here.
-  )
-
-
-(defun ms2-cut-cake (cake-info knife-info arm)
-  (common:prolog-connect-frames "/odom_combined" "/Box")
-  (ros-info "ms2-cut-object" "Getting into cutting position.")
-  (pr2-do:take-cutting-position cake-info knife-info arm 0.01)
-  (ros-info "ms2-cut-object" "Cutting.")
-  (pr2-do:cut-cake cake-info knife-info arm 0.01)
-  (ros-info "ms2-cut-cake" "Done."))
-
-
-(defun ms2-full-demo ()
-  (ms2-grasp-knife (common:get-object-info "Knife") common:+right-arm+ )
-  (pr2-do:get-in-base-pose)
-  (ms2-cut-cake (common:get-object-info "Box") (common:get-object-info "Knife") common:+right-arm+))

@@ -6,7 +6,7 @@
 TASK (string): Natural language description of the task.
                As of now it has to be one of the strings defined in `task->designators'."
   (common:ensure-node-is-running)
-  (format T "command: ~a" task)
+  (format T "Execute command: ~a" task)
   (execute-task task))
   
 
@@ -25,9 +25,20 @@ TASK (string): Natural language description of the task.
   (with-pr2-process-modules
     ;; Give our pm an alias, so it's less of a hassle to call it later.
     (process-module-alias :manipulation 'giskard-manipulation)
+
+    (turtle-do::with-turtle-process-modules
+    (process-module-alias :navigation 'turtle-do::simple-navigation)
     
-    ;; Translate the task to designators and execute them.
-    (execute-desigs (task->designators task)))
+    
+    ;; Translate the task to designators and execute
+      (format t "DESIG-PROP ~a~%" (cram-prolog:prolog (list 'desig-prop (car (task->designators "turtle deliver")) '(:type ?x))))
+      (format t "MATCHING-PROCESS-MODULE ~a~%" (cram-prolog:prolog (list 'matching-process-module (car (task->designators "turtle deliver")) '?y)))
+      (execute-desigs (task->designators task))))
+  
+  
+
+
+
   
   ;; logs extraction
   (beliefstate::set-experiment-meta-data
@@ -44,7 +55,7 @@ TASK (string): Natural language description of the task.
 DESIG (list of designators): List of designators to be executed."
   (if desigs
       (seq
-        (pm-execute :manipulation (car desigs))
+        (pm-execute-matching (car desigs))
         
         ;; Call the function recursively with the rest of the list.
         (execute-desigs (cdr desigs)))
@@ -56,44 +67,118 @@ DESIG (list of designators): List of designators to be executed."
   (alexandria:switch (task :test (lambda (x xs) (member x xs :test #'equal)))
     ('("basepose" "step0")
      (list (make-designator :action `((:type :base-pose)))))
+    ('("basepose-l" "step0l")
+      (list (make-designator :action `((:type :base-pose) (:arm ,common:+left-arm+)))))
+    ('("basepose-r" "step0r")
+      (list (make-designator :action `((:type :base-pose) (:arm ,common:+right-arm+)))))
     ('("grasp cylinder")
      (list (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "cylinder")))))
     ('("grasp knife" "step1")
-     (list (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "knife")))))
+     (list (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "cakeKnife")))))
     ('("detach" "step2")
-     (list (make-designator :action `((:type :detach) (:arm ,common:+right-arm+) (:object "knife")))))
+     (list (make-designator :action `((:type :detach) (:arm ,common:+right-arm+) (:object "cakeKnife")))))
     ('("move spatula next to cake" "step3")
-     (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula") (:target "next2cake")))))
+     (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "cakeSpatula") (:target "next2cake")))))
+    ('("grasp spatula" "stepPre3")
+      (list (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "cakeSpatula")))))
     ('("just cut" "step4b")
-     (list (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box")))))
+     (list (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "cakeKnife") (:cake "box")))))
     ('("just cut and move" "step4")
-     (list (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box") (:target "spatula")))))
+     (list (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "cakeKnife") (:cake "box") (:target "cakeSpatula")))))
     ('("move n flip" "step5")
-     (list (make-designator :action `((:type :move-n-flip) (:arm ,common:+left-arm+) (:tool "spatula") (:target "plate")))))
+     (list (make-designator :action `((:type :move-n-flip) (:arm ,common:+left-arm+) (:tool "cakeSpatula") (:target "dinnerPlateForCake")))))
     ('("drop spatula" "step6")
-     (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula") (:target "spatulaDropZone")))
-           (make-designator :action `((:type :move-gripper) (:arm ,common:+left-arm+) (:object "spatula") (:target "open")))
+     (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "cakeSpatula") (:target "spatulaDropZone")))
+           (make-designator :action `((:type :move-gripper) (:arm ,common:+left-arm+) (:target "open")))
            (make-designator :action `((:type :release) (:arm ,common:+left-arm+)))))
     ('("grasp plate" "step7")
-     (list (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "plate")))))
+     (list (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake")))))
     ('("deliver plate" "step8")
-     (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "plate1") (:target "deliver")))))
+     (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake") (:target "deliver")))
+           (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake") (:target "tortugabot1/surface")))))
     ('("cut cake")
-     (list (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "knife")))
-           (make-designator :action `((:type :detach) (:arm ,common:+right-arm+) (:object "knife")))
-           (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box")))))
+     (list (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "cakeKnife")))
+           (make-designator :action `((:type :detach) (:arm ,common:+right-arm+) (:object "cakeKnife")))
+           (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "cakeKnife") (:cake "box")))))
+    ('("prep")
+     (list (make-designator :action `((:type :move-gripper) (:arm ,common:+left-arm+) (:target "open")))
+           (make-designator :action `((:type :move-gripper) (:arm ,common:+right-arm+) (:target "open")))
+           (make-designator :action `((:type :base-pose)))
+           (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "cakeKnife")))
+           (make-designator :action `((:type :detach) (:arm ,common:+right-arm+) (:object "cakeKnife")))
+           (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "cakeSpatula")))
+           (make-designator :action `((:type :base-pose)))))
+    ('("cut")
+      (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "cakeSpatula") (:target "next2cake")))
+            (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "cakeKnife") (:cake "box") (:target "cakeSpatula")))
+            (make-designator :action `((:type :base-pose) (:arm ,common:+right-arm+)))
+            (make-designator :action `((:type :move-n-flip) (:arm ,common:+left-arm+) (:tool "cakeSpatula") (:target "dinnerPlateForCake")))
+            (make-designator :action `((:type :base-pose) (:arm ,common:+left-arm+)))))
+    ('("deliver")
+      (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "cakeSpatula") (:target "spatulaDropZone")))
+            (make-designator :action `((:type :move-gripper) (:arm ,common:+left-arm+) (:target "open")))
+            (make-designator :action `((:type :release) (:arm ,common:+left-arm+)))
+            (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake")))
+            ;; (make-designator :action `((:type :goal)
+            ;;                            (:go-to :table)
+            ;;                            (:goal ,(make-designator :location `((:go-to ,(cl-transforms-stamped:make-pose-stamped
+            ;;                                                                           "map"
+            ;;                                                                           (roslisp:ros-time)
+            ;;                                                                           (cl-transforms:make-3d-vector 0.498 1.88 0.0)
+            ;;                                                                           (cl-transforms:make-quaternion 0.0 0.0 0.0 1.0))))))))
+            (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake") (:target "deliver")))
+            (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake") (:target "tortugabot1/surface")))
+            (make-designator :action `((:type :move-gripper) (:arm ,common:+left-arm+) (:target "open")))
+            (make-designator :action `((:type :release) (:arm ,common:+left-arm+)))
+            (make-designator :action `((:type :base-pose)))
+            (make-designator :action `((:type :goal) (:go-to :table) (:goal
+                                                                        ,(make-designator :location `((:go-to ,(turtle-do::get-pose-of (common:get-place-of-guest))))))))
+            ))
+    ('("turtle deliver")
+      (list (make-designator :action `((:type :goal) (:go-to :table) (:goal
+                                                                      ,(make-designator :location `((:go-to ,(turtle-do::get-pose-of (common:get-place-of-guest))))))))))
+    ('("test turtle")
+      (list (make-designator :action `((:type :goal)
+                                       (:go-to :table)
+                                       (:goal ,(make-designator :location `((:go-to ,(cl-transforms-stamped:make-pose-stamped
+                                                                                      "map"
+                                                                                      (roslisp:ros-time)
+                                                                                      (cl-transforms:make-3d-vector 0.498 1.88 0.0)
+                                                                                      (cl-transforms:make-quaternion 0.0 0.0 0.0 1.0))))))))))
     ('("demo")
-     (list (make-designator :action `((:type :base-pose)))
-           (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "knife")))
-           (make-designator :action `((:type :detach) (:arm ,common:+right-arm+) (:object "knife")))
-           ;;(make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "spatula")))
-           (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula") (:target "next2cake")))
-           (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "knife") (:cake "box") (:target "spatula")))
-           (make-designator :action `((:type :move-n-flip) (:arm ,common:+left-arm+) (:tool "spatula") (:target "plate")))
-           (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "spatula") (:target "spatulaDropZone")))
-           (make-designator :action `((:type :move-gripper) (:arm ,common:+left-arm+) (:object "spatula") (:target "open")))
-           (make-designator :action `((:type :release) (:arm ,common:+left-arm+)))
-           (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "plate")))
-           (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "plate1") (:target "deliver")))))))
+      (list
+       (make-designator :action `((:type :base-pose)))
+       (make-designator :action `((:type :move-gripper) (:arm ,common:+right-arm+) (:target "open")))
+       (make-designator :action `((:type :grasp) (:arm ,common:+right-arm+) (:object "cakeKnife")))
+       (make-designator :action `((:type :detach) (:arm ,common:+right-arm+) (:object "cakeKnife")))
+       (make-designator :action `((:type :move-gripper) (:arm ,common:+left-arm+) (:target "open")))
+       (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "cakeSpatula")))
+       (make-designator :action `((:type :base-pose)))
+       (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "cakeSpatula") (:target "next2cake")))
+       (make-designator :action `((:type :cut) (:arm ,common:+right-arm+) (:knife "cakeKnife") (:cake "box") (:target "next2cake")))
+       (make-designator :action `((:type :move-n-flip) (:arm ,common:+left-arm+) (:tool "cakeSpatula") (:target "dinnerPlateForCake")))
+       (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "cakeSpatula") (:target "next2cake")))
+       (make-designator :action `((:type :move-gripper) (:arm ,common:+left-arm+) (:target "open")))
+       (make-designator :action `((:type :release) (:arm ,common:+left-arm+)))
+       (make-designator :action `((:type :base-pose)))
+       (make-designator :action `((:type :grasp) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake")))
+       (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake") (:target "deliver")))
+       (make-designator :action `((:type :move-with-arm) (:arm ,common:+left-arm+) (:object "dinnerPlateForCake") (:target "tortugabot1/surface")))))
+    ('("open and base")
+      (list
+       (make-designator :action `((:type :move-gripper) (:arm ,common:+right-arm+) (:target "open")))
+       (make-designator :action `((:type :move-gripper) (:arm ,common:+left-arm+) (:target "open")))
+       (make-designator :action `((:type :base-pose)))))
+    ('("move cake hack")
+      (list (make-designator :action `((:type :move-with-arm) (:arm ,common:+right-arm+) (:object "cakeKnife") (:target "SupportingPlaneOfSpatula1")))))))
 
 
+(defun task-reference (task)
+  (reference-desigs (task->designators task)))
+
+(defun reference-desigs (desigs)
+  (if desigs
+      (progn
+        (print (reference (car desigs)))
+        (reference-desigs (cdr desigs)))
+      (print "Done referencing!")))

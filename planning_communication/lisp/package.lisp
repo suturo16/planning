@@ -1,6 +1,10 @@
 (defpackage :planning-communication-package
   (:nicknames :pcomm )
-  (:use :cl :roslisp))
+  (:use :cl :roslisp)
+  (:export
+   :setup-pepper-communication
+   :fire-rpc
+   :fire-rpc-to-client))
 
 (in-package :planning-communication-package)
 
@@ -15,3 +19,8 @@
 
 ;; subscriber for the command topic
 (defparameter *command-subscriber* nil)
+;; mutex for the prolog knowledgebase requests
+(defparameter *prolog-mutex* nil)
+
+(defun get-prolog-mutex ()
+  (if *prolog-mutex* *prolog-mutex* (setf *prolog-mutex* (sb-thread:make-mutex :name "prolog-mutex"))))

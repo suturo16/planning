@@ -52,17 +52,23 @@ STRINGS (list of strings): Alternating keys and values. Has to have an even leng
 
 (defun run-full-pipeline ()
   "Run perception pipeline for recognizing knife and cake."
-  (ros-info "run-full-pipeline" "recognizing Knife....")
   (service-run-pipeline "knife")
+  (ros-info "run-full-pipeline" "recognizing Knife....")
   (sleep 15)
   (service-run-pipeline "spatula")
+  (ros-info "run-full-pipeline" "recognizing Spatula...")
   (sleep 10)
   (ros-info "run-full-pipeline" "recognizing Cake...")
   (service-run-pipeline "cake")
-  (sleep 10)
+  (sleep 20)
   (service-run-pipeline "plate")
+  (ros-info "run-full-pipeline" "recognizing Plate...")
+  (sleep 10)
+  (service-run-pipeline "board")
+  (ros-info "run-full-pipeline" "recognizing board...")
   (sleep 10)
   (service-run-pipeline "end")
+  (ros-info "run-full-pipeline" "rcognizing Done!")
   (sleep 5))
 
 (defun run-pipeline (obj-type)
@@ -86,18 +92,45 @@ using prolog interface."
 
 (defun get-object-info (object-type)
   "Get object infos for OBJECT-TYPE using prolog interface."
-  (cut:with-vars-bound
-      (?name ?frame ?timestamp ?pose ?width ?height ?depth)
-      (prolog-get-object-info object-type)
-    (make-object-info
-       :name (string-downcase (subseq (string ?name) 34))
-       :frame (string-downcase ?frame)
-       :type object-type
-       :timestamp ?timestamp
-       :pose ?pose
-       :height ?height
-       :width ?width
-       :depth ?depth)))
+  (let ((raw-response (prolog-get-object-info-simple object-type)))
+    (when raw-response
+      (cut:with-vars-bound
+          (?name ?frame ?timestamp ?pose ?width ?height ?depth)
+          raw-response
+        (let ((name (knowrob->str ?name T)))
+          (make-object-info
+           :name name
+           :frame (knowrob->str ?frame)
+           :type object-type
+           :timestamp ?timestamp
+           :pose ?pose
+           :height ?height
+           :width ?width
+           :depth ?depth
+           :physical-parts (get-phys-parts name)
+           :details (prolog-get-details name)))))))
+
+(defun get-object-part-detail (obj-info part detail)
+  "Get the DETAIL of the (physical) PART of OBJ-INFO."
+  ;; get the value
+  (knowrob->str (second
+                 ;; find the right detail
+                 (find (intern (concatenate 'string "'" detail "'"))
+                       ;; find the right part
+                       ;; my-part = part for every step
+                       ;; part-list = result of :key (in this case the parts of obj-info as an alist)
+                       (find part (object-info-physical-parts obj-info)
+                             :test (lambda (my-part part-list)
+                                     (let ((name-of-obj
+                                             (knowrob->str
+                                              (second
+                                               (find (intern "'nameOfObject'") part-list :key #'first)))))
+                                       (string-equal my-part (subseq name-of-obj 0 (1- (length name-of-obj)))))))
+                       :key #'first))))
+
+(defun get-object-detail (obj-info detail)
+  (knowrob->str
+   (car (alexandria:assoc-value (object-info-details obj-info) (intern (concatenate 'string "'" detail "'"))))))
 
 ; if it doesn't work from the start, comment in the uncommented line. 
 ; Make sure the node is running though
@@ -112,3 +145,77 @@ using prolog interface."
      :sound (symbol-code 'sound_play-msg:<soundrequest> :say)
      :command (symbol-code 'sound_play-msg:<soundrequest> :play_once)
      :arg a-string :arg2 "voice_kal_diphone")))
+
+(defun get-guest-ids ()
+  '(1 2 3 4 5 6))
+
+(defun get-guest-order (id)
+  "Get guest order of guest with ID."
+  (let ((raw-order (car (prolog-get-open-orders-of id))))
+    (if raw-order
+        (cut:with-vars-bound
+            (|?Amount|)
+            raw-order
+          (symbol->integer |?Amount|))
+        (ros-info (get-guest-info) "No guest info with id ~a" id))))
+
+(defun get-current-order ()
+  "Returns the customer-id of the current order. Retrieves the whole orders list via prolog. An already started order is always the current order.
+A finished order never is. If there is no order in the state :started, the next order in queue is the current order."
+  (let ((all-orders-raw (prolog-get-open-orders-of)))
+    (when all-orders-raw
+      (flet ((order-status (order)
+               (cut:with-vars-bound (|?Amount| |?Delivered|) order
+                 (if (>= |?Delivered| |?Amount|)
+                     :finished
+                     (if (< 0 |?Amount| |?Delivered|)
+                         :started
+                         :queued)))))
+        (let ((result (alexandria:assoc-value (unless (find :started all-orders-raw :key #'order-status)
+                                                (find :queued all-orders-raw :key #'order-status))
+                                              '|?CustomerID|)))
+          (when result (symbol->integer result)))))))
+
+(defun get-remaining-amount-for-order (&optional customer-id)
+  "Retrieve the remaining amount of pieces still to deliver. total - delivered = value"
+  (let* ((customer-id (if customer-id customer-id (get-current-order)))
+         (raw-order (car (prolog-get-open-orders-of customer-id))))
+    (when raw-order
+      (cut:with-vars-bound
+          (|?Amount| |?Delivered|)
+        raw-order
+        (- |?Amount|  |?Delivered|)))))
+
+
+(defun get-free-table ()
+  "Returns the first free table available as plain string."
+  (let ((raw-place (prolog-get-free-table)))
+    (when raw-place
+      (string-downcase (symbol-name (alexandria:assoc-value raw-place 'common::|?NameOfFreeTable|))))))
+
+(defun get-place-of-guest (&optional (customer-id (get-current-order)))
+  (let ((order (prolog-get-customer-infos customer-id)))
+    (if order
+        (let ((place (place->string (alexandria:assoc-value (first order) 'common::|?Place|))))
+          (if (< 0 (string-lessp "table" place))
+              place
+              (progn (ros-warn (get-place-for-guest) "The guest with ID ~a has no place assigned yet! Just use table1 per default." customer-id)
+                     "table1")))
+        (progn (ros-warn (get-place-for-guest) "There is no order with guest ID ~a! Just use table1 per default." customer-id)
+               "table1"))))
+
+(defun knowrob->str (knowrob-sym &optional (split NIL))
+  "Turn a symbol representing a string returned by Knowledge into a normal string. Optionally cut off the knowrob prefix as well."
+  (let* ((pre-str (symbol-name knowrob-sym))
+         (str (subseq pre-str 1 (1- (length pre-str)))))
+    (if split
+        (when (find #\# str)
+          (second (split str "#")))
+        str)))
+
+(defun symbol->integer (symbol)
+  "Parses a symbol containing an integer into an integer. Symbol has to contain a valid integer value."
+  (parse-integer (remove #\_ (symbol-name symbol))))
+
+(defun place->string (knowrob-place)
+  (string-downcase (symbol-name knowrob-place)))
