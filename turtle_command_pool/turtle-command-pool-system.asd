@@ -21,5 +21,4 @@
      (:file "action-designators" :depends-on ("package"))
      (:file "location-designators" :depends-on ("package"))
      (:file "process-modules" :depends-on ("package" "turtle-action-client" "action-designators" "commands"))
-     (:file "plans" :depends-on ("package"))
      (:file "turtle-action-client" :depends-on ("package"))))))
