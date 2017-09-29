@@ -2,8 +2,18 @@
     local-name: suturo_msgs
     uri: https://github.com/suturo16/suturo_msgs.git
 - git:
+    local-name: iai_common_msgs
+    uri: https://github.com/code-iai/iai_common_msgs.git
+- git:
+    local-name: roslisp_common
+    uri: https://github.com/ros/roslisp_common.git
+- git:
     local-name: cram_core
     uri: https://github.com/cram2/cram_core.git
+- git:
+    local-name: cram_common
+    uri: https://github.com/cram2/cram_common.git
+    version: e34935aa5a81f52d84a566cad1c9e757de1297cf
 - git:
     local-name: cram_3rdparty
     uri: https://github.com/cram2/cram_3rdparty.git
@@ -11,5 +21,13 @@
     local-name: cram_json_prolog
     uri: https://github.com/cram2/cram_json_prolog.git
 - git:
-    local-name: roslisp_common
-    uri: https://github.com/ros/roslisp_common.git
+    local-name: cram_beliefstate
+    uri: https://github.com/cram2/cram_beliefstate.git
+    version: b794bb7d6f2c83978729a8b7fa9da89964a22b24
+- git:
+    local-name: designator_integration
+    uri: https://github.com/code-iai/designator_integration.git
+## Turtles
+- git:
+    local-name: snap_map_icp
+    uri: https://github.com/code-iai/snap_map_icp.git
