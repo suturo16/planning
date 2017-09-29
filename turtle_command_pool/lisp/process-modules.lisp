@@ -20,20 +20,6 @@
         (execute-navigation-action goal-pose)
         (fail 'navigation-failed))))))
 
-;(defmacro with-turtle-process-modules (&body body)
-;`(with-process-modules-running
-;(turtle-navigation turtle-test-module)
-;,@body))
-
-(defun test-fun ()
-  (top-level
-    (with-turtle-process-modules
-      (process-module-alias :navigation 'turtle-test-module)
-      (with-designators
-          ((test-desig :action `((:type :move-to) (:location (1 2 3)) (:next-to "table1"))))
-           (pm-execute :navigation test-desig)))))
-
-
 (def-process-module simple-navigation (action-designator)
   (roslisp:ros-info (turtle-process-modules)
                     "Turtle simple navigation invoked with action designator `~a'."
