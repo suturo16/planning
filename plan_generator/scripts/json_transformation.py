@@ -42,33 +42,33 @@ def transform_plan_to_json_string(plan):
     return json_representation + "]"
 
 
-# (grasp-tool knife0 left) & (detach-tool-from-rack knife0 left)
+# needed for: (grasp-tool gripper tool) & (detach-tool-from-rack gripper tool)
 def create_json_string_with_object(action_type, arm, object_used):
     s = "{{type: {}, arm: {}, object: {}}}"
     return s.format(action_type, arm, object_used)
 
-# (hold-next-to-cake spatula0 right cake0) & (place-plate-on-turtlebot plate0 right)
+# needed for: (hold-next-to-cake gripper tool cake) & (place-plate-on-turtlebot gripper plate)
 def create_json_string_with_object_target(action_type, arm, object_used, target):
     s = "{{type: {}, arm: {}, object: {}, target: {}}}"
     return s.format(action_type, arm, object_used, target)
 
-# (cut-cake knife0 left spatula0 right cake0 pieceofcake0)  
+# needed for: (cut-cake gripper1 knife cake spatula gripper2 pieceofcake)  
 def create_json_string_with_cake_knife_target(action_type, arm, knife, cake, target):
     s = "{{type: {}, arm: {}, knife: {}, cake: {}, target: {}}}"
     return s.format(action_type, arm, knife, cake, target)
 
-# (place-piece-of-cake-on-plate pieceofcake0 plate0 spatula0 right)  
+# needed for: (place-piece-of-cake-on-plate gripper spatula plate pieceofcake)  
 def create_json_string_with_tool_target(action_type, arm, tool, target):
     s = "{{type: {}, arm: {}, tool: {}, target: {}}}"
     return s.format(action_type, arm, tool, target)
 
-# (place-spatula-on-table spatula0 right)  
+# needed for: (place-spatula-on-table gripper spatula)  
 def create_json_string_with_three_types(type1, type2, type3, arm, object_used, target1, target2):
     s = "{{type: {}, arm: {}, object: {}, target: {}}},{{type: {}, arm: {}, target: {}}},{{type: {}, arm: {}}}"
     return s.format(type1, arm, object_used, target1, type2, arm, target2, type3, arm)
   
  
- 
+## for testing 
 if __name__ == "__main__":
  
     plan = """(grasp-tool left knife)
